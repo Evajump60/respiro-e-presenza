@@ -734,6 +734,7 @@ if('speechSynthesis' in window){
 
 let currentVoiceClipAudio = null;
 function stopVoiceClipAudio(){
+  voiceGen++;
   if(currentVoiceClipAudio){
     try{ currentVoiceClipAudio.onended = null; currentVoiceClipAudio.onerror = null; currentVoiceClipAudio.pause(); }catch(e){}
     currentVoiceClipAudio = null;
@@ -749,23 +750,52 @@ function getRecordedAudio(text){
   if(!recordedAudioCache[text]) recordedAudioCache[text] = new Audio(RECORDED_VOICE_CLIPS[text]);
   return recordedAudioCache[text];
 }
-function unlockRecordedVoiceClips(){
+// Ogni esercizio sblocca solo le proprie registrazioni (non tutte insieme) e la voce parte
+// SOLO quando lo sblocco è finito: così nessuna registrazione viene fermata a metà.
+const unlockedClips = {};
+let unlockGate = null;
+const RE_RELAX = /Contrai con forza\.$|Rilascia, lascia andare tutto il peso\.$|^Riposo totale\./;
+const RE_AUTOREG = /^(Fermati|Nota mascella|Nota mani|Respira lentamente|Rivaluta|Chiudi gli occhi|Aggiungi dettagli|Rivivi la scena|Scatta una foto)/;
+const CLIP_FILTER = {
+  relax: t => RE_RELAX.test(t),
+  breath: t => t === 'Inspira' || t === 'Trattieni' || t === 'Espira',
+  prana: t => !RE_RELAX.test(t) && !RE_AUTOREG.test(t),
+  autoreg: t => RE_AUTOREG.test(t)
+};
+function unlockRecordedVoiceClips(kind){
+  const filter = CLIP_FILTER[kind];
+  const pending = [];
   Object.keys(RECORDED_VOICE_CLIPS).forEach(text=>{
+    if(filter && !filter(text)) return;
+    if(unlockedClips[text]) return;
     const el = getRecordedAudio(text);
     if(!el) return;
-    try{
-      el.muted = true; // silenzioso durante lo sblocco: non deve sentirsi nulla in questo istante
-      const finish = ()=>{ el.pause(); el.currentTime = 0; el.muted = false; };
-      const p = el.play();
-      if(p && p.then) p.then(finish).catch(finish);
-      else finish();
-    }catch(e){}
+    unlockedClips[text] = true;
+    pending.push(new Promise(resolve=>{
+      try{
+        el.muted = true; // silenzioso durante lo sblocco: non deve sentirsi nulla in questo istante
+        const finish = ()=>{ try{ el.pause(); el.currentTime = 0; el.muted = false; }catch(e){} resolve(); };
+        const p = el.play();
+        if(p && p.then) p.then(finish).catch(finish);
+        else finish();
+      }catch(e){ resolve(); }
+    }));
   });
+  if(pending.length){
+    unlockGate = Promise.race([Promise.all(pending), new Promise(r=>setTimeout(r, 3000))]);
+  }
 }
 
 // Guida vocale condivisa: usa la registrazione vera se esiste per il testo esatto,
 // altrimenti la sintesi vocale del browser.
+let voiceGen = 0;
 function speakCue(text, onEnd, onStart){
+  if(unlockGate){
+    const gate = unlockGate; unlockGate = null;
+    const gen = voiceGen;
+    gate.then(()=>{ if(gen === voiceGen) speakCue(text, onEnd, onStart); });
+    return;
+  }
   stopVoiceClipAudio(); // ferma davvero qualunque registrazione vera ancora in riproduzione
   const audioEl = getRecordedAudio(text);
   if(audioEl){
@@ -1127,7 +1157,7 @@ document.getElementById('relaxVoiceToggle').addEventListener('click', function()
 });
 document.getElementById('relaxStart').addEventListener('click', ()=>{
   if(relaxRunning) return;
-  unlockRecordedVoiceClips();
+  unlockRecordedVoiceClips('relax');
   relaxRunning = true;
   const myRelaxRun = ++relaxRunId;
   const circle = document.getElementById('relaxCircle');
@@ -1224,7 +1254,7 @@ document.getElementById('breathVoiceToggle').addEventListener('click', function(
 
 document.getElementById('breathStart').addEventListener('click', ()=>{
   if(breathRunning) return;
-  unlockRecordedVoiceClips();
+  unlockRecordedVoiceClips('breath');
   breathRunning = true;
   const myBreathRun = ++breathRunId;
   const circle = document.getElementById('breathCircle');
@@ -1413,7 +1443,7 @@ document.getElementById('pranaVoiceToggle').addEventListener('click', function()
 
 document.getElementById('pranaStart').addEventListener('click', ()=>{
   if(pranaRunning) return;
-  unlockRecordedVoiceClips();
+  unlockRecordedVoiceClips('prana');
   pranaRunning = true;
   const myPranaRun = ++pranaRunId;
   // "Sblocco" gli audio registrati proprio nell'istante del tocco: alcuni browser (soprattutto
@@ -1584,7 +1614,7 @@ document.getElementById('autoregVoiceToggle').addEventListener('click', function
 
 document.getElementById('autoregStart').addEventListener('click', ()=>{
   if(autoregRunning) return;
-  unlockRecordedVoiceClips();
+  unlockRecordedVoiceClips('autoreg');
   autoregRunning = true;
   const myRun = ++autoregRunId;
   const circle = document.getElementById('autoregCircle');
