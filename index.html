@@ -173,11 +173,20 @@
 
   .breath-zone{display:flex; flex-direction:column; align-items:center; gap:18px; padding:20px 0;}
   .breath-circle{
-    width:140px; height:140px; border-radius:50%;
-    background: radial-gradient(circle at 35% 30%, var(--indigo), var(--indigo-deep));
-    display:flex; align-items:center; justify-content:center; color:#fff;
-    font-family:'Zen Maru Gothic'; font-weight:700; font-size:16px;
-    transition: transform 4s ease-in-out;
+    --fill: linear-gradient(135deg, var(--indigo), var(--indigo-deep));
+    --sx:1; --sy:1; --d:.6s;
+    position:relative; isolation:isolate; overflow:hidden;
+    width:min(100%, 380px); min-height:150px; padding:20px 22px; box-sizing:border-box;
+    border-radius:24px; border:2px solid rgba(35,38,43,0.14); background:rgba(255,255,255,0.6);
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    color:#fff; font-family:'Zen Maru Gothic'; font-weight:700; font-size:19px; line-height:1.4;
+    overflow-wrap:anywhere;
+  }
+  .breath-circle::before{
+    content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit;
+    background:var(--fill);
+    transform:scale(var(--sx), var(--sy));
+    transition:transform var(--d) ease-in-out;
   }
   .mandala{width:180px; height:180px;}
 
@@ -334,7 +343,7 @@
     <h2>Rilassamento tensione-rilascio</h2>
     <div class="sub">Per ogni zona del corpo: contrai con forza, poi lascia andare tutto il peso. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
-      <div class="breath-circle" id="relaxCircle" style="background:radial-gradient(circle at 35% 30%, var(--gold), #8a6a3a);">Pronto</div>
+      <div class="breath-circle" id="relaxCircle" style="--fill:linear-gradient(135deg,#8a6a3a,#684c26);">Pronto</div>
       <div class="actions">
         <button class="primary" id="relaxStart" type="button">Avvia</button>
         <button class="ghost" id="relaxStop" type="button">⏹ Interrompi</button>
@@ -418,7 +427,7 @@
     <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">息 · Respirare</div>
     <h2>Pranayama</h2>
-    <div class="sub">Segui il cerchio: si espande quando inspiri, si restringe quando espiri. Puoi chiudere gli occhi: la voce ti guida.</div>
+    <div class="sub">Segui il riquadro colorato: si allarga quando inspiri, si restringe quando espiri. Puoi chiudere gli occhi: la voce ti guida.</div>
 
     <div class="note" style="margin:14px 0 20px;">
       <strong>Una nota onesta:</strong> il Respiro a Narici Alternate viene spesso descritto come un modo per "riequilibrare i due emisferi del cervello" — un'affermazione suggestiva ma senza conferme scientifiche solide. Ciò che è ben documentato è che le tecniche di respirazione lenta e controllata riducono in modo affidabile lo stress e l'attivazione del sistema nervoso, il che aiuta comunque la concentrazione.
@@ -434,7 +443,7 @@
     <div class="sub" id="pranaDescription"></div>
 
     <div class="breath-zone">
-      <div class="breath-circle" id="pranaCircle" style="background:radial-gradient(circle at 35% 30%, #7B5EA7, #4A3A66);">Pronto</div>
+      <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#6a4d96,#42335c);">Pronto</div>
       <div class="sub" id="pranaCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <button class="diff-btn small" id="localBin_prana" type="button">🎧 Binaurali</button>
       <button class="primary" id="pranaStart" type="button">Avvia (3 cicli)</button>
@@ -482,7 +491,7 @@
     </div>
 
     <div class="breath-zone">
-      <div class="breath-circle" id="autoregCircle" style="background:radial-gradient(circle at 35% 30%, #4A7FC1, #26456E);">Pronto</div>
+      <div class="breath-circle" id="autoregCircle" style="--fill:linear-gradient(135deg,#3a67a0,#26456E);">Pronto</div>
       <div class="sub" id="autoregCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <button class="primary" id="autoregStart" type="button">Avvia</button>
       <button class="ghost" id="autoregStop" type="button">⏹ Interrompi</button>
@@ -774,7 +783,7 @@ function unlockRecordedVoiceClips(kind){
     pending.push(new Promise(resolve=>{
       try{
         el.muted = true; // silenzioso durante lo sblocco: non deve sentirsi nulla in questo istante
-        const finish = ()=>{ try{ el.pause(); el.currentTime = 0; el.muted = false; }catch(e){} resolve(); };
+        const finish = ()=>{ try{ if(el !== currentVoiceClipAudio){ el.pause(); el.currentTime = 0; } el.muted = false; }catch(e){} resolve(); };
         const p = el.play();
         if(p && p.then) p.then(finish).catch(finish);
         else finish();
@@ -793,7 +802,7 @@ function speakCue(text, onEnd, onStart){
   if(unlockGate){
     const gate = unlockGate; unlockGate = null;
     const gen = voiceGen;
-    gate.then(()=>{ if(gen === voiceGen) speakCue(text, onEnd, onStart); });
+    gate.then(()=> new Promise(r=>setTimeout(r, 450))).then(()=>{ if(gen === voiceGen) speakCue(text, onEnd, onStart); });
     return;
   }
   stopVoiceClipAudio(); // ferma davvero qualunque registrazione vera ancora in riproduzione
@@ -801,9 +810,18 @@ function speakCue(text, onEnd, onStart){
   if(audioEl){
     try{
       audioEl.onended = null; audioEl.onerror = null; audioEl.onplaying = null;
+      audioEl.muted = false; audioEl.volume = 1;
       audioEl.currentTime = 0;
       currentVoiceClipAudio = audioEl;
-      if(onStart) audioEl.onplaying = onStart; // l'evento 'playing' scatta quando il suono è davvero udibile
+      let started = false;
+      // L'evento 'playing' scatta quando il suono è davvero udibile
+      audioEl.onplaying = ()=>{ if(started) return; started = true; if(onStart) onStart(); };
+      // Se dopo un secondo e mezzo non è partito, si riprova una volta (capita sul primo suono dopo lo sblocco).
+      setTimeout(()=>{
+        if(!started && currentVoiceClipAudio === audioEl){
+          try{ audioEl.muted = false; audioEl.currentTime = 0; const q = audioEl.play(); if(q && q.catch) q.catch(()=>{}); }catch(e){}
+        }
+      }, 1500);
       if(onEnd){
         audioEl.onended = ()=>{ if(currentVoiceClipAudio === audioEl) currentVoiceClipAudio = null; onEnd(); };
         audioEl.onerror = audioEl.onended;
@@ -1058,6 +1076,15 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
   resetSpeedUI();
 });
 
+function setBreathScale(el, str){
+  // Il fondo colorato si allarga e si restringe (inspira/espira); il testo resta fermo e leggibile.
+  const m = /scale\(([\d.]+)\)/.exec(String(str));
+  const v = m ? parseFloat(m[1]) : 1;
+  const t = (v === 1) ? 1 : Math.max(0, Math.min(1, (v - 0.8) / 0.7));
+  el.style.setProperty('--sx', (0.94 + 0.06*t).toFixed(3));
+  el.style.setProperty('--sy', (0.84 + 0.16*t).toFixed(3));
+}
+
 // ---------------- NAV ----------------
 function stopEverything(){
   if('speechSynthesis' in window) speechSynthesis.cancel();
@@ -1169,7 +1196,7 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
     function showText(){
       if(myRelaxRun !== relaxRunId) return;
       circle.textContent = RELAX_ZONES[zoneIdx] + ' — contrai';
-      circle.style.transform = 'scale(1.12)';
+      setBreathScale(circle, 'scale(1.12)');
     }
     const hasRecording = relaxVoiceOn && !!RECORDED_VOICE_CLIPS[text];
     if(relaxVoiceOn){
@@ -1191,7 +1218,7 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
     function showText(){
       if(myRelaxRun !== relaxRunId) return;
       circle.textContent = RELAX_ZONES[zoneIdx] + ' — rilascia';
-      circle.style.transform = 'scale(0.95)';
+      setBreathScale(circle, 'scale(0.95)');
     }
     const hasRecording = relaxVoiceOn && !!RECORDED_VOICE_CLIPS[text];
     function advance(){
@@ -1215,7 +1242,7 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
   function finalRest(){
     if(myRelaxRun !== relaxRunId) return;
     let t = 60;
-    circle.style.transform = 'scale(1)';
+    setBreathScale(circle, 'scale(1)');
     circle.textContent = 'Riposo totale — '+t+'s';
     if(relaxVoiceOn) speakCue('Riposo totale. Lascia che il corpo sia completamente pesante e rilassato.');
     relaxInterval = setInterval(()=>{
@@ -1238,7 +1265,7 @@ document.getElementById('relaxStop').addEventListener('click', ()=>{
   stopVoiceClipAudio();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   document.getElementById('relaxCircle').textContent = 'Pronto';
-  document.getElementById('relaxCircle').style.transform = 'scale(1)';
+  setBreathScale(document.getElementById('relaxCircle'), 'scale(1)');
 });
 
 let breathRunning = false;
@@ -1276,8 +1303,8 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
     const p = phases[idx];
     function showText(){
       if(myBreathRun !== breathRunId) return;
-      circle.style.transition = 'transform '+(p.dur/1000)+'s ease-in-out';
-      circle.style.transform = 'scale('+p.scale+')';
+      circle.style.setProperty('--d', (p.dur/1000)+'s');
+      setBreathScale(circle, 'scale('+p.scale+')');
       circle.textContent = p.label;
       caption.textContent = breathStyle === 'immaginativo' ? captions[p.label] : '';
     }
@@ -1289,7 +1316,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
       else {
         cycle++;
         if(cycle < maxCycles){ runPhase(0); }
-        else { circle.textContent = 'Fatto ✓'; circle.style.transform = 'scale(1)'; caption.textContent=''; breathRunning = false; }
+        else { circle.textContent = 'Fatto ✓'; setBreathScale(circle, 'scale(1)'); caption.textContent=''; breathRunning = false; }
       }
     }
     if(breathVoiceOn){
@@ -1316,7 +1343,7 @@ document.getElementById('breathStop').addEventListener('click', ()=>{
   stopVoiceClipAudio();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   document.getElementById('breathCircle').textContent = 'Inizia';
-  document.getElementById('breathCircle').style.transform = 'scale(1)';
+  setBreathScale(document.getElementById('breathCircle'), 'scale(1)');
   document.getElementById('breathCaption').textContent = '';
 });
 
@@ -1475,8 +1502,8 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     if(myPranaRun !== pranaRunId) return; // interrotto dall'esterno (es. cambio modulo)
     function showText(){
       if(myPranaRun !== pranaRunId) return;
-      circle.style.transition = 'transform '+(p.dur/1000)+'s ease-in-out';
-      circle.style.transform = 'scale('+p.scale+')';
+      circle.style.setProperty('--d', (p.dur/1000)+'s');
+      setBreathScale(circle, 'scale('+p.scale+')');
       circle.textContent = p.label;
       caption.textContent = p.caption;
     }
@@ -1510,7 +1537,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
         if(cycle < maxCycles){ runPhase(0); }
         else {
           circle.textContent = 'Fatto ✓';
-          circle.style.transform = 'scale(1)';
+          setBreathScale(circle, 'scale(1)');
           caption.textContent = '';
           pranaRunning = false;
         }
@@ -1533,7 +1560,7 @@ document.getElementById('pranaStop').addEventListener('click', ()=>{
   stopVoiceClipAudio();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   document.getElementById('pranaCircle').textContent = 'Pronto';
-  document.getElementById('pranaCircle').style.transform = 'scale(1)';
+  setBreathScale(document.getElementById('pranaCircle'), 'scale(1)');
   document.getElementById('pranaCaption').textContent = '';
 });
 
@@ -1628,7 +1655,7 @@ document.getElementById('autoregStart').addEventListener('click', ()=>{
     if(myRun !== autoregRunId) return; // interrotto dall'esterno (es. cambio modulo)
     if(idx >= phases.length){
       circle.textContent = 'Fatto ✓';
-      circle.style.transform = 'scale(1)';
+      setBreathScale(circle, 'scale(1)');
       caption.textContent = '';
       autoregRunning = false;
       if(autoregCurrentTech === 'tensione') document.getElementById('autoregPostTensione').style.display = 'block';
@@ -1638,8 +1665,8 @@ document.getElementById('autoregStart').addEventListener('click', ()=>{
     const p = phases[idx];
     function showText(){
       if(myRun !== autoregRunId) return;
-      circle.style.transition = 'transform '+(p.dur/1000)+'s ease-in-out';
-      circle.style.transform = 'scale('+(1 + idx*0.08)+')';
+      circle.style.setProperty('--d', (p.dur/1000)+'s');
+      setBreathScale(circle, 'scale('+(1 + idx*0.08)+')');
       circle.textContent = p.label;
       caption.textContent = p.caption;
     }
@@ -1673,7 +1700,7 @@ document.getElementById('autoregStop').addEventListener('click', ()=>{
   stopVoiceClipAudio();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   document.getElementById('autoregCircle').textContent = 'Pronto';
-  document.getElementById('autoregCircle').style.transform = 'scale(1)';
+  setBreathScale(document.getElementById('autoregCircle'), 'scale(1)');
   document.getElementById('autoregCaption').textContent = '';
 });
 
