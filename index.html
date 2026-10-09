@@ -228,6 +228,27 @@
   .record-card .lbl{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono';}
   .record-card .val{font-family:'Shippori Mincho'; font-size:22px; color:var(--indigo-deep); font-weight:700;}
 
+
+  /* ---------- SCHERMATE SEPARATE ---------- */
+  .home-top{padding:26px 0 8px;}
+  .home-top h1{font-size:clamp(28px,6vw,40px); color:var(--indigo-deep); font-weight:800; margin-bottom:6px;}
+  .home-top p{max-width:52ch; color:var(--ink-soft); font-size:15px; margin:6px 0 12px;}
+  .home-section{margin-top:22px;}
+  .home-section h3{font-size:17px; color:var(--indigo-deep); margin:0 0 6px;}
+  .home-section .modules-nav{margin:8px 0 4px;}
+  details.settings{margin-top:10px; border:1px solid var(--line); border-radius:14px; padding:10px 14px; background:rgba(255,255,255,0.35);}
+  details.settings summary{cursor:pointer; font-weight:700; color:var(--indigo); font-size:14px;}
+  details.settings .controls{margin:10px 0 4px;}
+  .in-panel .home-only, .in-panel footer{display:none !important;}
+  .back-btn{border:none; background:transparent; color:var(--indigo); font-family:'Zen Maru Gothic'; font-weight:700; font-size:15px; padding:8px 2px; cursor:pointer; margin-bottom:4px;}
+  .back-btn:hover{text-decoration:underline;}
+  .panel{margin-top:10px;}
+  .actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:6px 0 4px; width:100%;}
+  .actions .primary{padding:14px 34px; font-size:16px;}
+  .hint{font-size:13px; color:var(--ink-soft); text-align:center; margin:2px 0 0;}
+  .mini-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:10px;}
+  @media (max-width:600px){ .wrap{padding:16px 14px 60px;} .panel{padding:18px 14px;} .modules-nav{grid-template-columns:1fr 1fr;} .seal-card{padding:12px 10px; gap:9px;} .seal{width:38px;height:38px;font-size:18px;} }
+
   footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft);}
 
   @media (max-width:600px){
@@ -238,7 +259,7 @@
 
   @media print{
     body{background:#fff !important;}
-    .hero, .modules-nav, .note, .mode-toggle, footer{display:none !important;}
+    .hero, .modules-nav, .note, .mode-toggle, footer, .home-only, .back-btn{display:none !important;}
     .panel{display:none !important;}
     .panel.active{display:block !important; border:none; box-shadow:none; background:#fff; padding:0;}
     .no-print{display:none !important;}
@@ -251,16 +272,18 @@
 <body>
 <div class="wrap">
 
-  <div class="hero">
-    <div class="hero-text">
-      <div class="eyebrow">息 · Respiro e Concentrazione</div>
-      <h1>Respiro e<br>Concentrazione</h1>
-      <p>Quattro esercizi per calmare il sistema nervoso e allenare l'attenzione attraverso il respiro: rilassamento tensione-rilascio, visualizzazione guidata, pranayama dell'Art of Living, e due tecniche di autoregolazione mentale ispirate alla psicologia dello sport.</p>
+  <div class="home-only">
+  <div class="home-top">
+    <div class="eyebrow">Respiro e Concentrazione</div>
+    <h1>Respiro e<br>Concentrazione</h1>
+    <p>Scegli un esercizio. Ogni esercizio ha la sua schermata e la voce che ti guida: puoi chiudere gli occhi.</p>
+    <details class="settings">
+      <summary>⚙️ Impostazioni</summary>
       <div class="mode-toggle" id="modeToggle">
         <button data-mode="kids" class="active" type="button">Bambini</button>
         <button data-mode="adults" type="button">Adulti</button>
       </div>
-      <div class="controls" id="sessionControls" style="margin-top:14px;">
+      <div class="controls" id="sessionControls">
         <button class="diff-btn" id="wakeLockToggle" type="button">📱 Mantieni schermo acceso</button>
         <button class="diff-btn" id="bgMusicToggle" type="button">🎧 Suoni binaurali</button>
         <div class="field">Volume
@@ -268,90 +291,85 @@
         </div>
       </div>
       <div class="sub" id="binauralStatus" style="margin-top:4px; font-size:12px; min-height:16px;"></div>
-      <div class="sub" style="margin-top:2px; font-size:12px;">Richiedono le <strong>cuffie</strong> per funzionare (un tono leggermente diverso in ogni orecchio). Le prove scientifiche sull'effetto reale dei suoni binaurali restano limitate e discusse — qui sono un sottofondo leggero, non un intervento dimostrato.</div>
-    </div>
-    <div class="hero-demo" id="heroDemo">
-      <span id="heroChar">🌸</span>
-      <div class="cap">respiro lento</div>
-    </div>
+      <div class="sub" style="margin-top:2px; font-size:12px;">I suoni binaurali richiedono le <strong>cuffie</strong> (un tono leggermente diverso in ogni orecchio). Le prove scientifiche sul loro effetto reale restano limitate e discusse: qui sono un sottofondo leggero, non un intervento dimostrato.</div>
+    </details>
   </div>
+
+  <div class="home-section"><h3>Rilassarsi</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="relax" data-title="Rilassamento"><div class="seal">想</div><div class="txt"><strong>Rilassamento</strong><span>Contrai e rilascia</span></div></div>
+      <div class="seal-card" data-panel="breath" data-title="Respiro guidato"><div class="seal">息</div><div class="txt"><strong>Respiro guidato</strong><span>Dentro · ferma · fuori</span></div></div>
+      <div class="seal-card" data-panel="mandala" data-title="Mandala"><div class="seal">想</div><div class="txt"><strong>Mandala</strong><span>Guarda e visualizza</span></div></div>
+  </div></div>
+
+  <div class="home-section"><h3>Pranayama</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="pranayama" data-tech="nadi" data-title="Narici alternate"><div class="seal">息</div><div class="txt"><strong>Narici alternate</strong><span>Calma e equilibrio</span></div></div>
+      <div class="seal-card" data-panel="pranayama" data-tech="dirgha" data-title="Respiro a tre stadi"><div class="seal">息</div><div class="txt"><strong>Respiro a tre stadi</strong><span>Pancia, torace, petto</span></div></div>
+      <div class="seal-card" data-panel="pranayama" data-tech="bhramari" data-title="Respiro dell'ape"><div class="seal">息</div><div class="txt"><strong>Respiro dell'ape</strong><span>Un ronzio che calma</span></div></div>
+      <div class="seal-card" data-panel="pranayama" data-tech="leone" data-title="Respiro del leone"><div class="seal">息</div><div class="txt"><strong>Respiro del leone</strong><span>Scioglie il viso</span></div></div>
+      <div class="seal-card" data-panel="pranayama" data-tech="bhastrika" data-title="Respiro del mantice"><div class="seal">息</div><div class="txt"><strong>Respiro del mantice</strong><span>Energia vivace</span></div></div>
+  </div></div>
+
+  <div class="home-section"><h3>Autoregolazione</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="autoreg" data-tech="tensione" data-title="Soglia di Tensione"><div class="seal">静</div><div class="txt"><strong>Soglia di Tensione</strong><span>Nota e sciogli la tensione</span></div><div class="badge-record" id="recAutoreg" style="display:none;"></div></div>
+      <div class="seal-card" data-panel="autoreg" data-tech="visualizzazione" data-title="Visualizzazione positiva"><div class="seal">静</div><div class="txt"><strong>Visualizzazione positiva</strong><span>Prepara una situazione</span></div></div>
+  </div></div>
+
+  <div class="home-section"><h3>Diario e progressi</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="journal" data-title="Diario"><div class="seal">誌</div><div class="txt"><strong>Diario</strong><span>Scrivi cosa hai notato</span></div></div>
+      <div class="seal-card" data-panel="print" data-title="Scheda stampabile"><div class="seal">印</div><div class="txt"><strong>Scheda stampabile</strong><span>Senza schermo</span></div></div>
+      <div class="seal-card" data-panel="scores" data-title="I miei punteggi"><div class="seal">録</div><div class="txt"><strong>I miei punteggi</strong><span>Storico progressi</span></div></div>
+  </div></div>
 
   <div class="note">
-    <strong>Una nota onesta:</strong> il pranayama e le tecniche di respirazione qui dentro si ispirano all'Art of Living e a concetti diffusi in psicologia dello sport (soglia di tensione, visualizzazione positiva). Sono pratiche di autoregolazione reali e allenabili — calma, attenzione al corpo, gestione della tensione — ma non sostituiscono un percorso terapeutico quando serve.
+    <strong>Una nota onesta:</strong> il pranayama e le tecniche di respirazione si ispirano all'Art of Living e a concetti diffusi in psicologia dello sport (soglia di tensione, visualizzazione positiva). Sono pratiche di autoregolazione reali e allenabili — calma, attenzione al corpo, gestione della tensione — ma non sostituiscono un percorso terapeutico quando serve.
+  </div>
   </div>
 
-  <div class="modules-nav">
-    <div class="seal-card active" data-panel="visual">
-      <div class="seal">想</div>
-      <div class="txt"><strong>Respiro e Mandala</strong><span>Rilassamento e Visualizzazione</span></div>
-    </div>
-    <div class="seal-card" data-panel="pranayama">
-      <div class="seal">息</div>
-      <div class="txt"><strong>Pranayama</strong><span>Art of Living</span></div>
-    </div>
-    <div class="seal-card" data-panel="autoreg">
-      <div class="seal">静</div>
-      <div class="txt"><strong>Autoregolazione</strong><span>Mental Economy</span></div>
-      <div class="badge-record" id="recAutoreg" style="display:none;"></div>
-    </div>
-    <div class="seal-card" data-panel="journal">
-      <div class="seal">誌</div>
-      <div class="txt"><strong>Diario</strong><span>Brighter Minds</span></div>
-    </div>
-    <div class="seal-card" data-panel="print">
-      <div class="seal">印</div>
-      <div class="txt"><strong>Schede stampabili</strong><span>Senza schermo</span></div>
-    </div>
-    <div class="seal-card" data-panel="scores">
-      <div class="seal">録</div>
-      <div class="txt"><strong>I miei punteggi</strong><span>Storico progressi</span></div>
-    </div>
-  </div>
+  <div hidden><div class="hero-demo" id="heroDemo"><span id="heroChar">🌸</span><div class="cap">respiro lento</div></div></div>
 
-  <div class="panel active" id="panel-visual">
-    <div class="eyebrow">想 · Immaginare</div>
-    <h2>Respiro e Mandala</h2>
-    <div class="sub">Prima si calma la mente con il respiro, poi si allena l'occhio interiore: osserva il mandala, chiudi gli occhi, e prova a "vederlo" ancora.</div>
-
-    <div class="controls" style="margin-top:6px;">
-      <div class="field">Voce di lettura
-        <select id="voiceSelectVisual" style="padding:6px 8px; border-radius:8px; border:1px solid var(--line); max-width:220px;"></select>
-      </div>
-      <button class="ghost small" id="voiceTestVisual" type="button">🔊 Prova voce</button>
-    </div>
-
-    <div class="story-box" id="autoSuggestBox" style="font-style:normal;"></div>
-    <div class="controls" style="margin-top:6px;">
-      <button class="ghost small" id="autoSuggestNew" type="button">Un'altra frase</button>
-    </div>
-
-    <h3 style="margin-top:26px;">Rilassamento tensione-rilascio</h3>
-    <div class="sub">Per ogni zona: contrai con forza, poi rilascia lasciando andare tutto il peso. Da fare prima di qualunque visualizzazione.</div>
-    <div class="controls">
-      <button class="primary" id="relaxStart" type="button">Avvia rilassamento guidato</button>
-      <button class="ghost" id="relaxStop" type="button">⏹ Interrompi</button>
-      <button class="diff-btn" id="relaxVoiceToggle" type="button">🔊 Guida vocale</button>
-    </div>
-    <div class="breath-zone" style="padding-top:6px;">
+  <!-- SCHERMATA: RILASSAMENTO -->
+  <div class="panel" id="panel-relax">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">想 · Rilassarsi</div>
+    <h2>Rilassamento tensione-rilascio</h2>
+    <div class="sub">Per ogni zona del corpo: contrai con forza, poi lascia andare tutto il peso. Puoi chiudere gli occhi: la voce ti guida.</div>
+    <div class="breath-zone">
       <div class="breath-circle" id="relaxCircle" style="background:radial-gradient(circle at 35% 30%, var(--gold), #8a6a3a);">Pronto</div>
+      <div class="actions">
+        <button class="primary" id="relaxStart" type="button">Avvia</button>
+        <button class="ghost" id="relaxStop" type="button">⏹ Interrompi</button>
+      </div>
     </div>
+  </div>
 
-    <h3 style="margin-top:30px;">Respiro guidato</h3>
-    <div class="diff-row" id="breathStyleRow">
-      <button class="diff-btn on" data-style="tempo" type="button">Cronometrato</button>
-      <button class="diff-btn" data-style="immaginativo" type="button">Immaginativo</button>
-    </div>
+  <!-- SCHERMATA: RESPIRO GUIDATO -->
+  <div class="panel" id="panel-breath">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">息 · Respirare</div>
+    <h2>Respiro guidato 4-4-4</h2>
+    <div class="sub">Tre cicli: inspira, trattieni, espira, quattro secondi ciascuno. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
       <div class="breath-circle" id="breathCircle">Inizia</div>
       <div class="sub" id="breathCaption" style="min-height:20px; text-align:center;"></div>
-      <button class="diff-btn" id="breathVoiceToggle" type="button">🔊 Guida vocale (per farlo a occhi chiusi)</button>
-      <button class="diff-btn small" id="localBin_breath" type="button">🎧 Binaurali</button>
-      <button class="primary" id="breathStart" type="button">Avvia respiro guidato (4-4-4)</button>
-      <button class="ghost" id="breathStop" type="button">⏹ Interrompi</button>
+      <div class="actions">
+        <button class="primary" id="breathStart" type="button">Avvia</button>
+        <button class="ghost" id="breathStop" type="button">⏹ Interrompi</button>
+      </div>
+      <div class="mini-row" id="breathStyleRow">
+        <button class="diff-btn on" data-style="tempo" type="button">Cronometrato</button>
+        <button class="diff-btn" data-style="immaginativo" type="button">Immaginativo</button>
+      </div>
+      <div class="mini-row"><button class="diff-btn small" id="localBin_breath" type="button">🎧 Binaurali</button></div>
     </div>
+  </div>
 
-    <div style="text-align:center; margin-top:24px;">
-      <div class="sub">Difficoltà del mandala (numero di petali):</div>
+  <!-- SCHERMATA: MANDALA -->
+  <div class="panel" id="panel-mandala">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">想 · Immaginare</div>
+    <h2>Mandala</h2>
+    <div class="sub">Osserva il mandala, poi chiudi gli occhi e prova a "vederlo" ancora.</div>
+    <div style="text-align:center;">
       <div class="diff-row" id="visDiff" style="justify-content:center;">
         <button class="diff-btn" data-petals="6" type="button">Facile</button>
         <button class="diff-btn on" data-petals="10" type="button">Medio</button>
@@ -360,13 +378,19 @@
       </div>
       <svg class="mandala" id="mandalaSvg" viewBox="0 0 200 200"></svg>
       <div class="controls" style="justify-content:center; margin-top:16px;">
-        <button class="ghost" id="mandalaHide" type="button">Nascondi e visualizza (occhi chiusi)</button>
+        <button class="primary" id="mandalaHide" type="button">Nascondi e visualizza (occhi chiusi)</button>
       </div>
       <textarea class="text-answer" id="visualRecall" rows="3" placeholder="Cosa ricordi del disegno? Colori, forme, numero di petali..." style="margin-top:14px; display:none;"></textarea>
     </div>
 
-    <h3 style="margin-top:30px;">A che stadio sei oggi?</h3>
-    <div class="sub">Il modello a 5 stadi dell'immagine mentale, usato dopo qualunque esercizio di visualizzazione come autovalutazione, non come giudizio.</div>
+    <h3 style="margin-top:28px;">Una frase per oggi</h3>
+    <div class="story-box" id="autoSuggestBox" style="font-style:normal;"></div>
+    <div class="controls" style="margin-top:6px;">
+      <button class="ghost small" id="autoSuggestNew" type="button">Un'altra frase</button>
+    </div>
+
+    <h3 style="margin-top:26px;">A che stadio sei oggi?</h3>
+    <div class="sub">Il modello a 5 stadi dell'immagine mentale, usato come autovalutazione, non come giudizio.</div>
     <div class="answer-row" id="stageScale">
       <div class="chip stage-opt" data-stage="1">1 · Buio completo</div>
       <div class="chip stage-opt" data-stage="2">2 · Movimento indistinto</div>
@@ -380,18 +404,27 @@
     <div class="result" id="stageResult"></div>
   </div>
 
+  <!-- controlli vocali: la voce è sempre attiva con le tue registrazioni, qui restano solo per compatibilità del codice -->
+  <div hidden>
+    <button id="relaxVoiceToggle" type="button"></button>
+    <button id="breathVoiceToggle" type="button"></button>
+    <button id="pranaVoiceToggle" type="button"></button>
+    <button id="autoregVoiceToggle" type="button"></button>
+  </div>
+
 
   <!-- MODULE: PRANAYAMA -->
   <div class="panel" id="panel-pranayama">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">息 · Respirare</div>
     <h2>Pranayama</h2>
-    <div class="sub">Cinque tecniche di respirazione della tradizione yogica, rese popolari in Occidente soprattutto dall'Art of Living. Scegli una tecnica, leggi le istruzioni e segui il cerchio: si espande quando inspiri, si restringe quando espiri.</div>
+    <div class="sub">Segui il cerchio: si espande quando inspiri, si restringe quando espiri. Puoi chiudere gli occhi: la voce ti guida.</div>
 
     <div class="note" style="margin:14px 0 20px;">
       <strong>Una nota onesta:</strong> il Respiro a Narici Alternate viene spesso descritto come un modo per "riequilibrare i due emisferi del cervello" — un'affermazione suggestiva ma senza conferme scientifiche solide. Ciò che è ben documentato è che le tecniche di respirazione lenta e controllata riducono in modo affidabile lo stress e l'attivazione del sistema nervoso, il che aiuta comunque la concentrazione.
     </div>
 
-    <div class="diff-row" id="pranaTechnique">
+    <div class="diff-row" id="pranaTechnique" style="display:none;">
       <button class="diff-btn on" data-t="nadi" type="button">Narici Alternate</button>
       <button class="diff-btn" data-t="dirgha" type="button">Respiro a Tre Stadi</button>
       <button class="diff-btn" data-t="bhramari" type="button">Respiro dell'Ape</button>
@@ -403,7 +436,6 @@
     <div class="breath-zone">
       <div class="breath-circle" id="pranaCircle" style="background:radial-gradient(circle at 35% 30%, #7B5EA7, #4A3A66);">Pronto</div>
       <div class="sub" id="pranaCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
-      <button class="diff-btn" id="pranaVoiceToggle" type="button">🔊 Guida vocale (per farlo a occhi chiusi)</button>
       <button class="diff-btn small" id="localBin_prana" type="button">🎧 Binaurali</button>
       <button class="primary" id="pranaStart" type="button">Avvia (3 cicli)</button>
       <button class="ghost" id="pranaStop" type="button">⏹ Interrompi</button>
@@ -413,11 +445,12 @@
 
   <!-- MODULE: AUTOREGOLAZIONE -->
   <div class="panel" id="panel-autoreg">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">静 · Autoregolarsi</div>
     <h2>Autoregolazione</h2>
-    <div class="sub">Due tecniche di autocontrollo mentale ispirate a concetti diffusi in psicologia dello sport (soglia di tensione corporea, visualizzazione positiva) — non a un unico metodo specifico. Utili prima di una prova, una conversazione difficile, o semplicemente per una pausa.</div>
+    <div class="sub">Utile prima di una prova, di una conversazione difficile, o come semplice pausa. Puoi chiudere gli occhi: la voce ti guida.</div>
 
-    <div class="diff-row" id="autoregTechnique">
+    <div class="diff-row" id="autoregTechnique" style="display:none;">
       <button class="diff-btn on" data-t="tensione" type="button">Soglia di Tensione</button>
       <button class="diff-btn" data-t="visualizzazione" type="button">Visualizzazione Positiva</button>
     </div>
@@ -444,15 +477,8 @@
       </div>
     </div>
 
-    <div class="controls" style="margin-top:14px;">
-      <button class="diff-btn" id="autoregVoiceToggle" type="button">🔊 Guida vocale</button>
+    <div class="controls" style="margin-top:14px; justify-content:center;">
       <button class="diff-btn small" id="localBin_autoreg" type="button">🎧 Binaurali</button>
-    </div>
-    <div class="controls" style="margin-top:6px;">
-      <div class="field">Voce di lettura
-        <select id="voiceSelectAutoreg" style="padding:6px 8px; border-radius:8px; border:1px solid var(--line); max-width:220px;"></select>
-      </div>
-      <button class="ghost small" id="voiceTestAutoreg" type="button">🔊 Prova voce</button>
     </div>
 
     <div class="breath-zone">
@@ -489,6 +515,7 @@
 
 
   <div class="panel" id="panel-journal">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">誌 · Riflettere</div>
     <h2>Diario di Allenamento</h2>
     <div class="sub">Ispirato al journaling usato da Brighter Minds (un programma indiano per bambini, collegato a Heartfulness, con un impianto simile a Shichida). Qui non alleniamo memoria o coordinazione, ma la capacità di osservare se stessi: qualche riga dopo l'allenamento aiuta a notare i progressi che altrimenti passerebbero inosservati.</div>
@@ -564,6 +591,7 @@
 
   <!-- MODULE: PRINTABLE -->
   <div class="panel" id="panel-print">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">印 · Su carta</div>
     <h2>Scheda stampabile</h2>
     <div class="sub no-print">Un mandala da colorare e poi ricostruire a memoria, per allenarsi anche senza schermo.</div>
@@ -583,6 +611,7 @@
 
   <!-- MODULE 6: SCORES -->
   <div class="panel" id="panel-scores">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">録 · Progressi</div>
     <h2>I miei punteggi</h2>
     <div class="sub">Ogni sessione completata di Flashcard, Catena della Memoria, Occhio di Kim, Fissazione, Gioco in Coppia, Ascolto Rapido, Lettura Veloce, Test di Corsi, N-Back e Parola e Colore viene registrata qui per questa sessione. Usa "Esporta" prima di chiudere per non perdere lo storico.</div>
@@ -618,7 +647,7 @@
   <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo.</footer>
 </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti di coordinazione della Brain Gym, alle tecniche di respirazione dell'Art of Living, agli esercizi corporei del metodo Bronnikov, e a test classici della psicologia cognitiva come il Test di Corsi, l'N-Back e il test di Stroop. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo.</footer>
+
 </div>
 
 
@@ -702,7 +731,6 @@ if('speechSynthesis' in window){
   refreshVoiceList();
   speechSynthesis.onvoiceschanged = refreshVoiceList;
 }
-mountVoicePicker('voiceSelectVisual', 'voiceTestVisual', 'Inspira lentamente, e rilascia.');
 
 let currentVoiceClipAudio = null;
 function stopVoiceClipAudio(){
@@ -1001,33 +1029,58 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
 });
 
 // ---------------- NAV ----------------
-document.querySelectorAll('.seal-card').forEach(card=>{
-  card.addEventListener('click', ()=>{
-    document.querySelectorAll('.seal-card').forEach(c=>c.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    card.classList.add('active');
-    document.getElementById('panel-'+card.dataset.panel).classList.add('active');
-    // Se i suoni binaurali sono attivi, passa dolcemente al preset più adatto al nuovo modulo.
-    if(MODULE_BINAURAL[card.dataset.panel]) setBinauralPreset(MODULE_BINAURAL[card.dataset.panel]);
-    // Cambiando modulo, si interrompe subito qualunque esercizio, voce guida o audio
-    // registrato del modulo precedente, così non continua a parlare/suonare in sottofondo.
-    if('speechSynthesis' in window) speechSynthesis.cancel();
-    stopVoiceClipAudio();
-    ['audioApe','audioLeone'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(el){ try{ el.pause(); el.currentTime = 0; }catch(e){} }
-    });
-    relaxRunId++; relaxRunning = false;
-    if(relaxTimeout){ clearTimeout(relaxTimeout); relaxTimeout = null; }
-    if(relaxInterval){ clearInterval(relaxInterval); relaxInterval = null; }
-    breathRunId++; breathRunning = false;
-    if(breathPhaseTimeout){ clearTimeout(breathPhaseTimeout); breathPhaseTimeout = null; }
-    pranaRunId++; pranaRunning = false;
-    if(pranaPhaseTimeout){ clearTimeout(pranaPhaseTimeout); pranaPhaseTimeout = null; }
-    autoregRunId++; autoregRunning = false;
-    if(autoregPhaseTimeout){ clearTimeout(autoregPhaseTimeout); autoregPhaseTimeout = null; }
+function stopEverything(){
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  stopVoiceClipAudio();
+  ['audioApe','audioLeone'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ try{ el.pause(); el.currentTime = 0; }catch(e){} }
   });
+  relaxRunId++; relaxRunning = false;
+  if(relaxTimeout){ clearTimeout(relaxTimeout); relaxTimeout = null; }
+  if(relaxInterval){ clearInterval(relaxInterval); relaxInterval = null; }
+  breathRunId++; breathRunning = false;
+  if(breathPhaseTimeout){ clearTimeout(breathPhaseTimeout); breathPhaseTimeout = null; }
+  pranaRunId++; pranaRunning = false;
+  if(pranaPhaseTimeout){ clearTimeout(pranaPhaseTimeout); pranaPhaseTimeout = null; }
+  autoregRunId++; autoregRunning = false;
+  if(autoregPhaseTimeout){ clearTimeout(autoregPhaseTimeout); autoregPhaseTimeout = null; }
+}
+function goPanel(id, tech, title){
+  // Cambiando schermata si interrompe subito qualunque esercizio, voce guida o audio registrato.
+  stopEverything();
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.body.classList.toggle('in-panel', id !== 'home');
+  if(id !== 'home'){
+    const panel = document.getElementById('panel-'+id);
+    panel.classList.add('active');
+    if(tech){
+      const row = id === 'pranayama' ? 'pranaTechnique' : (id === 'autoreg' ? 'autoregTechnique' : null);
+      const btn = row ? document.querySelector('#'+row+' [data-t="'+tech+'"]') : null;
+      if(btn) btn.click();
+      const h2 = panel.querySelector('h2');
+      if(h2 && title) h2.textContent = title;
+    }
+    // Se i suoni binaurali sono attivi, passa dolcemente al preset più adatto.
+    if(MODULE_BINAURAL[id]) setBinauralPreset(MODULE_BINAURAL[id]);
+  }
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.seal-card').forEach(card=>{
+  card.addEventListener('click', ()=> goPanel(card.dataset.panel, card.dataset.tech, card.dataset.title));
 });
+document.querySelectorAll('.back-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> goPanel('home'));
+});
+// Un solo esercizio alla volta: avviandone uno, tutti gli altri si fermano.
+(function(){
+  const pairs = {relaxStart:'relaxStop', breathStart:'breathStop', pranaStart:'pranaStop', autoregStart:'autoregStop'};
+  Object.keys(pairs).forEach(sid=>{
+    document.getElementById(sid).addEventListener('click', ()=>{
+      Object.keys(pairs).forEach(o=>{ if(o !== sid){ const st = document.getElementById(pairs[o]); if(st) st.click(); } });
+    }, true);
+  });
+})();
 
 // generic difficulty row handler
 function wireDiffRow(rowId, onPick){
@@ -1062,7 +1115,7 @@ let relaxRunning = false;
 let relaxRunId = 0;
 let relaxTimeout = null;
 let relaxInterval = null;
-let relaxVoiceOn = false;
+let relaxVoiceOn = true;
 const RELAX_ZONES = [
   'Mani — pugni serrati', 'Fronte — sollevata', 'Viso — contratto al centro', 'Mascella — denti serrati',
   'Bocca — aperta, lingua contro gli incisivi', 'Testa e collo — mento al petto, spalle indietro',
@@ -1162,7 +1215,7 @@ let breathRunning = false;
 let breathRunId = 0;
 let breathPhaseTimeout = null;
 let breathStyle = 'tempo';
-let breathVoiceOn = false;
+let breathVoiceOn = true;
 wireDiffRow('breathStyleRow', btn=>{ breathStyle = btn.dataset.style; });
 document.getElementById('breathVoiceToggle').addEventListener('click', function(){
   breathVoiceOn = !breathVoiceOn;
@@ -1342,7 +1395,7 @@ let pranaCurrentTech = 'nadi';
 let pranaRunning = false;
 let pranaRunId = 0;
 let pranaPhaseTimeout = null;
-let pranaVoiceOn = false;
+let pranaVoiceOn = true;
 
 function updatePranaDescription(){
   document.getElementById('pranaDescription').textContent = PRANA_TECHNIQUES[pranaCurrentTech].desc;
@@ -1459,7 +1512,7 @@ let autoregCurrentTech = 'tensione';
 let autoregRunning = false;
 let autoregRunId = 0;
 let autoregPhaseTimeout = null;
-let autoregVoiceOn = false;
+let autoregVoiceOn = true;
 let tensionePrimaVal = null;
 let tensioneDopoVal = null;
 
@@ -1528,7 +1581,6 @@ document.getElementById('autoregVoiceToggle').addEventListener('click', function
   autoregVoiceOn = !autoregVoiceOn;
   this.classList.toggle('on', autoregVoiceOn);
 });
-mountVoicePicker('voiceSelectAutoreg', 'voiceTestAutoreg', 'Nota la tensione nel corpo, e lasciala sciogliere un poco.');
 
 document.getElementById('autoregStart').addEventListener('click', ()=>{
   if(autoregRunning) return;
@@ -1886,7 +1938,7 @@ const BINAURAL_PRESETS = {
 };
 // Quale preset si adatta meglio a ciascun modulo dell'app.
 const MODULE_BINAURAL = {
-  visual:'relax', pranayama:'calm', autoreg:'calm'
+  relax:'relax', breath:'relax', mandala:'relax', pranayama:'calm', autoreg:'calm'
 };
 // Nessuna registrazione reale per i preset di questa app: sempre tono sintetizzato.
 const REAL_TRACKS = {};
