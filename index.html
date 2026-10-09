@@ -1510,7 +1510,7 @@ function updatePranaDescription(){
 }
 // Livelli: moltiplicatore dei tempi e numero di cicli per ogni tecnica
 const PRANA_LEVELS = {
-  nadi:      { principiante:{mult:1,   cycles:5},  intermedio:{mult:1.5,  cycles:8},  avanzato:{special:'nadi'} },
+  nadi:      { principiante:{mult:1, dur:2400, hold:350, cycles:5},  intermedio:{mult:1, dur:2200, hold:100, cycles:8},  avanzato:{special:'nadi'} },
   dirgha:    { principiante:{mult:1,   cycles:5},  intermedio:{mult:1.33, cycles:6},  avanzato:{mult:1.67, cycles:10} },
   bhramari:  { principiante:{mult:1,   cycles:5},  intermedio:{mult:1,    cycles:8},  avanzato:{mult:1,    cycles:12} },
   leone:     { principiante:{mult:1,   cycles:3},  intermedio:{mult:1,    cycles:5},  avanzato:{mult:1,    cycles:8} },
@@ -1528,7 +1528,7 @@ function updatePranaLevelInfo(){
   const c = pranaLevelCfg(); let t;
   if(c.special === 'nadi') t = 'Sequenza completa: 30 secondi solo sinistra, 30 solo destra, 30 alternate, 30 narici libere (circa 2 minuti)';
   else if(pranaCurrentTech === 'bhastrika') t = c.count+' respiri veloci per serie · '+c.cycles+' serie';
-  else t = c.cycles+' cicli' + (c.mult && c.mult !== 1 ? ' · tempi più lunghi' : '');
+  else t = c.cycles+' cicli' + (c.mult && c.mult !== 1 ? ' · tempi più lunghi' : '') + (pranaCurrentTech==='nadi' ? ' · ritmo sostenuto' : '');
   document.getElementById('pranaLevelInfo').textContent = t;
 }
 wireDiffRow('pranaLevel', btn=>{ if(pranaRunning) return; pranaLevel = btn.dataset.l; updatePranaLevelInfo(); });
@@ -1569,7 +1569,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
   const lvl = pranaLevelCfg();
   let phases, maxCycles;
   if(lvl.special === 'nadi'){
-    const alt = tech.phases.map(p=>({...p, dur:4000}));
+    const alt = tech.phases.map(p=>({...p, dur:2200, hold:0}));
     phases = [
       {label:'Solo narice sinistra', section:30000, voice:NADI_ADV_TEXTS[0], caption:"Narice destra chiusa col pollice. Respira lentamente solo dalla sinistra."},
       {label:'Solo narice destra',   section:30000, voice:NADI_ADV_TEXTS[1], caption:"Narice sinistra chiusa col mignolo. Respira lentamente solo dalla destra."},
@@ -1582,6 +1582,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     phases = tech.phases.map(p=>{
       const q = {...p};
       if(lvl.mult && q.dur && !q.hold) q.dur = Math.round(q.dur*lvl.mult/100)*100;
+      if(lvl.dur){ q.dur = lvl.dur; q.hold = lvl.hold; }
       if(q.rapid && lvl.count) q.count = lvl.count;
       return q;
     });
@@ -1616,10 +1617,10 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
           if(myPranaRun !== pranaRunId) return;
           if(Date.now() >= end){ onDone(); return; }
           const ins = (n % 2 === 0);
-          circle.style.setProperty('--d', '4s');
+          circle.style.setProperty('--d', '3s');
           setBreathScale(circle, 'scale('+(ins ? 1.35 : 0.9)+')');
           circle.textContent = p.label + (ins ? ' — inspira' : ' — espira');
-          n++; pranaPhaseTimeout = setTimeout(tick, 4000);
+          n++; pranaPhaseTimeout = setTimeout(tick, 3000);
         })();
       }
       circle.textContent = p.label; setBreathScale(circle, 'scale(1)'); caption.textContent = p.caption;
@@ -1651,7 +1652,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
       speakCue(text, ()=>{
         if(myPranaRun !== pranaRunId) return;
         playPhaseSound(p);
-        pranaPhaseTimeout = setTimeout(onDone, p.hold || 500);
+        pranaPhaseTimeout = setTimeout(onDone, (p.hold !== undefined ? p.hold : 500));
       }, showText);
       return;
     }
