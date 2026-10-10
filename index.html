@@ -308,6 +308,11 @@
   .home-brand h1{margin:2px 0 0;}
   @media (max-width:420px){ .home-seed{width:66px; height:100px;} }
   @media print{ .home-seed{display:none;} }
+  #breathCircle:not([data-idle="1"])::after, #pranaCircle:not([data-idle="1"])::after{
+    content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+    background:var(--idle-glyph) no-repeat center / auto 92%;
+    opacity:.3; transform:scale(var(--seed,.8)); transition:transform var(--d,.6s) ease-in-out;
+  }
 </style>
 </head>
 <body>
@@ -779,7 +784,7 @@
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 38 · 10 ottobre</span></footer>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 39 · 10 ottobre</span></footer>
 </div>
 
 
@@ -1360,6 +1365,8 @@ function setBreathScale(el, str){
   const t = (v === 1) ? 1 : Math.max(0, Math.min(1, (v - 0.8) / 0.7));
   el.style.setProperty('--sx', (0.94 + 0.06*t).toFixed(3));
   el.style.setProperty('--sy', (0.84 + 0.16*t).toFixed(3));
+  // il seme sullo sfondo segue il respiro: si gonfia con l'inspirazione, resta fermo nelle pause, si riduce con l'espirazione
+  el.style.setProperty('--seed', (v === 1 ? 0.8 : 0.55 + 0.5*Math.max(0, Math.min(1, (v - 0.8)/0.7))).toFixed(3));
 }
 
 // ---------------- NAV ----------------
