@@ -295,6 +295,9 @@
       <div class="controls" id="sessionControls">
         <button class="diff-btn" id="wakeLockToggle" type="button">📱 Mantieni schermo acceso</button>
         <button class="diff-btn on" id="bellToggle" type="button">🔔 Campana inizio e fine</button>
+        <div class="field">Metronomo (battiti al minuto)
+          <select id="metroBpmSel"><option value="40">40</option><option value="50">50</option><option value="60">60</option><option value="70">70</option><option value="80">80</option><option value="100">100</option></select>
+        </div>
         <button class="diff-btn" id="bgMusicToggle" type="button">🎧 Suoni binaurali</button>
         <div class="field">Volume
           <input type="range" id="bgMusicVolume" min="0" max="100" value="20" style="width:100px; vertical-align:middle;">
@@ -377,7 +380,7 @@
         <button class="diff-btn on" data-style="tempo" type="button">Cronometrato</button>
         <button class="diff-btn" data-style="immaginativo" type="button">Immaginativo</button>
       </div>
-      <div class="mini-row"><button class="diff-btn small" id="localBin_breath" type="button">🎧 Binaurali</button></div>
+      <div class="mini-row"><button class="diff-btn small" id="localBin_breath" type="button">🎧 Binaurali</button> <button class="diff-btn small metro-btn" type="button">🥁 Metronomo</button></div>
     </div>
   </div>
 
@@ -462,6 +465,7 @@
       <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#6a4d96,#42335c);">Pronto</div>
       <div class="sub" id="pranaCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <button class="diff-btn small" id="localBin_prana" type="button">🎧 Binaurali</button>
+      <button class="diff-btn small metro-btn" type="button">🥁 Metronomo</button>
       <button class="primary" id="pranaStart" type="button">Avvia</button>
       <button class="diff-btn small" id="pranaIntroBtn" type="button">🔁 Riascolta la spiegazione</button>
       <button class="ghost" id="pranaStop" type="button">⏹ Interrompi</button>
@@ -844,6 +848,46 @@ function playIntroOnly(key, running, circleId, captionId, idleLabel){
   if(cap) cap.textContent = 'Spiegazione dell’esercizio.';
   speakCue(key, ()=>{ if(!running()){ if(c) c.textContent = idleLabel; if(cap) cap.textContent = ''; } });
 }
+// ---- METRONOMO (solo Pranayama e Respirazione quadrata): click sintetici, tempo 4/4, regolabile ----
+let metroOn = true, metroBpm = 60, metroCtx = null, metroTimer = null, metroNext = 0, metroBeat = 0;
+try{ metroOn = localStorage.getItem('pcd_metroOn') !== '0'; const b = parseInt(localStorage.getItem('pcd_metroBpm'),10); if(b>=30 && b<=120) metroBpm = b; }catch(e){}
+function metroPrime(){   // dentro il tocco dell'utente: sblocca l'audio del metronomo
+  try{
+    if(!metroCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) metroCtx = new AC(); }
+    if(metroCtx && metroCtx.state === 'suspended') metroCtx.resume();
+  }catch(e){}
+}
+function metroClick(time){
+  // click breve e secco come un metronomo elettronico: due componenti (~1300 Hz e ~3900 Hz), tutti i battiti uguali
+  [[1300,0.30],[3900,0.12]].forEach(([f,peak])=>{
+    const o = metroCtx.createOscillator(), g = metroCtx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.exponentialRampToValueAtTime(peak, time + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
+    o.connect(g); g.connect(metroCtx.destination);
+    o.start(time); o.stop(time + 0.08);
+  });
+}
+function metroRunning(){ return (typeof breathRunning !== 'undefined' && breathRunning) || (typeof pranaRunning !== 'undefined' && pranaRunning); }
+function metroStop(){ if(metroTimer){ clearInterval(metroTimer); metroTimer = null; } }
+function metroStart(){
+  if(!metroOn || !metroCtx || metroTimer) return;
+  try{ if(metroCtx.state === 'suspended') metroCtx.resume(); }catch(e){}
+  metroBeat = 0; metroNext = metroCtx.currentTime + 0.15;
+  metroTimer = setInterval(()=>{
+    if(!metroOn || !metroRunning()){ metroStop(); return; }
+    const spb = 60 / metroBpm;
+    while(metroNext < metroCtx.currentTime + 0.3){
+      metroClick(metroNext);
+      metroNext += spb; metroBeat++;
+    }
+  }, 80);
+}
+function updateMetroUI(){
+  document.querySelectorAll('.metro-btn').forEach(b=>{ b.classList.toggle('on', metroOn); b.textContent = '🥁 Metronomo ' + metroBpm + (metroOn ? ' ✓' : ''); });
+  const s = document.getElementById('metroBpmSel'); if(s) s.value = String(metroBpm);
+}
 const unlockedClips = {};
 let unlockGate = null;
 const RELAX_TEXTS = ["Stringi i pugni e tienili serrati.", "Rilascia i pugni.", "Solleva la fronte e tienila sollevata.", "Rilascia la fronte.", "Contrai il viso verso il centro e tienilo contratto.", "Rilascia il viso.", "Stringi i denti e tieni la mascella serrata.", "Rilascia la mascella.", "Metti la lingua contro gli incisivi superiori, apri un po’ la bocca e tienila aperta.", "Rilascia la bocca.", "Porta il mento al petto e le spalle indietro, e tieni così.", "Rilascia il collo e le spalle.", "Inarca la schiena e tienila inarcata.", "Rilascia la schiena.", "Tendi le gambe in avanti e tienile tese.", "Rilascia le gambe.", "Ora riposa. Lascia che il tuo corpo sia tutto pesante e rilassato."];
@@ -857,6 +901,7 @@ const CLIP_FILTER = {
 };
 function unlockRecordedVoiceClips(kind){
   startKeepAlive();
+  metroPrime();
   try{
     if(!sharedVoiceEl){ sharedVoiceEl = new Audio(); sharedVoiceEl.preload = 'auto'; }
     // sblocco: riproduzione silenziosa breve dentro il tocco dell'utente
@@ -1177,6 +1222,7 @@ function setBreathScale(el, str){
 
 // ---------------- NAV ----------------
 function stopEverything(){
+  metroStop();
   stopKeepAlive();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   stopVoiceClipAudio();
@@ -1434,10 +1480,11 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
   }
   setTimeout(()=>{
     if(myBreathRun !== breathRunId) return;
-    maybeIntro('INTRO:breath', breathVoiceOn, ()=> myBreathRun === breathRunId, circle, caption, ()=> runPhase(0));
+    maybeIntro('INTRO:breath', breathVoiceOn, ()=> myBreathRun === breathRunId, circle, caption, ()=>{ metroStart(); runPhase(0); });
   }, startDelay());
 });
 document.getElementById('breathStop').addEventListener('click', ()=>{
+  metroStop();
   breathRunId++;
   breathRunning = false;
   if(breathPhaseTimeout){ clearTimeout(breathPhaseTimeout); breathPhaseTimeout = null; }
@@ -1528,7 +1575,7 @@ const PRANA_TECHNIQUES = {
     desc: "Respiro dell'ape (Bhramari): l'espirazione diventa un ronzio continuo a bocca chiusa. Molto usata per calmare rapidamente il sistema nervoso.",
     phases: [
       {label:'Inspira dal naso', caption:"Inspira lentamente dal naso, bocca chiusa.", dur:4000, scale:1.4},
-      {label:'Espira ronzando: mmmm', voice:"Ora espira lentamente facendo un ronzio continuo con la bocca chiusa, come un'ape.", caption:"Espira lentamente producendo un ronzio continuo, come un'ape.", dur:11400, scale:0.85, sound:'audioApe'}
+      {label:'Espira ronzando: mmmm', voice:"Ora espira lentamente facendo un ronzio continuo con la bocca chiusa, come un'ape.", caption:"Espira lentamente producendo un ronzio continuo, come un'ape.", dur:8000, scale:0.85, voiceFirstOnly:true}
     ]
   },
   leone: {
@@ -1699,6 +1746,12 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
       return;
     }
     const text = p.voice || p.label;
+    // spiegazione lunga solo al primo ciclo: poi solo il testo e il tempo, in silenzio (senza ronzio di esempio)
+    if(p.voiceFirstOnly && cycle > 0){
+      showText();
+      pranaPhaseTimeout = setTimeout(onDone, p.dur);
+      return;
+    }
     const hasRecording = pranaVoiceOn && !!RECORDED_VOICE_CLIPS[text];
     if(hasRecording){
       // C'è una registrazione vera: si aspetta che finisca davvero prima di avanzare,
@@ -1740,6 +1793,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     const introKey = 'INTRO:'+pranaCurrentTech;
     function startPhases(){
       if(myPranaRun !== pranaRunId) return;
+      metroStart();
       if(tech.primer){ showPhase(tech.primer, ()=> runPhase(0)); } else { runPhase(0); }
     }
     if(pranaVoiceOn && RECORDED_VOICE_CLIPS[introKey] && !introSeen(introKey)){
@@ -1767,6 +1821,7 @@ document.getElementById('pranaIntroBtn').addEventListener('click', ()=>{
   speakCue(key, ()=>{ if(!pranaRunning){ document.getElementById('pranaCircle').textContent = 'Pronto'; document.getElementById('pranaCaption').textContent = ''; } });
 });
 document.getElementById('pranaStop').addEventListener('click', ()=>{
+  metroStop();
   pranaRunId++;
   pranaRunning = false;
   if(pranaPhaseTimeout){ clearTimeout(pranaPhaseTimeout); pranaPhaseTimeout = null; }
@@ -2143,6 +2198,16 @@ buildMandalaLineArt('mandalaPrintSvg', 12);
 
 document.getElementById('printBtn').addEventListener('click', ()=> window.print());
 
+document.querySelectorAll('.metro-btn').forEach(b=> b.addEventListener('click', ()=>{
+  metroOn = !metroOn; try{ localStorage.setItem('pcd_metroOn', metroOn ? '1' : '0'); }catch(e){}
+  if(!metroOn) metroStop(); else if(metroRunning()){ metroPrime(); metroStart(); }
+  updateMetroUI();
+}));
+document.getElementById('metroBpmSel').addEventListener('change', function(){
+  metroBpm = parseInt(this.value,10); try{ localStorage.setItem('pcd_metroBpm', String(metroBpm)); }catch(e){}
+  updateMetroUI();
+});
+updateMetroUI();
 document.getElementById('bellToggle').classList.toggle('on', bellOn);
 document.getElementById('bellToggle').addEventListener('click', function(){
   bellOn = !bellOn; this.classList.toggle('on', bellOn);
