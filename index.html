@@ -378,6 +378,8 @@ body[data-mode="adults"] .kids-only{display:none !important;}
 .mode-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 6px;}
 .mode-pick .mode-label{font-size:.92rem;opacity:.8;}
 .mode-pick .mode-toggle{margin:0;}
+body[data-mode="kids"] .adults-only{display:none !important;}
+.mode-note{font-size:.88rem;opacity:.85;margin:2px 0 8px;}
 </style>
 </head>
 <body>
@@ -397,6 +399,7 @@ body[data-mode="adults"] .kids-only{display:none !important;}
         <button data-mode="adults" class="active" type="button">Adulti</button>
       </div>
     </div>
+    <div class="mode-note" id="modeNote"></div>
     <details class="settings">
       <summary>⚙️ Impostazioni</summary>
       <div class="controls" id="sessionControls">
@@ -415,18 +418,21 @@ body[data-mode="adults"] .kids-only{display:none !important;}
     </details>
   </div>
 
-  <div class="home-section"><h3>Percorsi guidati</h3><div class="modules-nav">
+  <div class="home-section kids-only"><h3>Per i bambini</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="bambini" data-title="Gioco e calma"><div class="seal">遊</div><div class="txt"><strong>Gioco e calma</strong><span>Per i bambini: onda, vento, seme e animale amico (5 minuti)</span></div></div>
+  </div></div>
+
+  <div class="home-section adults-only"><h3>Percorsi guidati</h3><div class="modules-nav">
       <div class="seal-card" data-panel="percorsi" data-title="Percorsi guidati"><div class="seal">道</div><div class="txt"><strong>Percorsi di circa 10 minuti</strong><span>Una sequenza di esercizi, un solo tocco per partire</span></div></div>
   </div></div>
 
   <div class="home-section"><h3>Rilassarsi</h3><div class="modules-nav">
       <div class="seal-card" data-panel="relax" data-title="Rilassamento"><div class="seal">想</div><div class="txt"><strong>Rilassamento</strong><span>Contrai e rilascia</span></div></div>
-      <div class="seal-card" data-panel="breath" data-title="Respirazione yogica quadrata"><div class="seal">息</div><div class="txt"><strong>Respirazione yogica quadrata</strong><span>Dentro · ferma · fuori · ferma</span></div></div>
+      <div class="seal-card adults-only" data-panel="breath" data-title="Respirazione yogica quadrata"><div class="seal">息</div><div class="txt"><strong>Respirazione yogica quadrata</strong><span>Dentro · ferma · fuori · ferma</span></div></div>
       <div class="seal-card" data-panel="mandala" data-title="Mandala"><div class="seal">想</div><div class="txt"><strong>Mandala</strong><span>Guarda e visualizza</span></div></div>
       <div class="seal-card" data-panel="arcobaleno" data-title="Respirazione arcobaleno"><div class="seal">虹</div><div class="txt"><strong>Respirazione arcobaleno</strong><span>I sette colori entrano nel corpo con il respiro (ideale la sera)</span></div></div>
-      <div class="seal-card" data-panel="contemplare" data-title="Contemplare il respiro"><div class="seal">息</div><div class="txt"><strong>Contemplare il respiro</strong><span>Osservare il respiro senza cambiarlo (3 minuti)</span></div></div>
+      <div class="seal-card adults-only" data-panel="contemplare" data-title="Contemplare il respiro"><div class="seal">息</div><div class="txt"><strong>Contemplare il respiro</strong><span>Osservare il respiro senza cambiarlo (3 minuti)</span></div></div>
       <div class="seal-card" data-panel="montagna" data-title="La montagna"><div class="seal">山</div><div class="txt"><strong>La montagna</strong><span>Visualizzazione guidata: le stagioni passano, tu resti salda</span></div></div>
-      <div class="seal-card kids-only" data-panel="bambini" data-title="Gioco e calma"><div class="seal">遊</div><div class="txt"><strong>Gioco e calma</strong><span>Per i bambini: onda, vento, seme e animale amico (5 minuti)</span></div></div>
   </div></div>
 
   <div class="home-section"><h3>Pranayama</h3><div class="modules-nav">
@@ -434,11 +440,11 @@ body[data-mode="adults"] .kids-only{display:none !important;}
       <div class="seal-card" data-panel="pranayama" data-tech="dirgha" data-title="Respiro a tre stadi"><div class="seal">息</div><div class="txt"><strong>Respiro a tre stadi</strong><span>Pancia, torace, petto</span></div></div>
       <div class="seal-card" data-panel="pranayama" data-tech="bhramari" data-title="Respiro dell'ape"><div class="seal">息</div><div class="txt"><strong>Respiro dell'ape</strong><span>Un ronzio che calma</span></div></div>
       <div class="seal-card" data-panel="pranayama" data-tech="leone" data-title="Respiro del leone"><div class="seal">息</div><div class="txt"><strong>Respiro del leone</strong><span>Scioglie il viso</span></div></div>
-      <div class="seal-card" data-panel="pranayama" data-tech="bhastrika" data-title="Respiro del mantice"><div class="seal">息</div><div class="txt"><strong>Respiro del mantice</strong><span>Energia vivace</span></div></div>
+      <div class="seal-card adults-only" data-panel="pranayama" data-tech="bhastrika" data-title="Respiro del mantice"><div class="seal">息</div><div class="txt"><strong>Respiro del mantice</strong><span>Energia vivace</span></div></div>
   </div></div>
 
   <div class="home-section"><h3>Autoregolazione</h3><div class="modules-nav">
-      <div class="seal-card" data-panel="autoreg" data-tech="tensione" data-title="Soglia di Tensione"><div class="seal">静</div><div class="txt"><strong>Soglia di Tensione</strong><span>Nota e sciogli la tensione</span></div><div class="badge-record" id="recAutoreg" style="display:none;"></div></div>
+      <div class="seal-card adults-only" data-panel="autoreg" data-tech="tensione" data-title="Soglia di Tensione"><div class="seal">静</div><div class="txt"><strong>Soglia di Tensione</strong><span>Nota e sciogli la tensione</span></div><div class="badge-record" id="recAutoreg" style="display:none;"></div></div>
       <div class="seal-card" data-panel="autoreg" data-tech="visualizzazione" data-title="Visualizzazione positiva"><div class="seal">静</div><div class="txt"><strong>Visualizzazione positiva</strong><span>Prepara una situazione</span></div></div>
   </div></div>
 
@@ -877,7 +883,7 @@ body[data-mode="adults"] .kids-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 50 · 10 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 51 · 10 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1495,10 +1501,11 @@ document.getElementById('importScoresBtn').addEventListener('click', ()=>{
 });
 
 // ---------------- MODE TOGGLE ----------------
+function updateModeNote(){ const n=document.getElementById('modeNote'); if(n) n.textContent = mode==='kids' ? 'Modalità bambini: esercizi più leggeri e giocosi, adatti ai più piccoli.' : 'Modalità adulti: tutti gli esercizi.'; }
 document.getElementById('modeToggle').addEventListener('click', e=>{
   const btn = e.target.closest('button');
   if(!btn) return;
-  mode = btn.dataset.mode; document.body.dataset.mode = mode; try{ localStorage.setItem('pcd_mode', mode); }catch(e){}
+  mode = btn.dataset.mode; document.body.dataset.mode = mode; try{ localStorage.setItem('pcd_mode', mode); }catch(e){} updateModeNote();
   document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.toggle('active', b===btn));
 });
 
@@ -3100,8 +3107,9 @@ function startPath(key){
 (function(){
   const COL = [ ['#3571b5','#3571b5'], ['#3f9142','#3f9142'], ['#d12b27','#d12b27'], ['#f2c230','#b58900'], ['#3571b5','#3571b5'] ];
   const panelCol = {};
-  document.querySelectorAll('.home-section').forEach((sec, i)=>{
-    const c = COL[i % COL.length];
+  let ci=0;
+  document.querySelectorAll('.home-section').forEach((sec)=>{
+    const c = sec.classList.contains('kids-only') ? COL[3] : COL[(ci++) % COL.length];
     sec.style.setProperty('--sec', c[0]); sec.style.setProperty('--sec-text', c[1]);
     sec.querySelectorAll('.seal-card[data-panel]').forEach(card=>{ if(!panelCol[card.dataset.panel]) panelCol[card.dataset.panel] = c; });
   });
@@ -3111,11 +3119,12 @@ function startPath(key){
   });
 })();
 
+updateModeNote();
 // initial scores load
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=50;
+  const LOCAL=51;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
