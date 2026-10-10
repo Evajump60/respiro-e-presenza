@@ -366,6 +366,11 @@
   .home-brand{ position:relative; overflow:hidden; }
   .home-brand::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5px;
     background:linear-gradient(90deg,var(--c-red) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-blue) 75% 100%); }
+
+  .prog{ width:min(100%, 270px); height:9px; border-radius:99px; background:#dfe5ec; overflow:hidden; visibility:hidden; margin-top:-6px; }
+  .prog.on{ visibility:visible; }
+  .prog-fill{ height:100%; width:0; background:var(--sec, #3571b5); border-radius:99px; transition:width .9s linear; }
+  .prog-txt{ font-size:13px; color:#666; text-align:center; min-height:18px; margin-top:-10px; }
 </style>
 </head>
 <body>
@@ -448,6 +453,7 @@
     <div class="sub">Per ogni zona del corpo: contrai con forza, poi lascia andare tutto il peso. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
       <div class="breath-circle" id="relaxCircle" style="--fill:linear-gradient(135deg,#3f7d6e,#2a5a4f);">Pronto</div>
+      <div class="prog" id="relaxProg"><div class="prog-fill"></div></div><div class="prog-txt" id="relaxProgTxt"></div>
       <div class="startwrap"><button class="primary" id="relaxStart" type="button">Avvia</button></div>
       <div class="actions">
         <button class="ghost" id="relaxStop" type="button">⏹ Interrompi</button>
@@ -463,6 +469,7 @@
     <div class="sub">Sdraiato o seduto comodo, a occhi chiusi: con ogni respiro entra un colore, dal rosso al bianco. Sensazione di pulizia e di leggerezza, senza forzare: se un colore non viene, pensa a un oggetto di quel colore.</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="arcCircle" style="--fill:#3f7d6e;">Pronto</div>
+      <div class="prog" id="arcProg"><div class="prog-fill"></div></div><div class="prog-txt" id="arcProgTxt"></div>
       <div class="sub" id="arcCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="arcStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -479,6 +486,7 @@
     <div class="sub">Osservare il respiro senza cambiarlo e senza commentarlo: la porta d’ingresso a tutti gli altri esercizi. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="conCircle" style="--fill:#2D4A6B;">Pronto</div>
+      <div class="prog" id="conProg"><div class="prog-fill"></div></div><div class="prog-txt" id="conProgTxt"></div>
       <div class="sub" id="conCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="conStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -495,6 +503,7 @@
     <div class="sub">Immagina di essere una montagna: le stagioni passano, il tempo cambia, e tu resti salda. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="monCircle" style="--fill:#6b7280;">Pronto</div>
+      <div class="prog" id="monProg"><div class="prog-fill"></div></div><div class="prog-txt" id="monProgTxt"></div>
       <div class="sub" id="monCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="monStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -528,6 +537,7 @@
     <div class="sub" id="breathLevelInfo" style="text-align:center;"></div>
     <div class="breath-zone">
       <div class="breath-circle" id="breathCircle">Inizia</div>
+      <div class="prog" id="breathProg"><div class="prog-fill"></div></div><div class="prog-txt" id="breathProgTxt"></div>
       <div class="sub" id="breathCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="breathStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -616,6 +626,7 @@
 
     <div class="breath-zone">
       <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#2f6f93,#1d4a66);">Pronto</div>
+      <div class="prog" id="pranaProg"><div class="prog-fill"></div></div><div class="prog-txt" id="pranaProgTxt"></div>
       <div class="sub" id="pranaCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <div class="startwrap"><button class="primary" id="pranaStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -670,6 +681,7 @@
 
     <div class="breath-zone">
       <div class="breath-circle" id="autoregCircle" style="--fill:linear-gradient(135deg,#3a67a0,#26456E);">Pronto</div>
+      <div class="prog" id="autoregProg"><div class="prog-fill"></div></div><div class="prog-txt" id="autoregProgTxt"></div>
       <div class="sub" id="autoregCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <div class="startwrap"><button class="primary" id="autoregStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -838,7 +850,7 @@
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 44 · 10 ottobre</span></footer>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 45 · 10 ottobre</span></footer>
 </div>
 
 
@@ -1017,6 +1029,31 @@ function playIntroOnly(key, running, circleId, captionId, idleLabel){
   if(cap) cap.textContent = 'Spiegazione dell’esercizio.';
   speakCue(key, ()=>{ if(!running()){ if(c) c.textContent = idleLabel; if(cap) cap.textContent = ''; } });
 }
+
+// ---- barra di avanzamento (cicli + tempo rimasto stimato dal ritmo reale) ----
+const PROG = {};
+function progStart(id){ PROG[id] = {t0: Date.now()}; const w = document.getElementById(id+'Prog'); if(w) w.classList.add('on'); setProgress(id, 0, ''); }
+function progReset(id){
+  delete PROG[id];
+  const w = document.getElementById(id+'Prog'); if(w){ w.classList.remove('on'); const f = w.firstElementChild; if(f){ f.style.transition = 'none'; f.style.width = '0%'; void f.offsetWidth; f.style.transition = ''; } }
+  const t = document.getElementById(id+'ProgTxt'); if(t) t.textContent = '';
+}
+function fmtRemaining(sec){
+  if(sec < 45) return 'meno di un minuto';
+  const m = Math.round(sec/30)/2;                 // arrotonda a mezzo minuto
+  return 'circa ' + (m % 1 ? (Math.floor(m)>0 ? Math.floor(m)+' min e mezzo' : 'mezzo minuto') : (m === 1 ? '1 minuto' : m+' minuti'));
+}
+function setProgress(id, frac, label){
+  const w = document.getElementById(id+'Prog'), t = document.getElementById(id+'ProgTxt'); if(!w || !PROG[id]) return;
+  frac = Math.max(0, Math.min(1, frac));
+  w.firstElementChild.style.width = (frac*100).toFixed(1)+'%';
+  let txt = label || '';
+  const el = (Date.now() - PROG[id].t0)/1000;
+  if(frac > 0.12 && frac < 1 && el > 15) txt += (txt ? ' · ' : '') + 'ancora ' + fmtRemaining(el*(1-frac)/frac);
+  if(t) t.textContent = txt;
+}
+function progEnd(id){ if(!PROG[id]) return; setProgress(id, 1, 'Completato ✓'); }
+function progWeights(list, w){ const ws = list.map(w); const tot = ws.reduce((a,b)=>a+b,0) || 1; let acc = 0; return ws.map(x=>{ const r = acc/tot; acc += x; return r; }); }
 // ---- METRONOMO (solo Pranayama e Respirazione quadrata): click sintetici, tempo 4/4, regolabile ----
 let metroOn = true, metroBpm = 60, metroCtx = null, metroTimer = null, metroNext = 0, metroBeat = 0;
 try{ metroOn = localStorage.getItem('pcd_metroOn') !== '0'; const b = parseInt(localStorage.getItem('pcd_metroBpm'),10); if(b>=30 && b<=120) metroBpm = b; }catch(e){}
@@ -1436,6 +1473,7 @@ function stopMandalaGuide(){ try{ const st=document.getElementById('mandalaStatu
   if(mandalaTimeout){ clearTimeout(mandalaTimeout); mandalaTimeout = null; }
 }
 function stopEverything(){
+  Object.keys(PROG).forEach(progReset);
   if(!pathSwitching) stopPath();
   stopMandalaGuide();
   stopGuidedAll();
@@ -1546,6 +1584,7 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
   function tense(){
     if(myRelaxRun !== relaxRunId) return;
     const text = RELAX_TEXTS[zoneIdx*2];
+    setProgress('relax', zoneIdx/(RELAX_ZONES.length+1), 'Zona '+(zoneIdx+1)+' di '+RELAX_ZONES.length);
     function showText(){
       if(myRelaxRun !== relaxRunId) return;
       circle.textContent = RELAX_ZONES[zoneIdx] + ' — contrai';
@@ -1594,19 +1633,20 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
   function finalRest(){
     if(myRelaxRun !== relaxRunId) return;
     let t = 60;
+    setProgress('relax', RELAX_ZONES.length/(RELAX_ZONES.length+1), 'Riposo finale');
     setBreathScale(circle, 'scale(1)');
     circle.textContent = 'Riposo totale — '+t+'s';
     if(relaxVoiceOn) speakCue(RELAX_TEXTS[16]);
     relaxInterval = setInterval(()=>{
       if(myRelaxRun !== relaxRunId){ clearInterval(relaxInterval); return; }
       t--;
-      if(t<=0){ clearInterval(relaxInterval); circle.textContent = 'Fatto ✓'; relaxRunning = false; playBell(); }
+      if(t<=0){ clearInterval(relaxInterval); circle.textContent = 'Fatto ✓'; relaxRunning = false; progEnd('relax'); playBell(); }
       else circle.textContent = 'Riposo totale — '+t+'s';
     },1000);
   }
   setTimeout(()=>{
     if(myRelaxRun !== relaxRunId) return;
-    maybeIntro('INTRO:relax', relaxVoiceOn, ()=> myRelaxRun === relaxRunId, circle, document.getElementById('relaxCaption') || {textContent:''}, tense);
+    maybeIntro('INTRO:relax', relaxVoiceOn, ()=> myRelaxRun === relaxRunId, circle, document.getElementById('relaxCaption') || {textContent:''}, ()=>{ progStart('relax'); tense(); });
   }, 350);
 });
 document.getElementById('relaxStop').addEventListener('click', ()=>{
@@ -1665,6 +1705,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
   function runPhase(idx){
     if(myBreathRun !== breathRunId) return; // interrotto dall'esterno (es. cambio modulo)
     const p = phases[idx];
+    setProgress('breath', (cycle + idx/phases.length)/maxCycles, 'Ciclo '+(cycle+1)+' di '+maxCycles);
     function showText(){
       if(myBreathRun !== breathRunId) return;
       circle.style.setProperty('--d', (p.dur/1000)+'s');
@@ -1681,7 +1722,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
       else {
         cycle++;
         if(cycle < maxCycles){ runPhase(0); }
-        else { circle.textContent = 'Fatto ✓'; setBreathScale(circle, 'scale(1)'); caption.textContent=''; breathRunning = false; playBell(); }
+        else { circle.textContent = 'Fatto ✓'; setBreathScale(circle, 'scale(1)'); caption.textContent=''; breathRunning = false; progEnd('breath'); playBell(); }
       }
     }
     if(breathVoiceOn){
@@ -1698,7 +1739,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
   }
   setTimeout(()=>{
     if(myBreathRun !== breathRunId) return;
-    maybeIntro('INTRO:breath', breathVoiceOn, ()=> myBreathRun === breathRunId, circle, caption, ()=>{ metroStart(); runPhase(0); });
+    maybeIntro('INTRO:breath', breathVoiceOn, ()=> myBreathRun === breathRunId, circle, caption, ()=>{ progStart('breath'); metroStart(); runPhase(0); });
   }, 350);
 });
 document.getElementById('breathStop').addEventListener('click', ()=>{
@@ -2036,8 +2077,11 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     }
     pranaPhaseTimeout = setTimeout(onDone, p.dur);
   }
+  const phaseStart = progWeights(phases, p=> p.section ? p.section/1000 : (p.rapid ? (p.count||10)*2*(p.step||1000)/1000 : ((p.dur||2000)/1000)));
+  const phaseTotal = phases.reduce((a,p)=> a + (p.section ? p.section/1000 : (p.rapid ? (p.count||10)*2*(p.step||1000)/1000 : ((p.dur||2000)/1000))), 0);
   function runPhase(idx){
     if(myPranaRun !== pranaRunId) return;
+    setProgress('prana', (cycle + phaseStart[idx])/maxCycles, maxCycles > 1 ? 'Ciclo '+(cycle+1)+' di '+maxCycles : '');
     showPhase(phases[idx], ()=>{
       if(myPranaRun !== pranaRunId) return;
       if(idx < phases.length-1){ runPhase(idx+1); }
@@ -2048,7 +2092,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
           circle.textContent = 'Fatto ✓';
           setBreathScale(circle, 'scale(1)');
           caption.textContent = '';
-          pranaRunning = false; playBell();
+          pranaRunning = false; progEnd('prana'); playBell();
         }
       }
     });
@@ -2058,6 +2102,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     const introKey = 'INTRO:'+pranaCurrentTech;
     function startPhases(){
       if(myPranaRun !== pranaRunId) return;
+      progStart('prana');
       metroStart();
       if(tech.primer){ showPhase(tech.primer, ()=> runPhase(0)); } else { runPhase(0); }
     }
@@ -2189,12 +2234,13 @@ document.getElementById('autoregStart').addEventListener('click', ()=>{
       circle.textContent = 'Fatto ✓';
       setBreathScale(circle, 'scale(1)');
       caption.textContent = '';
-      autoregRunning = false; playBell();
+      autoregRunning = false; progEnd('autoreg'); playBell();
       if(autoregCurrentTech === 'tensione') document.getElementById('autoregPostTensione').style.display = 'block';
       else document.getElementById('autoregPostVisualizzazione').style.display = 'block';
       return;
     }
     const p = phases[idx];
+    setProgress('autoreg', idx/phases.length, 'Passo '+(idx+1)+' di '+phases.length);
     function showText(){
       if(myRun !== autoregRunId) return;
       circle.style.setProperty('--d', (p.dur/1000)+'s');
@@ -2222,7 +2268,7 @@ document.getElementById('autoregStart').addEventListener('click', ()=>{
   document.getElementById('autoregPostVisualizzazione').style.display = 'none';
   setTimeout(()=>{
     if(myRun !== autoregRunId) return;
-    maybeIntro('INTRO:'+autoregCurrentTech, autoregVoiceOn, ()=> myRun === autoregRunId, circle, caption, ()=> runPhase(0));
+    maybeIntro('INTRO:'+autoregCurrentTech, autoregVoiceOn, ()=> myRun === autoregRunId, circle, caption, ()=>{ progStart('autoreg'); runPhase(0); });
   }, 350);
 });
 document.getElementById('autoregStop').addEventListener('click', ()=>{
@@ -2811,10 +2857,12 @@ function makeGuided(id, cfg){
     unlockRecordedVoiceClips();
     g.running = true;
     const my = ++g.runId, circle = $('Circle'), cap = $('Caption');
+    const stepStart = progWeights(cfg.steps, st=> (st.w||5)+6);
     function step(i){
       if(my !== g.runId) return;
-      if(i >= cfg.steps.length){ circle.textContent = 'Fatto ✓'; cap.textContent = ''; g.running = false; playBell(); return; }
+      if(i >= cfg.steps.length){ circle.textContent = 'Fatto ✓'; cap.textContent = ''; g.running = false; progEnd(cfg.pre); playBell(); return; }
       const st = cfg.steps[i];
+      setProgress(cfg.pre, stepStart[i], 'Passo '+(i+1)+' di '+cfg.steps.length);
       circle.style.setProperty('--fill', st.c || cfg.base); circle.style.color = st.d ? '#23262B' : '#fff';
       circle.textContent = st.t; cap.textContent = st.cap || '';
       const after = ()=>{ if(my !== g.runId) return; if(!st.w){ g.timeout = setTimeout(()=>step(i+1), 0); return; } g.timeout = setTimeout(()=> step(i+1), st.w*1000); };
@@ -2823,10 +2871,10 @@ function makeGuided(id, cfg){
     }
     g.timeout = setTimeout(()=>{
       if(my !== g.runId) return;
-      maybeIntro(cfg.introKey, true, ()=> my === g.runId, circle, cap, ()=> step(0));
+      maybeIntro(cfg.introKey, true, ()=> my === g.runId, circle, cap, ()=>{ progStart(cfg.pre); step(0); });
     }, 350);
   });
-  $('Stop').addEventListener('click', ()=>{ g.stop(); stopVoiceClipAudio(); reset(); });
+  $('Stop').addEventListener('click', ()=>{ g.stop(); stopVoiceClipAudio(); reset(); progReset(cfg.pre); });
   $('IntroBtn').addEventListener('click', ()=> playIntroOnly(cfg.introKey, ()=>g.running, cfg.pre+'Circle', cfg.pre+'Caption', 'Pronto'));
 }
 function stopGuidedAll(){ Object.keys(GUIDED).forEach(k=> GUIDED[k].stop()); }
