@@ -375,6 +375,9 @@
 #updBanner{position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#3571b5;color:#fff;border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,.25);font-size:.95rem}
 #updBanner button{margin-left:auto;background:#fff;color:#3571b5;border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:600}
 body[data-mode="adults"] .kids-only{display:none !important;}
+.mode-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 6px;}
+.mode-pick .mode-label{font-size:.92rem;opacity:.8;}
+.mode-pick .mode-toggle{margin:0;}
 </style>
 </head>
 <body>
@@ -388,12 +391,14 @@ body[data-mode="adults"] .kids-only{display:none !important;}
     <h1>Respiro e<br>Concentrazione</h1>
       <div class="tagline">vedere · sentire · essere</div></div></div>
     <p>Scegli un esercizio. Ogni esercizio ha la sua schermata e la voce che ti guida: puoi chiudere gli occhi.</p>
+    <div class="mode-pick"><span class="mode-label">Per chi è l’esercizio?</span>
+      <div class="mode-toggle" id="modeToggle">
+        <button data-mode="kids" type="button">Bambini</button>
+        <button data-mode="adults" class="active" type="button">Adulti</button>
+      </div>
+    </div>
     <details class="settings">
       <summary>⚙️ Impostazioni</summary>
-      <div class="mode-toggle" id="modeToggle">
-        <button data-mode="kids" class="active" type="button">Bambini</button>
-        <button data-mode="adults" type="button">Adulti</button>
-      </div>
       <div class="controls" id="sessionControls">
         <button class="diff-btn" id="wakeLockToggle" type="button">📱 Mantieni schermo acceso</button>
         <button class="diff-btn on" id="bellToggle" type="button">🔔 Campana inizio e fine</button>
@@ -872,7 +877,7 @@ body[data-mode="adults"] .kids-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 48 · 10 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 50 · 10 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -885,7 +890,9 @@ body[data-mode="adults"] .kids-only{display:none !important;}
 <div id="updBanner" role="status"><span>È disponibile una nuova versione dell'app.</span><button id="updGo" type="button">Aggiorna</button></div>
 <script>
 // ---------------- STATE ----------------
-let mode = 'kids'; document.body.dataset.mode = 'kids';
+let mode = 'adults'; document.body.dataset.mode = 'adults';
+try{ if(localStorage.getItem('pcd_mode')==='kids'){ mode='kids'; document.body.dataset.mode='kids'; }
+  document.addEventListener('DOMContentLoaded',()=>{ document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode)); }); }catch(e){}
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
@@ -1491,7 +1498,7 @@ document.getElementById('importScoresBtn').addEventListener('click', ()=>{
 document.getElementById('modeToggle').addEventListener('click', e=>{
   const btn = e.target.closest('button');
   if(!btn) return;
-  mode = btn.dataset.mode; document.body.dataset.mode = mode;
+  mode = btn.dataset.mode; document.body.dataset.mode = mode; try{ localStorage.setItem('pcd_mode', mode); }catch(e){}
   document.querySelectorAll('#modeToggle button').forEach(b=>b.classList.toggle('active', b===btn));
 });
 
@@ -3108,7 +3115,7 @@ function startPath(key){
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=48;
+  const LOCAL=50;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
