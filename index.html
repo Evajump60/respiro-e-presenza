@@ -753,7 +753,7 @@
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo.</footer>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 33 · 10 ottobre</span></footer>
 </div>
 
 
@@ -911,8 +911,8 @@ function bellThen(cont){ if(bellOn){ playBell(); setTimeout(cont, 3200); } else 
 function startDelay(){ if(bellOn){ playBell(); return 3200; } return 350; }
 // spiegazione iniziale: una sola volta per tecnica, riascoltabile col pulsante
 const introMem = {};
-function introSeen(k){ try{ return localStorage.getItem('pcd_intro_'+k) === '1'; }catch(e){ return !!introMem[k]; } }
-function markIntroSeen(k){ introMem[k] = true; try{ localStorage.setItem('pcd_intro_'+k, '1'); }catch(e){} }
+function introSeen(k){ try{ return localStorage.getItem('pcd_intro2_'+k) === '1'; }catch(e){ return !!introMem[k]; } }
+function markIntroSeen(k){ introMem[k] = true; try{ localStorage.setItem('pcd_intro2_'+k, '1'); }catch(e){} }
 // spiegazione iniziale prima di un esercizio (una sola volta), poi continua
 function maybeIntro(key, voiceOn, valid, circleEl, captionEl, cont){
   if(voiceOn && RECORDED_VOICE_CLIPS[key] && !introSeen(key) && !(pathMode && pathSkipIntro)){
@@ -2825,7 +2825,7 @@ function startPath(key){
     list.appendChild(d);
   });
   document.getElementById('introResetBtn').addEventListener('click', ()=>{
-    try{ Object.keys(localStorage).filter(k=>k.indexOf('pcd_intro_')===0).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+    try{ Object.keys(localStorage).filter(k=>k.indexOf('pcd_intro2_')===0).forEach(k=>localStorage.removeItem(k)); }catch(e){}
     Object.keys(introMem).forEach(k=>delete introMem[k]);
     document.getElementById('introResetMsg').textContent = 'Fatto: le spiegazioni ripartiranno.';
   });
