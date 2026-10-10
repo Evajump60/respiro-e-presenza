@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Palestra del Cervello Destro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Maru+Gothic:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#EFEAE0;
@@ -24,17 +22,17 @@
   body{
     background:
       radial-gradient(ellipse at 10% -10%, rgba(45,74,107,0.06), transparent 45%),
-      radial-gradient(ellipse at 90% 0%, rgba(193,68,46,0.05), transparent 40%),
+      radial-gradient(ellipse at 90% 0%, rgba(53,113,181,0.05), transparent 40%),
       var(--paper);
     color:var(--ink);
-    font-family:'Zen Maru Gothic', sans-serif;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:980px;margin:0 auto;padding:28px 20px 80px;}
-  h1,h2,h3{font-family:'Shippori Mincho', serif; margin:0 0 8px; letter-spacing:0.01em;}
+  h1,h2,h3{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; margin:0 0 8px; letter-spacing:0.01em;}
   .eyebrow{
-    font-family:'JetBrains Mono', monospace;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
     color:var(--indigo); font-weight:600;
   }
@@ -56,7 +54,7 @@
   }
   .hero-demo .cap{
     position:absolute; bottom:8px; left:0; right:0; text-align:center;
-    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:10px; letter-spacing:0.12em;
     color:rgba(255,255,255,0.55); text-transform:uppercase;
   }
 
@@ -65,14 +63,14 @@
     overflow:hidden; margin-top:14px;
   }
   .mode-toggle button{
-    border:none; background:transparent; padding:8px 18px; font-family:'Zen Maru Gothic';
+    border:none; background:transparent; padding:8px 18px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight:700; font-size:14px; color:var(--indigo); cursor:pointer;
   }
   .mode-toggle button.active{background:var(--indigo); color:#fff;}
 
   .note{
     margin-top:18px; padding:14px 16px; border-left:3px solid var(--gold);
-    background:rgba(184,147,90,0.09); font-size:13.5px; color:var(--ink-soft);
+    background:rgba(53,113,181,0.09); font-size:13.5px; color:var(--ink-soft);
     border-radius:0 10px 10px 0;
   }
 
@@ -88,19 +86,19 @@
     display:flex; gap:12px; align-items:center;
   }
   .seal-card:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(35,38,43,0.08);}
-  .seal-card.active{border-color:var(--vermilion); background:rgba(193,68,46,0.06);}
+  .seal-card.active{border-color:var(--vermilion); background:rgba(53,113,181,0.06);}
   .seal{
     flex:0 0 auto; width:46px; height:46px; border-radius:48% 52% 51% 49%;
     border:2.5px solid var(--vermilion); color:var(--vermilion);
     display:flex; align-items:center; justify-content:center;
-    font-family:'Shippori Mincho'; font-size:21px; font-weight:700;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:21px; font-weight:700;
     transform:rotate(-4deg); opacity:0.92;
   }
   .seal-card .txt strong{display:block; font-size:14px;}
   .seal-card .txt span{font-size:12px; color:var(--ink-soft);}
   .badge-record{
     position:absolute; top:-8px; right:-8px; background:var(--gold); color:#fff;
-    font-family:'JetBrains Mono'; font-size:10px; padding:3px 7px; border-radius:999px;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:10px; padding:3px 7px; border-radius:999px;
     font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,0.2);
   }
 
@@ -114,25 +112,25 @@
   .controls{display:flex; flex-wrap:wrap; gap:18px; margin:14px 0 20px; align-items:flex-end;}
   .field{display:flex; flex-direction:column; gap:6px; font-size:13px; color:var(--ink-soft);}
   .field input[type=range]{width:150px;}
-  .field .val{font-family:'JetBrains Mono'; color:var(--indigo); font-weight:600;}
+  .field .val{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; color:var(--indigo); font-weight:600;}
 
   .diff-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
   .diff-btn{
     padding:7px 15px; border-radius:999px; border:1.5px solid var(--line);
-    background:#fff; font-family:'Zen Maru Gothic'; font-weight:700; font-size:13px;
+    background:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:13px;
     cursor:pointer; color:var(--ink-soft);
   }
-  .diff-btn.on{border-color:var(--vermilion); color:var(--vermilion); background:rgba(193,68,46,0.07);}
+  .diff-btn.on{border-color:var(--vermilion); color:var(--vermilion); background:rgba(53,113,181,0.07);}
 
   button.primary{
     background:var(--indigo); color:#fff; border:none; padding:12px 22px;
-    border-radius:999px; font-family:'Zen Maru Gothic'; font-weight:700; font-size:14.5px;
+    border-radius:999px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:14.5px;
     cursor:pointer; transition:background .15s;
   }
   button.primary:hover{background:var(--indigo-deep);}
   button.ghost{
     background:transparent; border:1.5px solid var(--vermilion); color:var(--vermilion);
-    padding:10px 20px; border-radius:999px; font-family:'Zen Maru Gothic'; font-weight:700;
+    padding:10px 20px; border-radius:999px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700;
     cursor:pointer;
   }
   button.small{padding:7px 14px; font-size:12.5px;}
@@ -142,8 +140,8 @@
     display:flex; align-items:center; justify-content:center; position:relative;
     margin-bottom:18px; overflow:hidden;
   }
-  .stage .item{font-size:78px; color:#fff; font-family:'Shippori Mincho';}
-  .stage .placeholder{color:rgba(255,255,255,0.35); font-size:15px; font-family:'JetBrains Mono';}
+  .stage .item{font-size:78px; color:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .stage .placeholder{color:rgba(255,255,255,0.35); font-size:15px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
 
   .answer-row{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0;}
   .chip{
@@ -153,7 +151,7 @@
   .chip.picked{border-color:var(--indigo); background:rgba(45,74,107,0.08);}
   input.text-answer, textarea.text-answer{
     width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
-    font-family:'Zen Maru Gothic'; font-size:14.5px; background:#fff;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:14.5px; background:#fff;
   }
   .result{margin-top:14px; font-size:14.5px;}
   .result strong{color:var(--indigo-deep);}
@@ -164,11 +162,11 @@
     border:1px solid var(--line); font-weight:700; font-size:14.5px;
   }
   .story-box{
-    margin-top:14px; padding:16px; border-radius:14px; background:rgba(184,147,90,0.1);
+    margin-top:14px; padding:16px; border-radius:14px; background:rgba(53,113,181,0.1);
     border-left:3px solid var(--gold); font-size:14.5px; font-style:italic; color:var(--ink-soft);
   }
   .timer{
-    font-family:'JetBrains Mono'; font-size:34px; color:var(--vermilion); font-weight:700;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:34px; color:var(--vermilion); font-weight:700;
   }
 
   .breath-zone{display:flex; flex-direction:column; align-items:center; gap:18px; padding:20px 0;}
@@ -176,10 +174,10 @@
     --fill: linear-gradient(135deg, var(--indigo), var(--indigo-deep));
     --sx:1; --sy:1; --d:.6s;
     position:relative; isolation:isolate; overflow:hidden;
-    width:min(100%, 380px); min-height:150px; padding:20px 22px; box-sizing:border-box;
+    width:min(100%, 270px); min-height:218px; padding:18px 16px; box-sizing:border-box;
     border-radius:24px; border:2px solid rgba(35,38,43,0.14); background:rgba(255,255,255,0.6);
     display:flex; align-items:center; justify-content:center; text-align:center;
-    color:#fff; font-family:'Zen Maru Gothic'; font-weight:700; font-size:19px; line-height:1.4;
+    color:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:19px; line-height:1.4;
     overflow-wrap:anywhere;
   }
   .breath-circle::before{
@@ -208,8 +206,8 @@
     cursor:pointer; color:transparent; transition:background .15s;
   }
   .cell.revealed{background:#fff; color:var(--ink); border:1px solid var(--line);}
-  .cell.matched{background:rgba(184,147,90,0.25); color:var(--ink); border:1px solid var(--gold);}
-  .stats-row{display:flex; gap:24px; margin:10px 0; font-size:13.5px; color:var(--ink-soft); font-family:'JetBrains Mono';}
+  .cell.matched{background:rgba(53,113,181,0.25); color:var(--ink); border:1px solid var(--gold);}
+  .stats-row{display:flex; gap:24px; margin:10px 0; font-size:13.5px; color:var(--ink-soft); font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
   .stats-row b{color:var(--indigo-deep);}
 
   /* ---------- PRINT WORKSHEETS ---------- */
@@ -222,20 +220,20 @@
     display:flex; align-items:center; justify-content:center; font-size:42px;
     background:#fff;
   }
-  .cut-card.word{font-size:16px; font-weight:700; font-family:'Zen Maru Gothic'; text-align:center; padding:6px;}
+  .cut-card.word{font-size:16px; font-weight:700; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; text-align:center; padding:6px;}
   .print-lines{border-bottom:1px solid var(--ink-soft); height:26px; margin-bottom:6px;}
-  .worksheet-title{font-family:'Shippori Mincho'; font-size:20px; color:var(--indigo-deep); margin-bottom:4px;}
+  .worksheet-title{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:20px; color:var(--indigo-deep); margin-bottom:4px;}
   .worksheet-tip{font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;}
 
   /* ---------- SCORES ---------- */
   .score-table{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:10px;}
   .score-table th, .score-table td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
-  .score-table th{font-family:'JetBrains Mono'; font-size:11px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:0.05em;}
+  .score-table th{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:0.05em;}
   .score-empty{color:var(--ink-soft); font-size:14px; font-style:italic;}
   .record-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin:16px 0;}
   .record-card{border:1px solid var(--line); border-radius:14px; padding:14px; background:#fff;}
-  .record-card .lbl{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono';}
-  .record-card .val{font-family:'Shippori Mincho'; font-size:22px; color:var(--indigo-deep); font-weight:700;}
+  .record-card .lbl{font-size:12px; color:var(--ink-soft); font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .record-card .val{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:22px; color:var(--indigo-deep); font-weight:700;}
 
 
   /* ---------- SCHERMATE SEPARATE ---------- */
@@ -249,7 +247,7 @@
   details.settings summary{cursor:pointer; font-weight:700; color:var(--indigo); font-size:14px;}
   details.settings .controls{margin:10px 0 4px;}
   .in-panel .home-only, .in-panel footer{display:none !important;}
-  .back-btn{border:none; background:transparent; color:var(--indigo); font-family:'Zen Maru Gothic'; font-weight:700; font-size:15px; padding:8px 2px; cursor:pointer; margin-bottom:4px;}
+  .back-btn{border:none; background:transparent; color:var(--indigo); font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:15px; padding:8px 2px; cursor:pointer; margin-bottom:4px;}
   .back-btn:hover{text-decoration:underline;}
   .panel{margin-top:10px;}
   .actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:6px 0 4px; width:100%;}
@@ -295,7 +293,7 @@
   .breath-circle[data-idle="1"]{ font-size:0; }
   .breath-circle[data-idle="1"]::before{ background:linear-gradient(160deg,#425a70,#27465a) !important; }
   .breath-circle[data-idle="1"]::after{
-    content:''; display:block; width:100%; height:112px;
+    content:''; display:block; width:100%; height:172px;
     background:var(--idle-glyph) no-repeat center / contain;
     animation:seedBreath 6s ease-in-out infinite;
   }
@@ -308,11 +306,66 @@
   .home-brand h1{margin:2px 0 0;}
   @media (max-width:420px){ .home-seed{width:66px; height:100px;} }
   @media print{ .home-seed{display:none;} }
+  #breathCircle, #pranaCircle{ text-shadow:0 1px 8px rgba(10,25,40,.55); }
   #breathCircle:not([data-idle="1"])::after, #pranaCircle:not([data-idle="1"])::after{
     content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
     background:var(--idle-glyph) no-repeat center / auto 92%;
     opacity:.3; transform:scale(var(--seed,.8)); transition:transform var(--d,.6s) ease-in-out;
   }
+  @property --lvl{ syntax:'<number>'; inherits:true; initial-value:0; }
+  #pranaCircle, #breathCircle{ transition:--lvl var(--dl,.6s) linear; }
+  #pranaCircle[data-lvl="1"]::before{
+    background:
+      linear-gradient(to top, #d08a4e 0, #d08a4e calc(var(--lvl) * 100% - 5%), rgba(208,138,78,0) calc(var(--lvl) * 100% + 5%)),
+      linear-gradient(135deg,#2f6f93,#1d4a66) !important;
+  }
+  #breathCircle[data-lvl="1"]::before{
+    background:
+      linear-gradient(to top, #d08a4e 0, #d08a4e calc(var(--lvl) * 100% - 5%), rgba(208,138,78,0) calc(var(--lvl) * 100% + 5%)),
+      linear-gradient(135deg,#2D4A6B,#1C324B) !important;
+  }
+
+  /* ====== TEMA "VISIONE COSCIENTE": grigio chiaro, blu del sito, angoli arrotondati, carattere semplice ====== */
+  :root{
+    --paper:#f6f6f6; --paper-2:#ececec; --ink:#222; --ink-soft:#555;
+    --indigo:#3571b5; --indigo-deep:#244f84; --vermilion:#3571b5; --gold:#3571b5;
+    --line:rgba(0,0,0,0.10);
+  }
+  body{ background:var(--paper) !important; }
+  h1,h2,h3{ font-weight:700; }
+  .panel h2, .home-section h3{ color:var(--indigo); }
+  .eyebrow{ color:#777; font-weight:700; letter-spacing:.2em; display:flex; align-items:center; gap:10px; font-size:12px; }
+  .eyebrow::before{ content:''; width:11px; height:11px; border-radius:50%; background:var(--indigo); flex:0 0 auto; }
+  .panel{ background:#fff; border:1px solid #e4e4e4; border-top:4px solid var(--indigo); border-radius:26px; }
+  .seal-card{ background:#fff; border:1px solid #e4e4e4; border-top:3px solid var(--indigo); border-radius:22px; }
+  .seal{ border-color:var(--indigo); color:var(--indigo); transform:none; border-radius:50%; font-weight:700; }
+  .note{ border-left:4px solid var(--indigo); background:#fff; border-radius:0 14px 14px 0; font-style:normal; }
+  .diff-btn{ background:#fff; }
+  .path-card{ background:#fff; border-top:3px solid var(--indigo); border-radius:22px; }
+  .stage-attn{ box-shadow:0 0 0 3px rgba(53,113,181,.35); }
+  .home-brand{ background:radial-gradient(ellipse 80% 70% at 45% -10%, rgba(255,255,255,.38), rgba(255,255,255,0) 60%), linear-gradient(160deg,#4a7d98 0%,#2c5a73 52%,#16364a 100%);
+    padding:20px 18px; border-radius:26px; box-shadow:0 10px 28px rgba(22,54,74,.25); }
+  .home-brand .eyebrow{ color:rgba(255,255,255,.82); }
+  .home-brand .eyebrow::before{ background:#fff; }
+  .home-brand h1{ color:#fff; margin:6px 0 4px; }
+  .home-brand .tagline{ font-family:Georgia, "Times New Roman", serif; letter-spacing:.2em; font-size:13px; color:rgba(255,255,255,.88); margin-top:6px; }
+  .home-seed{ background:none; box-shadow:none; }
+  .home-top p{ margin-top:14px; }
+
+  /* ====== I quattro colori del seme (rosso, verde, giallo, blu) come accenti, uno per sezione ====== */
+  :root{ --c-red:#d12b27; --c-green:#3f9142; --c-yellow:#f2c230; --c-blue:#3571b5; --c-yellow-text:#b58900; }
+  .home-section, .panel{ --sec:var(--c-blue); --sec-text:var(--c-blue); }
+  .home-section h3{ color:var(--sec-text); display:flex; align-items:center; gap:9px; }
+  .home-section h3::before{ content:''; width:11px; height:11px; border-radius:50%; background:var(--sec); flex:0 0 auto; }
+  .home-section .seal-card{ border-top-color:var(--sec); }
+  .home-section .seal{ border-color:var(--sec); color:var(--sec-text); }
+  .panel{ border-top-color:var(--sec); }
+  .panel h2{ color:var(--sec-text); }
+  .panel .eyebrow::before{ background:var(--sec); }
+  .panel .back-btn{ color:var(--sec-text); }
+  .home-brand{ position:relative; overflow:hidden; }
+  .home-brand::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5px;
+    background:linear-gradient(90deg,var(--c-red) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-blue) 75% 100%); }
 </style>
 </head>
 <body>
@@ -323,7 +376,8 @@
   <div class="home-top">
     <div class="home-brand"><div class="home-seed" role="img" aria-label="Visione Cosciente"></div>
       <div><div class="eyebrow">Respiro e Concentrazione</div>
-    <h1>Respiro e<br>Concentrazione</h1></div></div>
+    <h1>Respiro e<br>Concentrazione</h1>
+      <div class="tagline">vedere · sentire · essere</div></div></div>
     <p>Scegli un esercizio. Ogni esercizio ha la sua schermata e la voce che ti guida: puoi chiudere gli occhi.</p>
     <details class="settings">
       <summary>⚙️ Impostazioni</summary>
@@ -393,7 +447,7 @@
     <h2>Rilassamento tensione-rilascio</h2>
     <div class="sub">Per ogni zona del corpo: contrai con forza, poi lascia andare tutto il peso. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="breath-zone">
-      <div class="breath-circle" id="relaxCircle" style="--fill:linear-gradient(135deg,#8a6a3a,#684c26);">Pronto</div>
+      <div class="breath-circle" id="relaxCircle" style="--fill:linear-gradient(135deg,#3f7d6e,#2a5a4f);">Pronto</div>
       <div class="startwrap"><button class="primary" id="relaxStart" type="button">Avvia</button></div>
       <div class="actions">
         <button class="ghost" id="relaxStop" type="button">⏹ Interrompi</button>
@@ -408,7 +462,7 @@
     <h2>Respirazione arcobaleno</h2>
     <div class="sub">Sdraiato o seduto comodo, a occhi chiusi: con ogni respiro entra un colore, dal rosso al bianco. Sensazione di pulizia e di leggerezza, senza forzare: se un colore non viene, pensa a un oggetto di quel colore.</div>
     <div class="breath-zone">
-      <div class="breath-circle arc-circle" id="arcCircle" style="--fill:#8a6a3a;">Pronto</div>
+      <div class="breath-circle arc-circle" id="arcCircle" style="--fill:#3f7d6e;">Pronto</div>
       <div class="sub" id="arcCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="arcStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -561,7 +615,7 @@
     <div class="sub" id="pranaLevelInfo" style="text-align:center;"></div>
 
     <div class="breath-zone">
-      <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#6a4d96,#42335c);">Pronto</div>
+      <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#2f6f93,#1d4a66);">Pronto</div>
       <div class="sub" id="pranaCaption" style="text-align:center; min-height:40px; max-width:420px;"></div>
       <div class="startwrap"><button class="primary" id="pranaStart" type="button">Avvia</button></div>
       <div class="actions">
@@ -719,11 +773,11 @@
     <div class="controls">
       <button class="ghost small" id="journalExport" type="button">Esporta il mio diario</button>
     </div>
-    <textarea class="text-answer" id="journalExportArea" rows="4" readonly placeholder="Tocca 'Esporta' — il testo da copiare comparirà qui." style="font-family:'JetBrains Mono', monospace; font-size:11px;"></textarea>
+    <textarea class="text-answer" id="journalExportArea" rows="4" readonly placeholder="Tocca 'Esporta' — il testo da copiare comparirà qui." style="font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11px;"></textarea>
     <div class="controls" style="margin-top:14px;">
       <button class="ghost small" id="journalImportBtn" type="button">Importa diario incollato</button>
     </div>
-    <textarea class="text-answer" id="journalImportArea" rows="4" placeholder="Incolla qui il testo esportato in precedenza..." style="font-family:'JetBrains Mono', monospace; font-size:11px;"></textarea>
+    <textarea class="text-answer" id="journalImportArea" rows="4" placeholder="Incolla qui il testo esportato in precedenza..." style="font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11px;"></textarea>
     <div class="result" id="journalImportResult"></div>
   </div>
 
@@ -774,17 +828,17 @@
     <div class="controls">
       <button class="ghost small" id="exportScores" type="button">Esporta i miei punteggi</button>
     </div>
-    <textarea class="text-answer" id="exportArea" rows="4" readonly placeholder="Tocca 'Esporta' — il testo da copiare comparirà qui." style="font-family:'JetBrains Mono', monospace; font-size:11px;"></textarea>
+    <textarea class="text-answer" id="exportArea" rows="4" readonly placeholder="Tocca 'Esporta' — il testo da copiare comparirà qui." style="font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11px;"></textarea>
 
     <div class="controls" style="margin-top:16px;">
       <button class="ghost small" id="importScoresBtn" type="button">Importa punteggi incollati</button>
     </div>
-    <textarea class="text-answer" id="importArea" rows="4" placeholder="Incolla qui il testo esportato in precedenza..." style="font-family:'JetBrains Mono', monospace; font-size:11px;"></textarea>
+    <textarea class="text-answer" id="importArea" rows="4" placeholder="Incolla qui il testo esportato in precedenza..." style="font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11px;"></textarea>
     <div class="result" id="importResult"></div>
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 39 · 10 ottobre</span></footer>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 44 · 10 ottobre</span></footer>
 </div>
 
 
@@ -1358,6 +1412,12 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
   resetSpeedUI();
 });
 
+// barra di colore che sale (inspirazione) o scende (espirazione); lvl 0..1, secs = durata della transizione; lvl null = nessuna barra
+function setFill(el, lvl, secs){
+  if(lvl === null || lvl === undefined){ delete el.dataset.lvl; el.style.removeProperty('--lvl'); return; }
+  el.style.setProperty('--dl', Math.max(0.2, secs).toFixed(2)+'s');
+  el.dataset.lvl = '1'; el.style.setProperty('--lvl', lvl);
+}
 function setBreathScale(el, str){
   // Il fondo colorato si allarga e si restringe (inspira/espira); il testo resta fermo e leggibile.
   const m = /scale\(([\d.]+)\)/.exec(String(str));
@@ -1365,6 +1425,7 @@ function setBreathScale(el, str){
   const t = (v === 1) ? 1 : Math.max(0, Math.min(1, (v - 0.8) / 0.7));
   el.style.setProperty('--sx', (0.94 + 0.06*t).toFixed(3));
   el.style.setProperty('--sy', (0.84 + 0.16*t).toFixed(3));
+  if(v === 1 && el.dataset && el.dataset.lvl){ delete el.dataset.lvl; el.style.removeProperty('--lvl'); }
   // il seme sullo sfondo segue il respiro: si gonfia con l'inspirazione, resta fermo nelle pause, si riduce con l'espirazione
   el.style.setProperty('--seed', (v === 1 ? 0.8 : 0.55 + 0.5*Math.max(0, Math.min(1, (v - 0.8)/0.7))).toFixed(3));
 }
@@ -1608,6 +1669,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
       if(myBreathRun !== breathRunId) return;
       circle.style.setProperty('--d', (p.dur/1000)+'s');
       setBreathScale(circle, 'scale('+p.scale+')');
+      setFill(circle, p.scale > 1 ? 1 : 0, p.dur/1000);
       circle.textContent = p.label;
       caption.textContent = breathStyle === 'immaginativo' ? (p.cap || captions[p.label]) : '';
     }
@@ -1756,10 +1818,10 @@ const PRANA_TECHNIQUES = {
   dirgha: {
     desc: "Respiro yogico a tre stadi (Dirgha Pranayama): riempie in sequenza pancia, torace e parte alta del petto, per usare tutta la capacità polmonare.",
     phases: [
-      {label:'Inspira — pancia', caption:"Inspira lentamente dal naso, gonfiando prima la pancia.", dur:3000, scale:1.15},
-      {label:'Inspira — torace', caption:"Continua a inspirare: ora si espande il torace.", dur:2000, scale:1.3},
-      {label:'Inspira — petto alto', caption:"Ultimo tratto: si solleva anche la parte alta del petto.", dur:1500, scale:1.45},
-      {label:'Espira lentamente', caption:"Espira svuotando tutto, dall'alto verso il basso, lentamente.", dur:5000, scale:0.85}
+      {label:'Inspira — pancia', caption:"Inspira lentamente dal naso, gonfiando prima la pancia.", dur:3000, scale:1.15, lvl:0.34},
+      {label:'Inspira — torace', caption:"Continua a inspirare: ora si espande il torace.", dur:2000, scale:1.3, lvl:0.67},
+      {label:'Inspira — petto alto', caption:"Ultimo tratto: si solleva anche la parte alta del petto.", dur:1500, scale:1.45, lvl:1},
+      {label:'Espira lentamente', caption:"Espira svuotando tutto, dall'alto verso il basso, lentamente.", dur:5000, scale:0.85, lvl:0}
     ]
   },
   bhramari: {
@@ -1893,6 +1955,16 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
       if(myPranaRun !== pranaRunId) return;
       circle.style.setProperty('--d', (p.dur/1000)+'s');
       setBreathScale(circle, 'scale('+p.scale+')');
+      let lv = p.lvl;
+      if(lv === undefined && /^Espira/.test(p.label)) lv = 0;
+      else if(lv === undefined && /^Inspira/.test(p.label)) lv = 1;
+      else if(lv === undefined && p.scale !== undefined && p.scale !== 1) lv = p.scale > 1 ? 1 : 0;
+      if(lv !== undefined){
+        // la barra impiega quanto dura davvero la fase: la registrazione vera + la pausa, altrimenti il tempo previsto
+        let secs = p.dur/1000;
+        try{ if(pranaVoiceOn && !(p.voiceFirstOnly && cycle > 0) && sharedVoiceEl && isFinite(sharedVoiceEl.duration) && sharedVoiceEl.duration > 0.3) secs = sharedVoiceEl.duration + ((p.hold !== undefined ? p.hold : 500)/1000); }catch(e){}
+        setFill(circle, lv, secs);
+      } else setFill(circle, null);
       circle.textContent = p.label;
       caption.textContent = p.caption;
     }
@@ -1911,6 +1983,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
           const ins = (n % 2 === 0);
           circle.style.setProperty('--d', '3s');
           setBreathScale(circle, 'scale('+(ins ? 1.35 : 0.9)+')');
+          setFill(circle, ins ? 1 : 0, 3);
           circle.textContent = p.label + (ins ? ' — inspira' : ' — espira');
           n++; pranaPhaseTimeout = setTimeout(tick, 3000);
         })();
@@ -1930,6 +2003,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
         if(n >= tot){ onDone(); return; }
         const ins = (n % 2 === 0);
         setBreathScale(circle, 'scale('+(ins ? 1.35 : 0.9)+')');
+        setFill(circle, ins ? 1 : 0, p.step/1000);
         circle.textContent = ins ? 'Inspira' : 'Espira';
         n++;
         pranaPhaseTimeout = setTimeout(tick, p.step);
@@ -2757,7 +2831,7 @@ function makeGuided(id, cfg){
 }
 function stopGuidedAll(){ Object.keys(GUIDED).forEach(k=> GUIDED[k].stop()); }
 function guidedAnyRunning(){ return Object.keys(GUIDED).some(k=> GUIDED[k].running); }
-makeGuided('arcobaleno', {pre:'arc', base:'#8a6a3a', introKey:'INTRO:arcobaleno', steps:[
+makeGuided('arcobaleno', {pre:'arc', base:'#3f7d6e', introKey:'INTRO:arcobaleno', steps:[
   {k:'Sdraiati e respira piano. Porta l’attenzione sotto l’ombelico.', t:'Respira piano. Attenzione sotto l’ombelico.', cap:'Respira piano e senti il punto sotto l’ombelico.', w:15},
   {k:'Con il respiro entra il rosso. Pensa a un fiore rosso. Il rosso riempie tutto il corpo.', t:'Rosso', c:'#d9473f', cap:'Il colore entra con il respiro e riempie tutto il corpo.', w:20},
   {k:'Ora l’arancione, come una carota.', t:'Arancione', c:'#e8863a', cap:'Il colore entra con il respiro e riempie tutto il corpo.', w:20},
@@ -2891,6 +2965,22 @@ function startPath(key){
   }
   new MutationObserver(mark).observe(document.body, {subtree:true, childList:true, characterData:true});
   mark();
+})();
+
+
+// Colori del seme per sezione: la sezione e le sue schermate prendono lo stesso colore
+(function(){
+  const COL = [ ['#3571b5','#3571b5'], ['#3f9142','#3f9142'], ['#d12b27','#d12b27'], ['#f2c230','#b58900'], ['#3571b5','#3571b5'] ];
+  const panelCol = {};
+  document.querySelectorAll('.home-section').forEach((sec, i)=>{
+    const c = COL[i % COL.length];
+    sec.style.setProperty('--sec', c[0]); sec.style.setProperty('--sec-text', c[1]);
+    sec.querySelectorAll('.seal-card[data-panel]').forEach(card=>{ if(!panelCol[card.dataset.panel]) panelCol[card.dataset.panel] = c; });
+  });
+  Object.keys(panelCol).forEach(id=>{
+    const p = document.getElementById('panel-'+id); if(!p) return;
+    p.style.setProperty('--sec', panelCol[id][0]); p.style.setProperty('--sec-text', panelCol[id][1]);
+  });
 })();
 
 // initial scores load
