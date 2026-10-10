@@ -527,7 +527,7 @@
   <div class="panel" id="panel-breath">
     <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">息 · Respirare</div>
-    <h2>Respirazione yogica quadrata 4-4-4-4</h2>
+    <h2>Respirazione yogica quadrata</h2>
     <div class="sub">Inspira, trattieni, espira, trattieni: i tempi e i cicli dipendono dal livello. Puoi chiudere gli occhi: la voce ti guida.</div>
     <div class="diff-row" id="breathLevel">
       <button class="diff-btn" data-l="principiante" type="button">Principiante</button>
@@ -850,7 +850,7 @@
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 45 · 10 ottobre</span></footer>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 46 · 10 ottobre</span></footer>
 </div>
 
 
@@ -1672,9 +1672,9 @@ document.getElementById('breathVoiceToggle').addEventListener('click', function(
 });
 
 const BREATH_LEVELS = {
-  principiante: {dur:3000, cycles:5, info:'3 secondi per fase · 5 cicli'},
-  intermedio:   {dur:4000, cycles:5, info:'4 secondi per fase · 5 cicli'},
-  avanzato:     {dur:6000, cycles:8, info:'6 secondi per fase · 8 cicli'}
+  principiante: {dur:3000, cycles:5, info:'Ritmo 3-3-3-3 · 5 cicli'},
+  intermedio:   {dur:4000, cycles:5, info:'Ritmo 4-4-4-4 · 5 cicli'},
+  avanzato:     {dur:6000, cycles:8, info:'Ritmo 6-6-6-6 · 8 cicli'}
 };
 let breathLevel = 'intermedio';
 function updateBreathLevelInfo(){ document.getElementById('breathLevelInfo').textContent = BREATH_LEVELS[breathLevel].info; }
