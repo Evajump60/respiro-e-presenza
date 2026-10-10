@@ -906,6 +906,8 @@ function playBell(force){
   }catch(e){}
 }
 // ritardo prima che l'esercizio parta: lascia suonare l'inizio della campana
+// campana PRIMA dell'esercizio, ma sempre DOPO l'eventuale spiegazione parlata
+function bellThen(cont){ if(bellOn){ playBell(); setTimeout(cont, 3200); } else cont(); }
 function startDelay(){ if(bellOn){ playBell(); return 3200; } return 350; }
 // spiegazione iniziale: una sola volta per tecnica, riascoltabile col pulsante
 const introMem = {};
@@ -917,8 +919,8 @@ function maybeIntro(key, voiceOn, valid, circleEl, captionEl, cont){
     circleEl.textContent = 'Ascolta';
     captionEl.textContent = 'Ascolta le istruzioni, poi inizia l’esercizio.';
     let heard = false;
-    speakCue(key, ()=>{ if(!valid()) return; markIntroSeen(key); setTimeout(()=>{ if(valid()) cont(); }, 1500); }, ()=>{ heard = true; });
-  } else cont();
+    speakCue(key, ()=>{ if(!valid()) return; markIntroSeen(key); setTimeout(()=>{ if(valid()) bellThen(()=>{ if(valid()) cont(); }); }, 900); }, ()=>{ heard = true; });
+  } else bellThen(()=>{ if(valid()) cont(); });
 }
 // riascolto della sola spiegazione
 function playIntroOnly(key, running, circleId, captionId, idleLabel){
@@ -1511,7 +1513,7 @@ document.getElementById('relaxStart').addEventListener('click', ()=>{
   setTimeout(()=>{
     if(myRelaxRun !== relaxRunId) return;
     maybeIntro('INTRO:relax', relaxVoiceOn, ()=> myRelaxRun === relaxRunId, circle, document.getElementById('relaxCaption') || {textContent:''}, tense);
-  }, startDelay());
+  }, 350);
 });
 document.getElementById('relaxStop').addEventListener('click', ()=>{
   relaxRunId++;
@@ -1602,7 +1604,7 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
   setTimeout(()=>{
     if(myBreathRun !== breathRunId) return;
     maybeIntro('INTRO:breath', breathVoiceOn, ()=> myBreathRun === breathRunId, circle, caption, ()=>{ metroStart(); runPhase(0); });
-  }, startDelay());
+  }, 350);
 });
 document.getElementById('breathStop').addEventListener('click', ()=>{
   metroStop();
@@ -1947,11 +1949,11 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
       // spiegazione vocale iniziale: l'esercizio parte solo quando è finita (segnata come ascoltata solo alla fine)
       circle.textContent = 'Ascolta';
       caption.textContent = 'Ascolta le istruzioni, poi inizia l’esercizio.';
-      speakCue(introKey, ()=>{ if(myPranaRun !== pranaRunId) return; markIntroSeen(introKey); pranaPhaseTimeout = setTimeout(startPhases, 1500); });
+      speakCue(introKey, ()=>{ if(myPranaRun !== pranaRunId) return; markIntroSeen(introKey); pranaPhaseTimeout = setTimeout(()=> bellThen(startPhases), 900); });
     } else {
-      startPhases();
+      bellThen(startPhases);
     }
-  }, startDelay());
+  }, 350);
 });
 document.getElementById('relaxIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:relax', ()=>relaxRunning, 'relaxCircle', 'relaxCaption', 'Pronto'));
 document.getElementById('breathIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:breath', ()=>breathRunning, 'breathCircle', 'breathCaption', 'Inizia'));
@@ -2105,7 +2107,7 @@ document.getElementById('autoregStart').addEventListener('click', ()=>{
   setTimeout(()=>{
     if(myRun !== autoregRunId) return;
     maybeIntro('INTRO:'+autoregCurrentTech, autoregVoiceOn, ()=> myRun === autoregRunId, circle, caption, ()=> runPhase(0));
-  }, startDelay());
+  }, 350);
 });
 document.getElementById('autoregStop').addEventListener('click', ()=>{
   autoregRunId++;
@@ -2706,7 +2708,7 @@ function makeGuided(id, cfg){
     g.timeout = setTimeout(()=>{
       if(my !== g.runId) return;
       maybeIntro(cfg.introKey, true, ()=> my === g.runId, circle, cap, ()=> step(0));
-    }, startDelay());
+    }, 350);
   });
   $('Stop').addEventListener('click', ()=>{ g.stop(); stopVoiceClipAudio(); reset(); });
   $('IntroBtn').addEventListener('click', ()=> playIntroOnly(cfg.introKey, ()=>g.running, cfg.pre+'Circle', cfg.pre+'Caption', 'Pronto'));
