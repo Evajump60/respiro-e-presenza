@@ -394,6 +394,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 .path-bar .path-btns{display:flex; gap:8px; flex-wrap:wrap;}
 @media print{ .intel{display:none !important;} }
 
+.fixbar{height:5px;border-radius:3px;background:var(--line);margin:8px 0 4px;overflow:hidden}.fixbar>div{height:100%;width:0;background:#3571b5;opacity:.55;transition:width 1s linear}
 </style>
 </head>
 <body>
@@ -536,7 +537,6 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="eyebrow">速 · Velocità</div>
     <h2>Occhio di Kim</h2>
     <div class="sub">La griglia si mostra per pochi secondi e poi si copre. Trova tutte le coppie usando solo la memoria dell'istante in cui hai guardato.</div>
-    <div class="intel" data-ex="grid"></div>
 
     <div class="diff-row" id="gridDiff">
       <button class="diff-btn" data-size="6" type="button">Facile</button>
@@ -553,14 +553,15 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="primary" id="gridStart" type="button">Mescola e mostra</button>
     </div>
 
+
+    <div class="grid-game" id="gridGame"></div>
     <div class="stats-row">
       <div>Mosse: <b id="gridMoves">0</b></div>
       <div>Coppie trovate: <b id="gridFound">0</b></div>
       <div id="gridPreviewTimer"></div>
     </div>
     <div id="gridSaveMsg"></div>
-
-    <div class="grid-game" id="gridGame"></div>
+    <div class="intel" data-ex="grid"></div>
   </div>
 
   <div class="panel" id="panel-fixation">
@@ -581,6 +582,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="stage" id="dotStage" style="height:170px; background:#fff; border:1px solid var(--line);">
       <div id="dotEl" style="width:24px; height:24px; border-radius:50%; background:#191b1e;"></div>
     </div>
+    <div class="fixbar" id="dotBar"><div></div></div>
     <div class="sub" id="dotTimer"></div>
 
     <h3 style="margin-top:30px;">Immagine residua colorata</h3>
@@ -594,7 +596,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="primary" id="residueStart" type="button">Fissa 30 secondi</button>
     </div>
     <div class="stage" id="residueStage" style="height:190px;"><span class="placeholder">pronto quando vuoi</span></div>
-    <div class="result" id="residueResult"></div>
+    <div class="fixbar" id="resBar"><div></div></div><div class="result" id="residueResult"></div>
 
     <h3 style="margin-top:30px;">Ginnastica oculare</h3>
     <div class="sub">Testa immobile, muovi solo lo sguardo. Un pattern al giorno basta: un allenamento troppo lungo affatica il muscolo oculare.</div>
@@ -729,6 +731,16 @@ body[data-mode="kids"] .adults-only{display:none !important;}
         <button class="primary" id="stroopSaveResult" type="button">Registra risultato</button>
       </div>
     </div>
+
+    <h3 style="margin-top:30px;">Versione da toccare (conta i punti da sola)</h3>
+    <div class="sub">Compare una parola scritta con un colore diverso dal suo significato. Tocca il cerchio del colore che la parola DICE, non quello con cui è scritta. 20 parole: conto io errori e tempo.</div>
+    <div class="controls"><button class="primary" id="stTouchStart" type="button">Comincia (20 parole)</button></div>
+    <div id="stTouchBox" style="display:none; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; text-align:center; touch-action:manipulation; -webkit-user-select:none; user-select:none;">
+      <div class="sub" id="stTouchInfo" style="min-height:20px;"></div>
+      <div id="stTouchWord" style="font-size:40px; font-weight:800; min-height:64px; line-height:64px;"></div>
+      <div id="stTouchBtns" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; justify-items:center; margin-top:10px;"></div>
+    </div>
+    <div class="result" id="stTouchResult"></div>
     <div class="result" id="stroopResult"></div>
   </div>
 
@@ -979,7 +991,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 4 · 11 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 7 · 11 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1541,19 +1553,21 @@ document.getElementById('dotSize').addEventListener('input', e=>{
   dot.style.width = e.target.value+'px';
   dot.style.height = e.target.value+'px';
 });
+function fixBar(el, f){ el.style.width = Math.round(f*100)+'%'; }
 let dotTimerInterval = null;
 document.getElementById('dotStart').addEventListener('click', ()=>{
   if(dotTimerInterval){ clearInterval(dotTimerInterval); dotTimerInterval = null; }
   let t = 60;
   const timerEl = document.getElementById('dotTimer');
-  timerEl.textContent = t+' secondi — visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
+  const bar = document.querySelector('#dotBar > div');
+  const msg = 'Visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
+  timerEl.textContent = msg; fixBar(bar, 0);
   dotTimerInterval = setInterval(()=>{
-    t--;
+    t--; fixBar(bar, (60-t)/60);
     if(t<=0){
       clearInterval(dotTimerInterval); dotTimerInterval = null;
       timerEl.textContent = 'Fatto. Percepisci un alone più ampio del punto reale?';
     }
-    else timerEl.textContent = t+' secondi — visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
   },1000);
 });
 
@@ -1572,8 +1586,9 @@ document.getElementById('residueStart').addEventListener('click', ()=>{
   stage.innerHTML = '<div style="width:'+cfg.size+'px; height:'+cfg.size+'px; border-radius:50%; background:'+cfg.circle+';"></div>';
   document.getElementById('residueResult').innerHTML = 'Fissa il centro senza sbattere le palpebre...';
   let t = 30;
+  const rbar = document.querySelector('#resBar > div'); fixBar(rbar, 0);
   residueInterval = setInterval(()=>{
-    t--;
+    t--; fixBar(rbar, (30-t)/30);
     if(t<=0){
       clearInterval(residueInterval); residueInterval = null;
       stage.style.background = '#EDEDED';
@@ -2308,6 +2323,39 @@ document.getElementById('stroopSaveResult').addEventListener('click', ()=>{
   }, 'stroopResult');
   document.getElementById('stroopScoreArea').style.display = 'none';
 });
+
+
+(function(){
+  const N=20; let q=[], i=0, ok=0, bad=0, t0=0, lock=false, circ=[];
+  const box=document.getElementById('stTouchBox'), wEl=document.getElementById('stTouchWord'),
+        info=document.getElementById('stTouchInfo'), btns=document.getElementById('stTouchBtns'),
+        res=document.getElementById('stTouchResult');
+  function show(){
+    const it=q[i]; wEl.textContent=it.meaning.name; wEl.style.color=it.ink.hex;
+    info.textContent='Parola '+(i+1)+' di '+N+' · giuste '+ok+' · errori '+bad; lock=false;
+  }
+  function end(){
+    const secs=((performance.now()-t0)/1000).toFixed(1);
+    box.style.display='none';
+    saveSession({ts:new Date().toISOString(), module:'stroop', mode, difficulty:'touch',
+      label:secs+'s · '+ok+'/'+N+' giuste', ratio:ok/N}, 'stTouchResult');
+    res.insertAdjacentHTML('afterbegin','<strong>'+ok+' giuste su '+N+'</strong> in '+secs+' secondi ('+bad+' error'+(bad===1?'e':'i')+').<br>');
+    document.getElementById('stTouchStart').textContent='Ricomincia';
+  }
+  document.getElementById('stTouchStart').addEventListener('click',()=>{
+    q=[]; for(let k=0;k<N;k++){ const m=shuffle(ITALIAN_COLORS)[0]; q.push({meaning:m, ink:pickInkColor(m)}); }
+    circ=shuffle(ITALIAN_COLORS); i=0; ok=0; bad=0; res.innerHTML='';
+    btns.innerHTML=circ.map(c=>'<button type="button" data-n="'+c.name+'" aria-label="'+c.name+'" style="width:64px;height:64px;border-radius:50%;border:3px solid transparent;background:'+c.hex+';padding:0;"></button>').join('');
+    box.style.display='block'; t0=performance.now(); show();
+  });
+  btns.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||lock) return; lock=true;
+    const right=b.dataset.n===q[i].meaning.name;
+    if(right) ok++; else bad++;
+    b.style.borderColor=right?'#3B8C5A':'#C1442E'; b.style.transform='scale(1.12)';
+    setTimeout(()=>{ b.style.borderColor='transparent'; b.style.transform=''; i++; if(i>=N) end(); else show(); }, 220);
+  });
+})();
 
 // ---------------- MODULE: CORSI TEST ----------------
 let corsiPositions = [];
@@ -3308,7 +3356,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=4;
+  const LOCAL=7;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
