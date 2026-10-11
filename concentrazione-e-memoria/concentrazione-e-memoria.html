@@ -714,34 +714,15 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">色 · Parola e colore</div>
     <h2>Parola e Colore</h2>
-    <div class="sub" id="stroopInstructions">Con l'indice destro tocca una parola nella lista. Con l'indice sinistro tocca, tra i cerchi a destra, quello del colore corrispondente. Scendi lungo la lista il più velocemente possibile senza sbagliare.</div>
+        <div class="sub" id="stroopInstructions">Compare una parola scritta con un colore diverso dal suo significato. Tocca il cerchio del colore che la parola DICE, non quello con cui è scritta. 20 parole: il tempo parte al primo tocco e conto io giuste ed errori.</div>
     <div class="intel" data-ex="stroop"></div>
-    <div class="controls">
-      <button class="primary" id="stroopGenerate" type="button">Genera nuova lista</button>
-      <button class="primary" id="stroopTimerStart" type="button">Via! Avvia cronometro</button>
-      <button class="ghost" id="stroopTimerStop" style="display:none;" type="button">Ho finito</button>
-    </div>
-    <div class="sub" id="stroopTimerLive" style="min-height:18px;"></div>
-    <div id="stroopArea" style="background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; overscroll-behavior:contain;"></div>
-    <div id="stroopScoreArea" style="display:none; margin-top:16px;">
-      <div class="controls">
-        <div class="field">Errori fatti (facoltativo)
-          <input type="number" id="stroopErrors" min="0" max="20" value="0" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line);">
-        </div>
-        <button class="primary" id="stroopSaveResult" type="button">Registra risultato</button>
-      </div>
-    </div>
-
-    <h3 style="margin-top:30px;">Versione da toccare (conta i punti da sola)</h3>
-    <div class="sub">Compare una parola scritta con un colore diverso dal suo significato. Tocca il cerchio del colore che la parola DICE, non quello con cui è scritta. 20 parole: conto io errori e tempo.</div>
-    <div class="controls"><button class="primary" id="stTouchStart" type="button">Comincia (20 parole)</button></div>
-    <div id="stTouchBox" style="display:none; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; text-align:center; touch-action:manipulation; -webkit-user-select:none; user-select:none;">
+    <div class="controls"><button class="ghost" id="stTouchStart" type="button">Nuova serie</button></div>
+    <div id="stTouchBox" style="display:block; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; text-align:center; touch-action:manipulation; -webkit-user-select:none; user-select:none;">
       <div class="sub" id="stTouchInfo" style="min-height:20px;"></div>
-      <div id="stTouchWord" style="font-size:40px; font-weight:800; min-height:64px; line-height:64px;"></div>
-      <div id="stTouchBtns" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; justify-items:center; margin-top:10px;"></div>
+      <div id="stTouchWord" style="font-size:40px; font-weight:800; min-height:52px; line-height:52px;"></div>
+      <div id="stTouchBtns" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; justify-items:center; margin-top:4px;"></div>
     </div>
     <div class="result" id="stTouchResult"></div>
-    <div class="result" id="stroopResult"></div>
   </div>
 
   <div class="panel" id="panel-corsi">
@@ -991,7 +972,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 7 · 11 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 8 · 11 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2255,106 +2236,49 @@ function stroopInstructionText(flip){
     : "Con l'indice destro tocca una parola nella lista. Con l'indice sinistro tocca, tra i cerchi a destra, il colore corrispondente al SIGNIFICATO della parola — non al colore con cui è scritta, che è sempre diverso apposta per ingannare l'occhio.";
 }
 
-let stroopFlip = false;
 let stroopPrintFlip = false;
-let stroopTimerInterval = null;
-let stroopStartTime = 0;
-let stroopElapsedMs = 0;
-
-function resetStroopTimerUI(){
-  if(stroopTimerInterval){ clearInterval(stroopTimerInterval); stroopTimerInterval = null; }
-  document.getElementById('stroopTimerStart').style.display = 'inline-block';
-  document.getElementById('stroopTimerStop').style.display = 'none';
-  document.getElementById('stroopTimerLive').textContent = '';
-  document.getElementById('stroopScoreArea').style.display = 'none';
-  document.getElementById('stroopErrors').value = 0;
-}
-
-document.getElementById('stroopGenerate').addEventListener('click', ()=>{
-  stroopFlip = !stroopFlip;
-  document.getElementById('stroopInstructions').textContent = stroopInstructionText(stroopFlip);
-  document.getElementById('stroopArea').innerHTML = renderStroopHTML(generateStroopExercise(), stroopFlip);
-  resetStroopTimerUI();
-});
 document.getElementById('stroopPrintRegen').addEventListener('click', ()=>{
   stroopPrintFlip = !stroopPrintFlip;
   document.getElementById('stroopPrintTip').textContent = stroopInstructionText(stroopPrintFlip);
   document.getElementById('stroopPrintArea').innerHTML = renderStroopHTML(generateStroopExercise(), stroopPrintFlip);
 });
-document.getElementById('stroopGenerate').click();
 document.getElementById('stroopPrintRegen').click();
-
-// ---- MODULE: STROOP — cronometro e registrazione risultato ----
-document.getElementById('stroopTimerStart').addEventListener('click', ()=>{
-  document.getElementById('stroopScoreArea').style.display = 'none';
-  document.getElementById('stroopTimerStart').style.display = 'none';
-  document.getElementById('stroopTimerStop').style.display = 'inline-block';
-  stroopStartTime = performance.now();
-  const liveEl = document.getElementById('stroopTimerLive');
-  liveEl.textContent = '0.0 s';
-  stroopTimerInterval = setInterval(()=>{
-    liveEl.textContent = ((performance.now()-stroopStartTime)/1000).toFixed(1)+' s';
-  }, 100);
-});
-
-document.getElementById('stroopTimerStop').addEventListener('click', ()=>{
-  if(stroopTimerInterval){ clearInterval(stroopTimerInterval); stroopTimerInterval = null; }
-  stroopElapsedMs = performance.now() - stroopStartTime;
-  document.getElementById('stroopTimerStop').style.display = 'none';
-  document.getElementById('stroopTimerStart').style.display = 'inline-block';
-  document.getElementById('stroopTimerStart').textContent = 'Via! Riavvia cronometro';
-  document.getElementById('stroopTimerLive').textContent = 'Tempo: '+(stroopElapsedMs/1000).toFixed(1)+' s — quanti errori hai fatto?';
-  document.getElementById('stroopResult').innerHTML = '';
-  document.getElementById('stroopScoreArea').style.display = 'block';
-});
-
-document.getElementById('stroopSaveResult').addEventListener('click', ()=>{
-  const totalTouches = 20; // 10 righe × 2 tocchi (parola + colore) per riga
-  let errors = parseInt(document.getElementById('stroopErrors').value);
-  if(isNaN(errors) || errors < 0) errors = 0;
-  if(errors > totalTouches) errors = totalTouches;
-  const secs = (stroopElapsedMs/1000).toFixed(1);
-  const ratio = (totalTouches - errors) / totalTouches;
-  saveSession({
-    ts: new Date().toISOString(), module:'stroop', mode,
-    difficulty: stroopFlip ? 'invertito' : 'standard',
-    label: secs+'s · '+errors+' error'+(errors===1?'':'i'),
-    ratio
-  }, 'stroopResult');
-  document.getElementById('stroopScoreArea').style.display = 'none';
-});
 
 
 (function(){
-  const N=20; let q=[], i=0, ok=0, bad=0, t0=0, lock=false, circ=[];
+  const N=20; let q=[], i=0, ok=0, bad=0, t0=0, lock=false, started=false, done=false;
   const box=document.getElementById('stTouchBox'), wEl=document.getElementById('stTouchWord'),
         info=document.getElementById('stTouchInfo'), btns=document.getElementById('stTouchBtns'),
         res=document.getElementById('stTouchResult');
   function show(){
-    const it=q[i]; wEl.textContent=it.meaning.name; wEl.style.color=it.ink.hex;
-    info.textContent='Parola '+(i+1)+' di '+N+' · giuste '+ok+' · errori '+bad; lock=false;
+    const it=q[i]; wEl.textContent=it.meaning.name; wEl.style.color=it.ink.hex; lock=false;
+    info.textContent = started ? ('Parola '+(i+1)+' di '+N+' · giuste '+ok+' · errori '+bad)
+                               : 'Anteprima: tocca il colore che la parola dice per cominciare';
+  }
+  function fresh(){
+    q=[]; for(let k=0;k<N;k++){ const m=shuffle(ITALIAN_COLORS)[0]; q.push({meaning:m, ink:pickInkColor(m)}); }
+    const circ=shuffle(ITALIAN_COLORS); i=0; ok=0; bad=0; started=false; done=false;
+    btns.innerHTML=circ.map(c=>'<button type="button" data-n="'+c.name+'" aria-label="'+c.name+'" style="width:56px;height:56px;border-radius:50%;border:3px solid transparent;background:'+c.hex+';padding:0;"></button>').join('');
+    res.innerHTML=''; box.style.display='block'; show();
   }
   function end(){
-    const secs=((performance.now()-t0)/1000).toFixed(1);
-    box.style.display='none';
+    const secs=((performance.now()-t0)/1000).toFixed(1); done=true;
+    wEl.textContent='Fatto!'; wEl.style.color='var(--ink, #23262B)';
+    info.textContent=ok+' giuste su '+N+' · '+secs+' secondi';
     saveSession({ts:new Date().toISOString(), module:'stroop', mode, difficulty:'touch',
       label:secs+'s · '+ok+'/'+N+' giuste', ratio:ok/N}, 'stTouchResult');
     res.insertAdjacentHTML('afterbegin','<strong>'+ok+' giuste su '+N+'</strong> in '+secs+' secondi ('+bad+' error'+(bad===1?'e':'i')+').<br>');
-    document.getElementById('stTouchStart').textContent='Ricomincia';
   }
-  document.getElementById('stTouchStart').addEventListener('click',()=>{
-    q=[]; for(let k=0;k<N;k++){ const m=shuffle(ITALIAN_COLORS)[0]; q.push({meaning:m, ink:pickInkColor(m)}); }
-    circ=shuffle(ITALIAN_COLORS); i=0; ok=0; bad=0; res.innerHTML='';
-    btns.innerHTML=circ.map(c=>'<button type="button" data-n="'+c.name+'" aria-label="'+c.name+'" style="width:64px;height:64px;border-radius:50%;border:3px solid transparent;background:'+c.hex+';padding:0;"></button>').join('');
-    box.style.display='block'; t0=performance.now(); show();
-  });
+  document.getElementById('stTouchStart').addEventListener('click', fresh);
   btns.addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b||lock) return; lock=true;
+    const b=e.target.closest('button'); if(!b||lock||done) return; lock=true;
+    if(!started){ started=true; t0=performance.now(); }
     const right=b.dataset.n===q[i].meaning.name;
     if(right) ok++; else bad++;
     b.style.borderColor=right?'#3B8C5A':'#C1442E'; b.style.transform='scale(1.12)';
     setTimeout(()=>{ b.style.borderColor='transparent'; b.style.transform=''; i++; if(i>=N) end(); else show(); }, 220);
   });
+  fresh();
 })();
 
 // ---------------- MODULE: CORSI TEST ----------------
@@ -3356,7 +3280,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=7;
+  const LOCAL=8;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
