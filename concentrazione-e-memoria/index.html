@@ -1026,7 +1026,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 11 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 12 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -3445,7 +3445,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=11;
+  const LOCAL=12;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -3470,6 +3470,7 @@ refreshScoresUI();
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(false); });
 })();
 
+window.LAB_ITEMS = [{"titolo": "Un suono ripetuto", "origine": "Ripetizione di una parola o di un suono (mantra), dal capitolo sul “potere delle parole” (J. A. Johnson, Chinese Medical Qigong Therapy, vol. 3, cap. 26), in forma semplice.", "per": "tutti", "durata": "circa 5 minuti", "cosa": ["Scegli una parola o un suono breve che ti piace e ti fa stare bene: per esempio una vocale lunga, come “aaa”, oppure una parola come “calma”.", "Per un minuto ripetilo a voce normale, piano, ascoltando dove lo senti nel corpo.", "Per un minuto ripetilo a bassa voce, quasi sussurrando.", "Per un minuto ripetilo solo nella mente, senza muovere le labbra.", "Resta un momento in silenzio. Che cosa è rimasto?"], "cautele": "Nessuna promessa su onde cerebrali o emisferi: le ricerche citate dal libro non sono verificate. Scegli un suono che non ti ricordi nulla di spiacevole.", "id": "suono-ripetuto"}, {"titolo": "Mandala e yantra da guardare", "origine": "Mandala e yantra come immagini su cui concentrarsi (J. A. Johnson, Chinese Medical Qigong Therapy, vol. 3, cap. 26).", "per": "tutti", "durata": "circa 5 minuti", "cosa": ["Scegli un disegno: una mandala (circolare, simmetrica, con un centro) oppure uno yantra (semplice, geometrico, di un solo colore). Può essere uno tuo o stampato.", "Posalo davanti a te, a una distanza comoda, e rilassa lo sguardo.", "Guarda prima il centro. Poi lascia che gli occhi seguano la simmetria verso i quattro punti (alto, destra, basso, sinistra) e torna al centro.", "Dopo qualche minuto chiudi gli occhi e prova a rivedere il disegno nella mente, in mezzo alla fronte.", "Apri gli occhi e guardalo ancora un momento."], "cautele": "Il libro attribuisce a questi disegni poteri sottili: noi li usiamo solo come immagini su cui concentrarsi e osserviamo che cosa succede.", "id": "mandala-yantra"}, {"titolo": "Luce che si espande e si raccoglie", "origine": "Prima meditazione di “visione interiore” (Nei Guan n. 1) di J. A. Johnson, Chinese Medical Qigong Therapy, vol. 3, cap. 26. Solo la prima delle tre meditazioni.", "per": "adulti", "durata": "circa 8 minuti", "cosa": ["Siediti con la schiena dritta ma rilassata e respira piano. Se vuoi, prima conta da uno a dieci respirando.", "Immagina una luce calda e luminosa nella pancia, sotto l’ombelico.", "Fai salire la luce lungo il centro del corpo, fino al centro della testa.", "Inspirando, immagina che la luce si allarghi verso l’esterno, brillando in tutte le direzioni.", "Espirando, la luce torna al centro della testa e brilla come una brace luminosa.", "Ripeti per qualche minuto.", "Poi lascia scendere la luce lungo il centro del corpo fino alla pancia. Finisci con tre respiri, immaginando una luce che scende lungo il corpo fino a terra."], "cautele": "Solo adulti. Se senti pressione, mal di testa o disagio, interrompi. È solo un’immagine di luce: nessuna affermazione su ghiandole o altro. Non proporre le altre due meditazioni dello stesso capitolo.", "id": "nei-guan-1"}];
 /* ---- LABORATORIO (struttura; nascosto finché non ci sono gli esercizi) ---- */
 (function(){
   const APP = (location.pathname.split('/').filter(Boolean).slice(-2,-1)[0] || 'respiro');
@@ -3542,7 +3543,7 @@ refreshScoresUI();
   }
   function reveal(){ const on = (location.hash === '#laboratorio') || (function(){ try{ return localStorage.getItem('pcd_lab')==='1'; }catch(e){ return false; } })();
     if(location.hash === '#laboratorio'){ try{ localStorage.setItem('pcd_lab','1'); }catch(e){} }
-    door.style.display = (on || window.LAB_ITEMS.length) ? '' : 'none'; }
+    door.style.display = on ? '' : 'none'; }
   reveal(); window.addEventListener('hashchange', reveal);
 })();
 </script>
