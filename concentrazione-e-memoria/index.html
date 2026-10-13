@@ -394,6 +394,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 .path-bar .path-btns{display:flex; gap:8px; flex-wrap:wrap;}
 @media print{ .intel{display:none !important;} }
 
+.fixbar{height:5px;border-radius:3px;background:var(--line);margin:8px 0 4px;overflow:hidden}.fixbar>div{height:100%;width:0;background:#3571b5;opacity:.55;transition:width 1s linear}
 </style>
 </head>
 <body>
@@ -444,6 +445,12 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <div class="seal-card" data-panel="fixation" data-title="Fissazione e immagine residua"><div class="seal">凝</div><div class="txt"><strong>Fissazione e immagine residua</strong><span>Tre esercizi di training visivo</span></div><div class="badge-record" id="recFixation" style="display:none;"></div></div>
       <div class="seal-card" data-panel="pair" data-title="Gioco in coppia"><div class="seal">組</div><div class="txt"><strong>Gioco in coppia</strong><span>Concentrazione condivisa tra due persone</span></div><div class="badge-record" id="recPair" style="display:none;"></div></div>
       <div class="seal-card" data-panel="stroop" data-title="Parola e colore"><div class="seal">色</div><div class="txt"><strong>Parola e colore</strong><span>Le due mani, i colori e le parole</span></div><div class="badge-record" id="recStroop" style="display:none;"></div></div>
+  </div></div>
+
+  <div class="home-section"><h3>Attenzione guidata</h3><div class="modules-nav">
+      <div class="seal-card" data-panel="mmemoria" data-title="Mandala-memoria"><div class="seal">曼</div><div class="txt"><strong>Mandala-memoria</strong><span>Guarda un mandala, poi ricostruiscilo a occhi chiusi</span></div></div>
+      <div class="seal-card" data-panel="occhimorbidi" data-title="Occhi morbidi e linea di ancoraggio"><div class="seal">眼</div><div class="txt"><strong>Occhi morbidi e linea di ancoraggio</strong><span>Sguardo morbido, visione larga, una linea a cui tornare</span></div></div>
+      <div class="seal-card" data-panel="paesaggio" data-title="Portarsi dentro il paesaggio"><div class="seal">景</div><div class="txt"><strong>Portarsi dentro il paesaggio</strong><span>Guarda un paesaggio, poi ricrealo nella mente</span></div></div>
   </div></div>
 
   <div class="home-section"><h3>Ascoltare e leggere</h3><div class="modules-nav">
@@ -536,7 +543,6 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="eyebrow">速 · Velocità</div>
     <h2>Occhio di Kim</h2>
     <div class="sub">La griglia si mostra per pochi secondi e poi si copre. Trova tutte le coppie usando solo la memoria dell'istante in cui hai guardato.</div>
-    <div class="intel" data-ex="grid"></div>
 
     <div class="diff-row" id="gridDiff">
       <button class="diff-btn" data-size="6" type="button">Facile</button>
@@ -553,14 +559,63 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="primary" id="gridStart" type="button">Mescola e mostra</button>
     </div>
 
+
+    <div class="grid-game" id="gridGame"></div>
     <div class="stats-row">
       <div>Mosse: <b id="gridMoves">0</b></div>
       <div>Coppie trovate: <b id="gridFound">0</b></div>
       <div id="gridPreviewTimer"></div>
     </div>
     <div id="gridSaveMsg"></div>
+    <div class="intel" data-ex="grid"></div>
+  </div>
 
-    <div class="grid-game" id="gridGame"></div>
+  <div class="panel" id="panel-mmemoria">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">曼 · Attenzione guidata</div>
+    <h2>Mandala-memoria</h2>
+    <div class="sub">Guarda il mandala con occhi morbidi, poi chiudi gli occhi e prova a ricostruirlo nella mente.</div>
+    <svg viewBox="0 0 100 100" width="150" height="150" style="margin:6px auto 0;display:block" aria-label="Mandala"><g fill="none" stroke="#8c6bc4" stroke-width="1.6"><circle cx="50" cy="50" r="6" fill="#d9a93a"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="44"/></g><g fill="#5fae6b"><circle cx="50" cy="26" r="5"/><circle cx="50" cy="74" r="5"/><circle cx="26" cy="50" r="5"/><circle cx="74" cy="50" r="5"/></g><g fill="#d9473f"><circle cx="33" cy="33" r="4"/><circle cx="67" cy="33" r="4"/><circle cx="33" cy="67" r="4"/><circle cx="67" cy="67" r="4"/></g><g fill="#5aa9d6"><circle cx="50" cy="8" r="3.5"/><circle cx="50" cy="92" r="3.5"/><circle cx="8" cy="50" r="3.5"/><circle cx="92" cy="50" r="3.5"/></g></svg>
+    <div class="breath-zone">
+      <div class="breath-circle arc-circle" id="mmCircle" style="--fill:#8c6bc4;">Pronto</div>
+      <div class="sub" id="mmProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="sub" id="mmCaption" style="min-height:20px; text-align:center;"></div>
+      <div class="startwrap"><button class="primary" id="mmStart" type="button">Avvia</button></div>
+      <div class="actions"><button class="ghost" id="mmStop" type="button">⏹ Interrompi</button></div>
+    </div>
+    <div class="sub" style="margin-top:14px; font-size:12px;">Esercizio di attenzione guidata, senza promesse di effetti. La voce usa la sintesi vocale del dispositivo.</div>
+  </div>
+
+  <div class="panel" id="panel-occhimorbidi">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">眼 · Attenzione guidata</div>
+    <h2>Occhi morbidi e linea di ancoraggio</h2>
+    <div class="sub">Allena uno sguardo morbido e stabile: un punto davanti a te, l’attenzione larga ai lati e una linea a cui tornare.</div>
+    
+    <div class="breath-zone">
+      <div class="breath-circle arc-circle" id="omCircle" style="--fill:#2D4A6B;">Pronto</div>
+      <div class="sub" id="omProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="sub" id="omCaption" style="min-height:20px; text-align:center;"></div>
+      <div class="startwrap"><button class="primary" id="omStart" type="button">Avvia</button></div>
+      <div class="actions"><button class="ghost" id="omStop" type="button">⏹ Interrompi</button></div>
+    </div>
+    <div class="sub" style="margin-top:14px; font-size:12px;">Esercizio di attenzione guidata, senza promesse di effetti. La voce usa la sintesi vocale del dispositivo.</div>
+  </div>
+
+  <div class="panel" id="panel-paesaggio">
+    <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
+    <div class="eyebrow">景 · Attenzione guidata</div>
+    <h2>Portarsi dentro il paesaggio</h2>
+    <div class="sub">Guarda un paesaggio dalla finestra, all’aperto o in una foto, poi ricrealo nella mente con colori, suoni e sensazioni.</div>
+    
+    <div class="breath-zone">
+      <div class="breath-circle arc-circle" id="ppCircle" style="--fill:#5fae6b;">Pronto</div>
+      <div class="sub" id="ppProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="sub" id="ppCaption" style="min-height:20px; text-align:center;"></div>
+      <div class="startwrap"><button class="primary" id="ppStart" type="button">Avvia</button></div>
+      <div class="actions"><button class="ghost" id="ppStop" type="button">⏹ Interrompi</button></div>
+    </div>
+    <div class="sub" style="margin-top:14px; font-size:12px;">Esercizio di attenzione guidata, senza promesse di effetti. La voce usa la sintesi vocale del dispositivo.</div>
   </div>
 
   <div class="panel" id="panel-fixation">
@@ -581,6 +636,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="stage" id="dotStage" style="height:170px; background:#fff; border:1px solid var(--line);">
       <div id="dotEl" style="width:24px; height:24px; border-radius:50%; background:#191b1e;"></div>
     </div>
+    <div class="fixbar" id="dotBar"><div></div></div>
     <div class="sub" id="dotTimer"></div>
 
     <h3 style="margin-top:30px;">Immagine residua colorata</h3>
@@ -594,7 +650,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="primary" id="residueStart" type="button">Fissa 30 secondi</button>
     </div>
     <div class="stage" id="residueStage" style="height:190px;"><span class="placeholder">pronto quando vuoi</span></div>
-    <div class="result" id="residueResult"></div>
+    <div class="fixbar" id="resBar"><div></div></div><div class="result" id="residueResult"></div>
 
     <h3 style="margin-top:30px;">Ginnastica oculare</h3>
     <div class="sub">Testa immobile, muovi solo lo sguardo. Un pattern al giorno basta: un allenamento troppo lungo affatica il muscolo oculare.</div>
@@ -712,24 +768,15 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>
     <div class="eyebrow">色 · Parola e colore</div>
     <h2>Parola e Colore</h2>
-    <div class="sub" id="stroopInstructions">Con l'indice destro tocca una parola nella lista. Con l'indice sinistro tocca, tra i cerchi a destra, quello del colore corrispondente. Scendi lungo la lista il più velocemente possibile senza sbagliare.</div>
+        <div class="sub" id="stroopInstructions">Compare una parola scritta con un colore diverso dal suo significato. Tocca il cerchio del colore che la parola DICE, non quello con cui è scritta. 20 parole: il tempo parte al primo tocco e conto io giuste ed errori.</div>
     <div class="intel" data-ex="stroop"></div>
-    <div class="controls">
-      <button class="primary" id="stroopGenerate" type="button">Genera nuova lista</button>
-      <button class="primary" id="stroopTimerStart" type="button">Via! Avvia cronometro</button>
-      <button class="ghost" id="stroopTimerStop" style="display:none;" type="button">Ho finito</button>
+    <div class="controls"><button class="ghost" id="stTouchStart" type="button">Nuova serie</button></div>
+    <div id="stTouchBox" style="display:block; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; text-align:center; touch-action:manipulation; -webkit-user-select:none; user-select:none;">
+      <div class="sub" id="stTouchInfo" style="min-height:20px;"></div>
+      <div id="stTouchWord" style="font-size:40px; font-weight:800; min-height:52px; line-height:52px;"></div>
+      <div id="stTouchBtns" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; justify-items:center; margin-top:4px;"></div>
     </div>
-    <div class="sub" id="stroopTimerLive" style="min-height:18px;"></div>
-    <div id="stroopArea" style="background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; overscroll-behavior:contain;"></div>
-    <div id="stroopScoreArea" style="display:none; margin-top:16px;">
-      <div class="controls">
-        <div class="field">Errori fatti (facoltativo)
-          <input type="number" id="stroopErrors" min="0" max="20" value="0" style="width:70px; padding:6px 8px; border-radius:8px; border:1px solid var(--line);">
-        </div>
-        <button class="primary" id="stroopSaveResult" type="button">Registra risultato</button>
-      </div>
-    </div>
-    <div class="result" id="stroopResult"></div>
+    <div class="result" id="stTouchResult"></div>
   </div>
 
   <div class="panel" id="panel-corsi">
@@ -979,7 +1026,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 3 · 11 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 9 · 12 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1084,7 +1131,22 @@ if('speechSynthesis' in window){
 mountVoicePicker('voiceSelectListen', 'voiceTestListen', 'Questo è un esempio della voce di lettura scelta.');
 
 // Guida vocale condivisa, per fare gli esercizi di respiro a occhi chiusi.
+const GL_CLIPS = {"Ora guardiamo un disegno colorato e poi lo portiamo dentro la testa, come una foto. Guarda con occhi morbidi, senza fretta.": "audio/MM-I-K.m4a", "In questo esercizio guardi un mandala con attenzione morbida, poi chiudi gli occhi e lo ricostruisci nella mente. Non conta farlo perfetto: conta tornare con gentilezza all’immagine ogni volta che la mente si distrae.": "audio/MM-I-A.m4a", "Siediti comodo. Respira piano e guarda il disegno davanti a te.": "audio/MM-K01.m4a", "Guarda il centro del disegno. Poi guarda i colori intorno, uno alla volta.": "audio/MM-K02.m4a", "Quale colore ti piace di più? Guardalo bene.": "audio/MM-K03.m4a", "Ora chiudi gli occhi. Prova a vedere il disegno dentro la testa, come una foto.": "audio/MM-K04.m4a", "Se l’immagine scappa, nessun problema: torna al centro e ricomincia.": "audio/MM-K05.m4a", "Apri gli occhi e guarda di nuovo il disegno. Che cosa avevi dimenticato? Che cosa ricordavi bene?": "audio/MM-K06.m4a", "Siediti comodo, con la schiena morbida. Appoggia lo sguardo sul mandala, senza fissarlo.": "audio/MM-A01.m4a", "Parti dal centro. Poi lascia che lo sguardo si sposti piano sugli anelli, dall’interno verso l’esterno.": "audio/MM-A02.m4a", "Nota tre cose: un colore, una forma e una posizione. Non devi ricordare altro.": "audio/MM-A03.m4a", "Chiudi gli occhi. Ricostruisci il mandala nella mente, partendo dal centro.": "audio/MM-A04.m4a", "Quando la mente si distrae, e succederà, torna al centro con gentilezza, senza giudicare.": "audio/MM-A05.m4a", "Apri gli occhi e confronta ciò che avevi in mente con il disegno. Nota con curiosità cosa corrisponde e cosa no.": "audio/MM-A06.m4a", "Ora impariamo a guardare con occhi morbidi, come quando guardi lontano senza fissare. Poi seguiamo una linea con lo sguardo.": "audio/OM-I-K.m4a", "Questo esercizio allena uno sguardo morbido e stabile. Guardi un punto davanti a te, allarghi l’attenzione verso i lati senza muovere gli occhi, e poi ti appoggi a una linea di riferimento per tornare quando la mente si distrae.": "audio/OM-I-A.m4a", "Siediti comodo. Scegli un punto davanti a te e guardalo con occhi morbidi, come se fossero due palloncini che si rilassano.": "audio/OM-K01.m4a", "Senza muovere gli occhi, prova ad accorgerti di quello che c’è a destra e a sinistra.": "audio/OM-K02.m4a", "Ora trova una linea: il bordo del tavolo, della finestra o del pavimento. Seguila con lo sguardo, piano piano.": "audio/OM-K03.m4a", "Se la testa vola via, torna alla linea. È la tua strada per tornare.": "audio/OM-K04.m4a", "Chiudi gli occhi un momento e riposali. Poi aprili quando vuoi.": "audio/OM-K05.m4a", "Siediti comodo e scegli un punto davanti a te, all’altezza degli occhi. Guardalo con sguardo morbido, senza fissare.": "audio/OM-A01.m4a", "Senza spostare gli occhi, allarga l’attenzione ai lati, alla visione periferica, come se vedessi una finestra più larga.": "audio/OM-A02.m4a", "Ora individua una linea di riferimento: un bordo, un orizzonte, uno spigolo. Segui la linea con lo sguardo, a ritmo del respiro.": "audio/OM-A03.m4a", "Ogni volta che ti accorgi di esserti distratto, ritorna alla linea. Questo ritorno è l’allenamento.": "audio/OM-A04.m4a", "Chiudi gli occhi e riposali per qualche respiro. Poi riaprili con calma.": "audio/OM-A05.m4a", "Ora guardiamo un paesaggio, poi lo portiamo dentro di noi per ritrovarlo quando serve.": "audio/PP-I-K.m4a", "In questo esercizio guardi con attenzione un paesaggio, vero o in immagine, e poi lo ricrei nella mente, con colori, suoni e sensazioni. È una pratica di attenzione e di memoria visiva.": "audio/PP-I-A.m4a", "Guarda il paesaggio con calma. Cosa vedi lontano? Cosa vedi vicino?": "audio/PP-K01.m4a", "Scegli una cosa che ti piace, un albero, una nuvola, un sasso, e guardala bene.": "audio/PP-K02.m4a", "Chiudi gli occhi. Prova a portare dentro la testa quel paesaggio, con i suoi colori.": "audio/PP-K03.m4a", "Se vuoi, aggiungi un suono: il vento, un uccellino, l’acqua.": "audio/PP-K04.m4a", "Apri gli occhi. Guarda se il paesaggio è come lo avevi portato dentro.": "audio/PP-K05.m4a", "Guarda il paesaggio con attenzione morbida. Distingui il lontano dal vicino, la luce dall’ombra.": "audio/PP-A01.m4a", "Scegli un elemento e osservane i dettagli: colore, forma, texture.": "audio/PP-A02.m4a", "Chiudi gli occhi e ricostruisci il paesaggio nella mente. Parti dall’elemento che hai scelto e allarga piano.": "audio/PP-A03.m4a", "Aggiungi altri sensi: un suono, un profumo, la temperatura dell’aria.": "audio/PP-A04.m4a", "Apri gli occhi e confronta. Nota cosa ricordavi con precisione e cosa era sfumato, senza giudicare.": "audio/PP-A05.m4a"};
+let glEl = null;
 function speakCue(text, onEnd){
+  const url = GL_CLIPS[text];
+  if(!url){ ttsSpeak(text, onEnd); return; }
+  try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  if(!glEl) glEl = new Audio();
+  let done = false;
+  const fallback = ()=>{ if(done) return; done = true; glEl.onended = null; glEl.onerror = null; ttsSpeak(text, onEnd); };
+  glEl.onended = ()=>{ if(done) return; done = true; glEl.onended = null; glEl.onerror = null; if(onEnd) onEnd(); };
+  glEl.onerror = fallback;
+  glEl.src = url;
+  try{ const p = glEl.play(); if(p && p.catch) p.catch(fallback); }catch(e){ fallback(); }
+}
+function stopGlVoice(){ if(glEl){ try{ glEl.onended = null; glEl.onerror = null; glEl.pause(); }catch(e){} } }
+function ttsSpeak(text, onEnd){
   if(!('speechSynthesis' in window)){ if(onEnd) onEnd(); return; }
   try{
     speechSynthesis.cancel();
@@ -1274,8 +1336,66 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
 });
 
 // ---------------- NAV ----------------
+const GUIDED_LITE = {};
+function makeGuidedLite(id,cfg){
+  const g=GUIDED_LITE[id]={running:false,runId:0,timeout:null};
+  const $=suf=>document.getElementById(cfg.pre+suf);
+  g.stop=function(){ g.runId++; g.running=false; if(g.timeout){clearTimeout(g.timeout);g.timeout=null;} stopGlVoice(); if('speechSynthesis' in window) speechSynthesis.cancel(); };
+  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; $('ProgTxt').textContent=''; }
+  $('Start').addEventListener('click',()=>{
+    if(g.running) return; g.running=true; const my=++g.runId; const steps=cfg.steps(); const circle=$('Circle');
+    function step(i){
+      if(my!==g.runId) return;
+      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; $('ProgTxt').textContent=''; g.running=false; return; }
+      const st=steps[i];
+      $('ProgTxt').textContent='Passo '+(i+1)+' di '+steps.length;
+      circle.textContent=st.k; $('Caption').textContent='';
+      speakCue(st.k, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(i+1), (st.w||0)*1000+400); });
+    }
+    const intro=cfg.intro(); circle.textContent=intro; $('ProgTxt').textContent='Spiegazione';
+    speakCue(intro, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(0),600); });
+  });
+  $('Stop').addEventListener('click',()=>{ g.stop(); reset(); });
+}
+function stopGuidedLiteAll(){ Object.keys(GUIDED_LITE).forEach(k=>GUIDED_LITE[k].stop()); }
+const MM_K=[{k:'Siediti comodo. Respira piano e guarda il disegno davanti a te.', w:6},
+ {k:'Guarda il centro del disegno. Poi guarda i colori intorno, uno alla volta.', w:15},
+ {k:'Quale colore ti piace di più? Guardalo bene.', w:10},
+ {k:'Ora chiudi gli occhi. Prova a vedere il disegno dentro la testa, come una foto.', w:20},
+ {k:'Se l’immagine scappa, nessun problema: torna al centro e ricomincia.', w:15},
+ {k:'Apri gli occhi e guarda di nuovo il disegno. Che cosa avevi dimenticato? Che cosa ricordavi bene?', w:12}];
+const MM_A=[{k:'Siediti comodo, con la schiena morbida. Appoggia lo sguardo sul mandala, senza fissarlo.', w:8},
+ {k:'Parti dal centro. Poi lascia che lo sguardo si sposti piano sugli anelli, dall’interno verso l’esterno.', w:20},
+ {k:'Nota tre cose: un colore, una forma e una posizione. Non devi ricordare altro.', w:15},
+ {k:'Chiudi gli occhi. Ricostruisci il mandala nella mente, partendo dal centro.', w:30},
+ {k:'Quando la mente si distrae, e succederà, torna al centro con gentilezza, senza giudicare.', w:20},
+ {k:'Apri gli occhi e confronta ciò che avevi in mente con il disegno. Nota con curiosità cosa corrisponde e cosa no.', w:15}];
+makeGuidedLite('mmemoria',{pre:'mm', intro:()=> document.body.dataset.mode==='kids' ? 'Ora guardiamo un disegno colorato e poi lo portiamo dentro la testa, come una foto. Guarda con occhi morbidi, senza fretta.' : 'In questo esercizio guardi un mandala con attenzione morbida, poi chiudi gli occhi e lo ricostruisci nella mente. Non conta farlo perfetto: conta tornare con gentilezza all’immagine ogni volta che la mente si distrae.', steps:()=> document.body.dataset.mode==='kids' ? MM_K : MM_A});
+const OM_K=[{k:'Siediti comodo. Scegli un punto davanti a te e guardalo con occhi morbidi, come se fossero due palloncini che si rilassano.', w:10},
+ {k:'Senza muovere gli occhi, prova ad accorgerti di quello che c’è a destra e a sinistra.', w:12},
+ {k:'Ora trova una linea: il bordo del tavolo, della finestra o del pavimento. Seguila con lo sguardo, piano piano.', w:15},
+ {k:'Se la testa vola via, torna alla linea. È la tua strada per tornare.', w:15},
+ {k:'Chiudi gli occhi un momento e riposali. Poi aprili quando vuoi.', w:8}];
+const OM_A=[{k:'Siediti comodo e scegli un punto davanti a te, all’altezza degli occhi. Guardalo con sguardo morbido, senza fissare.', w:10},
+ {k:'Senza spostare gli occhi, allarga l’attenzione ai lati, alla visione periferica, come se vedessi una finestra più larga.', w:15},
+ {k:'Ora individua una linea di riferimento: un bordo, un orizzonte, uno spigolo. Segui la linea con lo sguardo, a ritmo del respiro.', w:20},
+ {k:'Ogni volta che ti accorgi di esserti distratto, ritorna alla linea. Questo ritorno è l’allenamento.', w:20},
+ {k:'Chiudi gli occhi e riposali per qualche respiro. Poi riaprili con calma.', w:10}];
+makeGuidedLite('occhimorbidi',{pre:'om', intro:()=> document.body.dataset.mode==='kids' ? 'Ora impariamo a guardare con occhi morbidi, come quando guardi lontano senza fissare. Poi seguiamo una linea con lo sguardo.' : 'Questo esercizio allena uno sguardo morbido e stabile. Guardi un punto davanti a te, allarghi l’attenzione verso i lati senza muovere gli occhi, e poi ti appoggi a una linea di riferimento per tornare quando la mente si distrae.', steps:()=> document.body.dataset.mode==='kids' ? OM_K : OM_A});
+const PP_K=[{k:'Guarda il paesaggio con calma. Cosa vedi lontano? Cosa vedi vicino?', w:15},
+ {k:'Scegli una cosa che ti piace, un albero, una nuvola, un sasso, e guardala bene.', w:12},
+ {k:'Chiudi gli occhi. Prova a portare dentro la testa quel paesaggio, con i suoi colori.', w:20},
+ {k:'Se vuoi, aggiungi un suono: il vento, un uccellino, l’acqua.', w:12},
+ {k:'Apri gli occhi. Guarda se il paesaggio è come lo avevi portato dentro.', w:8}];
+const PP_A=[{k:'Guarda il paesaggio con attenzione morbida. Distingui il lontano dal vicino, la luce dall’ombra.', w:20},
+ {k:'Scegli un elemento e osservane i dettagli: colore, forma, texture.', w:15},
+ {k:'Chiudi gli occhi e ricostruisci il paesaggio nella mente. Parti dall’elemento che hai scelto e allarga piano.', w:30},
+ {k:'Aggiungi altri sensi: un suono, un profumo, la temperatura dell’aria.', w:20},
+ {k:'Apri gli occhi e confronta. Nota cosa ricordavi con precisione e cosa era sfumato, senza giudicare.', w:12}];
+makeGuidedLite('paesaggio',{pre:'pp', intro:()=> document.body.dataset.mode==='kids' ? 'Ora guardiamo un paesaggio, poi lo portiamo dentro di noi per ritrovarlo quando serve.' : 'In questo esercizio guardi con attenzione un paesaggio, vero o in immagine, e poi lo ricrei nella mente, con colori, suoni e sensazioni. È una pratica di attenzione e di memoria visiva.', steps:()=> document.body.dataset.mode==='kids' ? PP_K : PP_A});
 function stopEverything(){
   if('speechSynthesis' in window) speechSynthesis.cancel();
+  try{ stopGuidedLiteAll(); }catch(e){}
   try{ stopVoice(); }catch(e){}
   ['audioApe','audioLeone'].forEach(id=>{
     const el = document.getElementById(id);
@@ -1541,19 +1661,21 @@ document.getElementById('dotSize').addEventListener('input', e=>{
   dot.style.width = e.target.value+'px';
   dot.style.height = e.target.value+'px';
 });
+function fixBar(el, f){ el.style.width = Math.round(f*100)+'%'; }
 let dotTimerInterval = null;
 document.getElementById('dotStart').addEventListener('click', ()=>{
   if(dotTimerInterval){ clearInterval(dotTimerInterval); dotTimerInterval = null; }
   let t = 60;
   const timerEl = document.getElementById('dotTimer');
-  timerEl.textContent = t+' secondi — visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
+  const bar = document.querySelector('#dotBar > div');
+  const msg = 'Visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
+  timerEl.textContent = msg; fixBar(bar, 0);
   dotTimerInterval = setInterval(()=>{
-    t--;
+    t--; fixBar(bar, (60-t)/60);
     if(t<=0){
       clearInterval(dotTimerInterval); dotTimerInterval = null;
       timerEl.textContent = 'Fatto. Percepisci un alone più ampio del punto reale?';
     }
-    else timerEl.textContent = t+' secondi — visione a campo allargato: il punto e tutto lo spazio intorno, insieme.';
   },1000);
 });
 
@@ -1572,8 +1694,9 @@ document.getElementById('residueStart').addEventListener('click', ()=>{
   stage.innerHTML = '<div style="width:'+cfg.size+'px; height:'+cfg.size+'px; border-radius:50%; background:'+cfg.circle+';"></div>';
   document.getElementById('residueResult').innerHTML = 'Fissa il centro senza sbattere le palpebre...';
   let t = 30;
+  const rbar = document.querySelector('#resBar > div'); fixBar(rbar, 0);
   residueInterval = setInterval(()=>{
-    t--;
+    t--; fixBar(rbar, (30-t)/30);
     if(t<=0){
       clearInterval(residueInterval); residueInterval = null;
       stage.style.background = '#EDEDED';
@@ -2240,74 +2363,50 @@ function stroopInstructionText(flip){
     : "Con l'indice destro tocca una parola nella lista. Con l'indice sinistro tocca, tra i cerchi a destra, il colore corrispondente al SIGNIFICATO della parola — non al colore con cui è scritta, che è sempre diverso apposta per ingannare l'occhio.";
 }
 
-let stroopFlip = false;
 let stroopPrintFlip = false;
-let stroopTimerInterval = null;
-let stroopStartTime = 0;
-let stroopElapsedMs = 0;
-
-function resetStroopTimerUI(){
-  if(stroopTimerInterval){ clearInterval(stroopTimerInterval); stroopTimerInterval = null; }
-  document.getElementById('stroopTimerStart').style.display = 'inline-block';
-  document.getElementById('stroopTimerStop').style.display = 'none';
-  document.getElementById('stroopTimerLive').textContent = '';
-  document.getElementById('stroopScoreArea').style.display = 'none';
-  document.getElementById('stroopErrors').value = 0;
-}
-
-document.getElementById('stroopGenerate').addEventListener('click', ()=>{
-  stroopFlip = !stroopFlip;
-  document.getElementById('stroopInstructions').textContent = stroopInstructionText(stroopFlip);
-  document.getElementById('stroopArea').innerHTML = renderStroopHTML(generateStroopExercise(), stroopFlip);
-  resetStroopTimerUI();
-});
 document.getElementById('stroopPrintRegen').addEventListener('click', ()=>{
   stroopPrintFlip = !stroopPrintFlip;
   document.getElementById('stroopPrintTip').textContent = stroopInstructionText(stroopPrintFlip);
   document.getElementById('stroopPrintArea').innerHTML = renderStroopHTML(generateStroopExercise(), stroopPrintFlip);
 });
-document.getElementById('stroopGenerate').click();
 document.getElementById('stroopPrintRegen').click();
 
-// ---- MODULE: STROOP — cronometro e registrazione risultato ----
-document.getElementById('stroopTimerStart').addEventListener('click', ()=>{
-  document.getElementById('stroopScoreArea').style.display = 'none';
-  document.getElementById('stroopTimerStart').style.display = 'none';
-  document.getElementById('stroopTimerStop').style.display = 'inline-block';
-  stroopStartTime = performance.now();
-  const liveEl = document.getElementById('stroopTimerLive');
-  liveEl.textContent = '0.0 s';
-  stroopTimerInterval = setInterval(()=>{
-    liveEl.textContent = ((performance.now()-stroopStartTime)/1000).toFixed(1)+' s';
-  }, 100);
-});
 
-document.getElementById('stroopTimerStop').addEventListener('click', ()=>{
-  if(stroopTimerInterval){ clearInterval(stroopTimerInterval); stroopTimerInterval = null; }
-  stroopElapsedMs = performance.now() - stroopStartTime;
-  document.getElementById('stroopTimerStop').style.display = 'none';
-  document.getElementById('stroopTimerStart').style.display = 'inline-block';
-  document.getElementById('stroopTimerStart').textContent = 'Via! Riavvia cronometro';
-  document.getElementById('stroopTimerLive').textContent = 'Tempo: '+(stroopElapsedMs/1000).toFixed(1)+' s — quanti errori hai fatto?';
-  document.getElementById('stroopResult').innerHTML = '';
-  document.getElementById('stroopScoreArea').style.display = 'block';
-});
-
-document.getElementById('stroopSaveResult').addEventListener('click', ()=>{
-  const totalTouches = 20; // 10 righe × 2 tocchi (parola + colore) per riga
-  let errors = parseInt(document.getElementById('stroopErrors').value);
-  if(isNaN(errors) || errors < 0) errors = 0;
-  if(errors > totalTouches) errors = totalTouches;
-  const secs = (stroopElapsedMs/1000).toFixed(1);
-  const ratio = (totalTouches - errors) / totalTouches;
-  saveSession({
-    ts: new Date().toISOString(), module:'stroop', mode,
-    difficulty: stroopFlip ? 'invertito' : 'standard',
-    label: secs+'s · '+errors+' error'+(errors===1?'':'i'),
-    ratio
-  }, 'stroopResult');
-  document.getElementById('stroopScoreArea').style.display = 'none';
-});
+(function(){
+  const N=20; let q=[], i=0, ok=0, bad=0, t0=0, lock=false, started=false, done=false;
+  const box=document.getElementById('stTouchBox'), wEl=document.getElementById('stTouchWord'),
+        info=document.getElementById('stTouchInfo'), btns=document.getElementById('stTouchBtns'),
+        res=document.getElementById('stTouchResult');
+  function show(){
+    const it=q[i]; wEl.textContent=it.meaning.name; wEl.style.color=it.ink.hex; lock=false;
+    info.textContent = started ? ('Parola '+(i+1)+' di '+N+' · giuste '+ok+' · errori '+bad)
+                               : 'Anteprima: tocca il colore che la parola dice per cominciare';
+  }
+  function fresh(){
+    q=[]; for(let k=0;k<N;k++){ const m=shuffle(ITALIAN_COLORS)[0]; q.push({meaning:m, ink:pickInkColor(m)}); }
+    const circ=shuffle(ITALIAN_COLORS); i=0; ok=0; bad=0; started=false; done=false;
+    btns.innerHTML=circ.map(c=>'<button type="button" data-n="'+c.name+'" aria-label="'+c.name+'" style="width:56px;height:56px;border-radius:50%;border:3px solid transparent;background:'+c.hex+';padding:0;"></button>').join('');
+    res.innerHTML=''; box.style.display='block'; show();
+  }
+  function end(){
+    const secs=((performance.now()-t0)/1000).toFixed(1); done=true;
+    wEl.textContent='Fatto!'; wEl.style.color='var(--ink, #23262B)';
+    info.textContent=ok+' giuste su '+N+' · '+secs+' secondi';
+    saveSession({ts:new Date().toISOString(), module:'stroop', mode, difficulty:'touch',
+      label:secs+'s · '+ok+'/'+N+' giuste', ratio:ok/N}, 'stTouchResult');
+    res.insertAdjacentHTML('afterbegin','<strong>'+ok+' giuste su '+N+'</strong> in '+secs+' secondi ('+bad+' error'+(bad===1?'e':'i')+').<br>');
+  }
+  document.getElementById('stTouchStart').addEventListener('click', fresh);
+  btns.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||lock||done) return; lock=true;
+    if(!started){ started=true; t0=performance.now(); }
+    const right=b.dataset.n===q[i].meaning.name;
+    if(right) ok++; else bad++;
+    b.style.borderColor=right?'#3B8C5A':'#C1442E'; b.style.transform='scale(1.12)';
+    setTimeout(()=>{ b.style.borderColor='transparent'; b.style.transform=''; i++; if(i>=N) end(); else show(); }, 220);
+  });
+  fresh();
+})();
 
 // ---------------- MODULE: CORSI TEST ----------------
 let corsiPositions = [];
@@ -3108,6 +3207,7 @@ refreshScoresUI();
 
 // ---------------- VOCE REGISTRATA (file nella cartella audio/) ----------------
 // Se un file manca, il pulsante «Ascolta» non compare e tutto resta come prima, in silenzio.
+const AUDIO_DIR = 'audio/';   // le voci stanno nella cartella audio/ accanto a index.html
 let voiceEl = null;
 function stopVoice(){
   if(voiceEl){ try{ voiceEl.onended = null; voiceEl.onerror = null; voiceEl.pause(); }catch(e){} voiceEl = null; }
@@ -3115,7 +3215,7 @@ function stopVoice(){
 }
 function playVoice(name, btn){
   stopVoice();
-  const a = new Audio('audio/'+name+'.m4a'); voiceEl = a;
+  const a = new Audio(AUDIO_DIR+name+'.m4a'); voiceEl = a;
   if(btn){ btn.classList.add('playing'); btn.textContent = '⏹ Ferma'; }
   a.onended = ()=> stopVoice();
   a.onerror = ()=> stopVoice();
@@ -3125,7 +3225,7 @@ function probeVoice(name, cb){
   const a = new Audio(); a.preload = 'metadata';
   a.onloadedmetadata = ()=> cb(true);
   a.onerror = ()=> cb(false);
-  a.src = 'audio/'+name+'.m4a';
+  a.src = AUDIO_DIR+name+'.m4a';
 }
 
 // ---------------- PERCORSI GUIDATI ----------------
@@ -3307,7 +3407,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=3;
+  const LOCAL=9;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
