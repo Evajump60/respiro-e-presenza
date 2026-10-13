@@ -771,7 +771,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 8 · 11 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 9 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1071,7 +1071,8 @@ function playClipOrSpeak(key, text, onEnd){
   let done = false; const fin = ()=>{ if(done) return; done = true; onEnd && onEnd(); };
   try{
     if(typeof stopVoice === 'function') stopVoice();
-    const a = new Audio(url); voiceEl = a;
+    if(!window.__clipEl) window.__clipEl = new Audio();
+    const a = window.__clipEl; a.onended = null; a.onerror = null; a.src = url; voiceEl = a;
     a.onended = fin;
     a.onerror = ()=>{ if(done) return; done = true; speakCue(text, onEnd); };
     const p = a.play(); if(p && p.catch) p.catch(()=>{ if(done) return; done = true; speakCue(text, onEnd); });
