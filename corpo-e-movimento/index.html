@@ -771,7 +771,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 9 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 10 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1098,6 +1098,7 @@ function makeGuidedLite(id,cfg){
   });
   $('Stop').addEventListener('click',()=>{ g.stop(); reset(); });
 }
+Object.assign(CLIPS,{'INTRO:incrociato-1':'audio/MI1.m4a','INTRO:incrociato-2':'audio/MI2.m4a','INTRO:incrociato-3':'audio/MI3.m4a','INTRO:incrociato-4':'audio/MI4.m4a','INTRO:incrociato-5':'audio/MI5.m4a'});
 function stopGuidedLiteAll(){ Object.keys(GUIDED_LITE).forEach(k=>GUIDED_LITE[k].stop()); }
 const SPE_K=[{k:'Primo passo: i piedi. Stai in piedi con i piedi alla larghezza delle spalle. Senti tutta la pianta che tocca terra.', w:10},
  {k:'Secondo passo: le ginocchia. Piegale un pochino, come molle morbide.', w:8},
@@ -2103,7 +2104,7 @@ function crossFinish(){
   document.getElementById('crossCircle').textContent = 'Fatto ✓';
   document.getElementById('crossCaption').textContent = 'Routine completata — buona ripresa!';
   document.getElementById('crossIllustration').innerHTML = '';
-  if(crossVoiceOn) speakCue('Routine completata. Buona ripresa!');
+  if(crossVoiceOn) playClipOrSpeak('INTRO:incrociato-6', 'Routine completata. Buona ripresa!');
   crossRunning = false;
   crossPaused = false;
   document.getElementById('crossStart').style.display = 'inline-block';
@@ -2121,7 +2122,7 @@ function crossGoTo(idx){
   crossIdx = idx;
   crossRemaining = CROSS_PHASES[idx].dur;
   crossRenderPhase(idx);
-  if(crossVoiceOn) speakCue(CROSS_PHASES[idx].label+'. '+CROSS_PHASES[idx].caption);
+  if(crossVoiceOn) playClipOrSpeak('INTRO:incrociato-'+(idx+1), CROSS_PHASES[idx].label+'. '+CROSS_PHASES[idx].caption);
   if(!crossRunning){
     // se la routine non era ancora partita, un click su uno step la avvia direttamente da lì
     crossRunning = true;
