@@ -1066,7 +1066,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 62 · 13 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 63 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -3630,7 +3630,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=62;
+  const LOCAL=63;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -3664,6 +3664,82 @@ refreshScoresUI();
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });
+})();
+
+/* ---- LABORATORIO (struttura; nascosto finché non ci sono gli esercizi) ---- */
+(function(){
+  const APP = (location.pathname.split('/').filter(Boolean).slice(-2,-1)[0] || 'respiro');
+  const KEY = 'lab_diario_' + APP;
+  const NOTICE = 'Qui sperimentiamo insieme. Per queste pratiche, al momento, non ci sono prove scientifiche e non promettiamo nessun risultato. Provale con curiosità e annota che cosa succede: raccogliere queste osservazioni potrà un giorno aiutare chi è in grado di studiarle.';
+  const SHORT = 'Sperimentazione: nessuna prova scientifica, nessuna garanzia. Non sostituisce cure mediche o psicologiche.';
+  const QUESTIONS = ['Che cosa ho fatto? (esercizio, quando, da quanto tempo)','Che cosa ho notato nel corpo, nelle emozioni, nei pensieri?','È successo qualcosa di particolare dopo, nelle ore o nei giorni seguenti?','Lo ripeterei? Che cosa cambierei?'];
+  // Gli esercizi si aggiungono qui: {id, titolo, origine, per:'tutti'|'adulti', durata, cosa:[paragrafi], cautele}
+  window.LAB_ITEMS = window.LAB_ITEMS || [];
+  const anchor = document.querySelector('.panel'); if(!anchor) return;
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const panel = document.createElement('div'); panel.className='panel'; panel.id='panel-laboratorio';
+  panel.innerHTML = '<button class="back-btn" data-go="home" type="button">← Tutti gli esercizi</button>'+
+    '<div class="eyebrow">試 · Sperimentazione</div><h2>Laboratorio</h2>'+
+    '<div id="labNotice" style="border-left:4px solid var(--vermilion,#d12b27);background:#faf5ee;padding:10px 12px;border-radius:8px;margin:10px 0 14px;font-size:14px;">'+esc(NOTICE)+'</div>'+
+    '<div id="labBody"></div>';
+  anchor.parentNode.appendChild(panel);
+  panel.querySelector('.back-btn').addEventListener('click', ()=> goPanel('home'));
+  const door = document.createElement('div'); door.className='home-section'; door.id='labDoor'; door.style.display='none';
+  door.innerHTML = '<h3>Laboratorio</h3><div class="modules-nav"><div class="seal-card" data-panel="laboratorio" data-title="Laboratorio"><div class="seal">試</div><div class="txt"><strong>Laboratorio</strong><span>Sperimentiamo insieme, senza garanzie</span></div></div></div>';
+  const secs = document.querySelectorAll('.home-section');
+  if(secs.length){ const last = secs[secs.length-1]; last.parentNode.insertBefore(door, last.nextSibling); } else anchor.parentNode.insertBefore(door, anchor);
+  door.querySelector('.seal-card').addEventListener('click', ()=>{ list(); goPanel('laboratorio'); });
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+  function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
+  function visible(){ const kids = document.body.dataset.mode === 'kids'; return window.LAB_ITEMS.filter(it=> !kids || it.per === 'tutti'); }
+  const body = panel.querySelector('#labBody');
+  function list(){
+    const its = visible(); let h = '';
+    if(!its.length) h += '<p class="sub">I primi esperimenti arrivano presto.</p>';
+    its.forEach(it=>{ h += '<div class="seal-card lab-item" data-id="'+esc(it.id)+'" style="margin:8px 0;"><div class="seal">試</div><div class="txt"><strong>'+esc(it.titolo)+'</strong><span>'+esc(it.durata||'')+(it.per==='adulti'?' · solo adulti':'')+'</span></div></div>'; });
+    h += '<div style="margin-top:18px;"><button class="ghost" id="labDiaryBtn" type="button">Il mio diario di osservazione ('+load().length+')</button></div>';
+    body.innerHTML = h;
+    body.querySelectorAll('.lab-item').forEach(c=> c.addEventListener('click', ()=> detail(c.dataset.id)));
+    body.querySelector('#labDiaryBtn').addEventListener('click', diary);
+  }
+  function detail(id){
+    const it = window.LAB_ITEMS.find(x=>x.id===id); if(!it) return list();
+    let h = '<button class="ghost small" id="labBack" type="button">← Laboratorio</button><h3 style="margin:12px 0 4px;">'+esc(it.titolo)+'</h3>';
+    h += '<div class="sub">'+(it.origine?'Da dove viene: '+esc(it.origine)+'<br>':'')+'Per chi: '+(it.per==='adulti'?'solo adulti':'tutti')+(it.durata?' · Durata: '+esc(it.durata):'')+'</div>';
+    (it.cosa||[]).forEach(p=>{ h += '<p>'+esc(p)+'</p>'; });
+    if(it.cautele) h += '<p class="sub"><strong>Cautele:</strong> '+esc(it.cautele)+'</p>';
+    h += '<p class="sub" style="font-size:12px;">'+esc(SHORT)+'</p>';
+    h += '<h4 style="margin:18px 0 6px;">Dopo l’esperimento: il tuo diario</h4>';
+    QUESTIONS.forEach((q,i)=>{ h += '<label class="sub" style="display:block;margin-top:8px;">'+(i+1)+'. '+esc(q)+'<textarea rows="2" class="lab-q" style="width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid var(--line,#ccd);font:inherit;"></textarea></label>'; });
+    h += '<p class="sub" style="font-size:12px;">Nessun risultato è un esito valido.</p><button class="primary" id="labSave" type="button">Salva nel diario</button><span id="labSaved" class="sub" style="margin-left:10px;"></span>';
+    body.innerHTML = h;
+    body.querySelector('#labBack').addEventListener('click', list);
+    body.querySelector('#labSave').addEventListener('click', ()=>{
+      const r = Array.from(body.querySelectorAll('.lab-q')).map(t=>t.value.trim());
+      const a = load(); a.unshift({id:it.id, titolo:it.titolo, data:new Date().toISOString(), r}); save(a);
+      body.querySelectorAll('.lab-q').forEach(t=>t.value=''); body.querySelector('#labSaved').textContent = 'Salvato ✓';
+    });
+  }
+  function diary(){
+    const a = load(); let h = '<button class="ghost small" id="labBack" type="button">← Laboratorio</button><h3 style="margin:12px 0 4px;">Il mio diario di osservazione</h3>';
+    if(!a.length) h += '<p class="sub">Ancora nessuna annotazione.</p>';
+    a.forEach((e,i)=>{ h += '<div style="border:1px solid var(--line,#ccd);border-radius:10px;padding:10px;margin:8px 0;"><strong>'+esc(e.titolo)+'</strong> <span class="sub">· '+esc(new Date(e.data).toLocaleDateString('it-IT'))+'</span>';
+      e.r.forEach((t,k)=>{ if(t) h += '<div class="sub" style="margin-top:6px;"><em>'+esc(QUESTIONS[k])+'</em><br>'+esc(t)+'</div>'; });
+      h += '<div style="margin-top:6px;"><button class="ghost small lab-del" data-i="'+i+'" type="button">Elimina</button></div></div>'; });
+    if(a.length) h += '<button class="ghost" id="labExp" type="button">Esporta in un file di testo</button>';
+    body.innerHTML = h;
+    body.querySelector('#labBack').addEventListener('click', list);
+    body.querySelectorAll('.lab-del').forEach(b=> b.addEventListener('click', ()=>{ const x=load(); x.splice(parseInt(b.dataset.i,10),1); save(x); diary(); }));
+    const ex = body.querySelector('#labExp'); if(ex) ex.addEventListener('click', ()=>{
+      let t = 'DIARIO DI OSSERVAZIONE - Laboratorio\n'+SHORT+'\n\n';
+      load().forEach(e=>{ t += '== '+e.titolo+' ('+new Date(e.data).toLocaleDateString('it-IT')+')\n'; e.r.forEach((x,k)=>{ t += QUESTIONS[k]+'\n'+(x||'-')+'\n'; }); t += '\n'; });
+      try{ const u = URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'})); const l = document.createElement('a'); l.href=u; l.download='diario-laboratorio.txt'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000); }catch(err){ prompt('Copia il testo:', t); }
+    });
+  }
+  function reveal(){ const on = (location.hash === '#laboratorio') || (function(){ try{ return localStorage.getItem('pcd_lab')==='1'; }catch(e){ return false; } })();
+    if(location.hash === '#laboratorio'){ try{ localStorage.setItem('pcd_lab','1'); }catch(e){} }
+    door.style.display = (on || window.LAB_ITEMS.length) ? '' : 'none'; }
+  reveal(); window.addEventListener('hashchange', reveal);
 })();
 </script>
 </body>
