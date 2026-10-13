@@ -772,7 +772,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 14 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 15 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1126,6 +1126,20 @@ function makeGuidedLite(id,cfg){
   $('Stop').addEventListener('click',()=>{ g.stop(); reset(); });
 }
 Object.assign(CLIPS,{'INTRO:incrociato-1':'audio/MI1.m4a','INTRO:incrociato-2':'audio/MI2.m4a','INTRO:incrociato-3':'audio/MI3.m4a','INTRO:incrociato-4':'audio/MI4.m4a','INTRO:incrociato-5':'audio/MI5.m4a','INTRO:incrociato-6':'audio/MI6.m4a'});
+
+// Simbolo (seme di visionecosciente.ch) al posto delle scritte "Pronto / Inizia / Ascolta" prima dell'esercizio: pulsa piano
+(function(){
+  const IDLE = {'Pronto':1, 'Inizia':1, 'Ascolta':1};
+  function mark(){
+    document.querySelectorAll('.breath-circle').forEach(c=>{
+      const idle = !!IDLE[(c.textContent||'').trim()];
+      if(idle){ if(c.dataset.idle !== '1'){ c.dataset.idle = '1'; c.setAttribute('aria-label', (c.textContent||'').trim()); } }
+      else if(c.dataset.idle){ delete c.dataset.idle; c.removeAttribute('aria-label'); }
+    });
+  }
+  new MutationObserver(mark).observe(document.body, {subtree:true, childList:true, characterData:true});
+  mark();
+})();
 function stopGuidedLiteAll(){ Object.keys(GUIDED_LITE).forEach(k=>GUIDED_LITE[k].stop()); }
 const SPE_K=[{k:'Primo passo: i piedi. Stai in piedi con i piedi alla larghezza delle spalle. Senti tutta la pianta che tocca terra.', w:10},
  {k:'Secondo passo: le ginocchia. Piegale un pochino, come molle morbide.', w:8},
