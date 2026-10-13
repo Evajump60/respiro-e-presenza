@@ -792,7 +792,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 21 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 22 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1180,14 +1180,14 @@ const SPE_A=[{k:'Primo passo: i piedi. Alla larghezza delle spalle, con il peso 
  {k:'Quinto passo: le spalle. Alzale verso le orecchie e lasciale cadere, aperte e rilassate.', w:8},
  {k:'Sesto passo: la testa e lo sguardo. Mento leggermente rientrato, sguardo morbido all’orizzonte, lingua appoggiata al palato.', w:12}];
 makeGuidedLite('specchio',{pre:'spe', onStep:speFig, intro:()=> document.body.dataset.mode==='kids' ? 'Ora ci guardiamo allo specchio con il corpo, partendo dai piedi fino alla testa. Seguiamo sei passi.' : 'Un controllo della postura in sei passi, dal basso verso l’alto, da fare in piedi, davanti a uno specchio oppure a occhi chiusi.', introKey:()=> 'INTRO:specchio-' + (document.body.dataset.mode==='kids'?'k':'a'), steps:()=> document.body.dataset.mode==='kids' ? SPE_K : SPE_A});
-const CAM_K=[{k:'Stai in piedi e respira piano. Pronto a camminare lentamente.', w:6},
- {k:'Inspira camminando: uno, due, tre.', w:6},
- {k:'Espira camminando: uno, due, tre.', w:6},
+const CAM_K=[{k:'Stai in piedi e respira piano. Pronto a camminare lentamente.', w:3},
+ {k:'Inspira camminando: uno, due, tre.', w:0},
+ {k:'Espira camminando: uno, due, tre.', w:1},
  {k:'Continua così, piano piano. Dentro tre passi, fuori tre passi.', w:40},
  {k:'Rallenta e fermati. Senti i piedi per terra. Respira piano.', w:6}];
 const CAM_A=[{k:'Stai in piedi e porta l’attenzione ai piedi. Respira con calma dal naso.', w:6},
- {k:'Inizia a camminare lentamente. Inspira per tre passi.', w:6},
- {k:'Espira per tre passi. Il passo e il respiro vanno insieme, senza forzare.', w:8},
+ {k:'Inizia a camminare lentamente. Inspira per tre passi.', w:1},
+ {k:'Espira per tre passi. Il passo e il respiro vanno insieme, senza forzare.', w:2},
  {k:'Continua così. Se il ritmo diventa scomodo, adattalo: due passi o quattro, come preferisci.', w:60},
  {k:'Rallenta e fermati. Ascolta il corpo e il respiro. Quando vuoi, riprendi la tua giornata.', w:8}];
 makeGuidedLite('camminata',{pre:'cam', intro:()=> document.body.dataset.mode==='kids' ? 'Ora camminiamo piano piano, contando fino a tre. Tre passi che respirano dentro, tre passi che respirano fuori.' : 'Una camminata lenta e consapevole, sincronizzata con il respiro: tre passi inspirando, tre passi espirando. Si può fare in casa o all’aperto, a un ritmo che resti comodo.', introKey:()=> 'INTRO:camminata-' + (document.body.dataset.mode==='kids'?'k':'a'), steps:()=> document.body.dataset.mode==='kids' ? CAM_K : CAM_A});
@@ -2263,7 +2263,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=21;
+  const LOCAL=22;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
