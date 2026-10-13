@@ -367,9 +367,12 @@
   .home-brand::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5px;
     background:linear-gradient(90deg,var(--c-red) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-blue) 75% 100%); }
 
-  .postfig .base{ stroke:#9aa7b5; stroke-width:5; }
-  .postfig .z{ stroke:#c4ccd6; stroke-width:5; transition:stroke .4s, fill .4s; }
-  .postfig .z.on{ stroke:#d1523a; fill:rgba(209,82,58,.18); }
+  .postfig .base{ stroke:#c4ccd6; fill:#c4ccd6; }
+  .postfig .base[fill="none"]{ fill:none; }
+  .postfig .z{ fill:#c4ccd6; stroke:none; transition:fill .4s, stroke .4s; }
+  .postfig .z.line{ fill:none; stroke:#aab5c2; stroke-width:3; }
+  .postfig .z.on{ fill:#d1523a; }
+  .postfig .z.line.on{ fill:none; stroke:#d1523a; stroke-width:5; }
   .prog{ width:min(100%, 270px); height:9px; border-radius:99px; background:#dfe5ec; overflow:hidden; visibility:hidden; margin-top:-6px; }
   .prog.on{ visibility:visible; }
   .prog-fill{ height:100%; width:0; background:var(--sec, #3571b5); border-radius:99px; transition:width .9s linear; }
@@ -519,17 +522,19 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="speCircle" style="--fill:#2D4A6B;">Pronto</div>
       <div class="prog" id="speProg"><div class="prog-fill"></div></div><div class="prog-txt" id="speProgTxt"></div>
-      <div id="speFigure" aria-hidden="true" style="display:none;text-align:center;margin:2px 0 6px;"><svg viewBox="0 0 120 262" width="104" height="226" class="postfig">
-        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <line class="z z4" x1="60" y1="50" x2="60" y2="148"/>
-          <line class="z z5" x1="30" y1="68" x2="90" y2="68"/>
-          <path class="base" d="M30 68 L24 130 M90 68 L96 130"/>
-          <circle class="z z6" cx="60" cy="28" r="17"/>
-          <ellipse class="z z3" cx="60" cy="118" rx="17" ry="24"/>
-          <path class="base" d="M48 148 L46 195 M72 148 L74 195"/>
-          <circle class="z z2" cx="46" cy="196" r="7"/><circle class="z z2" cx="74" cy="196" r="7"/>
-          <path class="base" d="M46 203 L44 238 M74 203 L76 238"/>
-          <ellipse class="z z1" cx="42" cy="246" rx="14" ry="6"/><ellipse class="z z1" cx="78" cy="246" rx="14" ry="6"/>
+      <div id="speFigure" aria-hidden="true" style="display:none;text-align:center;margin:2px 0 6px;"><svg viewBox="0 0 120 270" width="112" height="252" class="postfig">
+        <g stroke-linecap="round" stroke-linejoin="round">
+          <g class="base" fill="none"><path d="M33 70 Q22 100 26 132" stroke-width="10"/><path d="M87 70 Q98 100 94 132" stroke-width="10"/>
+            <path d="M46 152 L44 194 M74 152 L76 194" stroke-width="15"/><path d="M44 204 L43 240 M76 204 L77 240" stroke-width="11"/></g>
+          <g class="base" stroke="none"><rect x="53" y="40" width="14" height="16" rx="5"/><circle cx="26" cy="137" r="6"/><circle cx="94" cy="137" r="6"/>
+            <path d="M38 78 L82 78 L79 114 L41 114 Z"/></g>
+          <path class="z z5" d="M30 70 Q33 57 52 55 L68 55 Q87 57 90 70 L86 80 L34 80 Z"/>
+          <path class="z z3" d="M41 114 L79 114 Q88 134 81 154 L39 154 Q32 134 41 114 Z"/>
+          <ellipse class="z z6" cx="60" cy="26" rx="14" ry="17"/>
+          <path class="z z4 line" d="M60 58 C57 85 63 110 60 150" fill="none"/>
+          <circle class="z z2" cx="44" cy="197" r="8"/><circle class="z z2" cx="76" cy="197" r="8"/>
+          <path class="z z1" d="M29 246 Q30 238 44 240 Q56 242 55 252 L30 252 Q27 251 29 246 Z"/>
+          <path class="z z1" d="M91 246 Q90 238 76 240 Q64 242 65 252 L90 252 Q93 251 91 246 Z"/>
         </g></svg></div>
       <div class="sub" id="speCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="speStart" type="button">Avvia</button></div>
@@ -787,7 +792,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 18 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 19 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2258,7 +2263,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=18;
+  const LOCAL=19;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
