@@ -1066,7 +1066,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 59 · 12 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 61 · 12 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1345,6 +1345,17 @@ function unlockRecordedVoiceClips(kind){
 // Guida vocale condivisa: usa la registrazione vera se esiste per il testo esatto,
 // altrimenti la sintesi vocale del browser.
 let voiceGen = 0;
+// Se un file non si trova (404) prova la cartella alternativa (audio/N/nome <-> audio/nome), poi prosegue.
+function tryAltClip(el,text){
+  try{
+    if(el._altTried === text) return false;
+    const u = RECORDED_VOICE_CLIPS[text]||''; let alt = null, m;
+    if((m = u.match(/^audio\/\d+\/([^\/]+)$/))) alt = 'audio/'+m[1];
+    else if((m = u.match(/^audio\/([^\/]+)$/))) alt = 'audio/4/'+m[1];
+    if(!alt) return false;
+    el._altTried = text; el.src = alt; const q = el.play(); if(q && q.catch) q.catch(()=>{}); return true;
+  }catch(e){ return false; }
+}
 function speakCue(text, onEnd, onStart){
   if(unlockGate){
     const gate = unlockGate; unlockGate = null;
@@ -1371,8 +1382,9 @@ function speakCue(text, onEnd, onStart){
       }, 1500);
       if(onEnd){
         audioEl.onended = ()=>{ if(currentVoiceClipAudio === audioEl) currentVoiceClipAudio = null; onEnd(); };
-        audioEl.onerror = audioEl.onended;
+        audioEl.onerror = ()=>{ if(!tryAltClip(audioEl,text)) audioEl.onended(); };
       }
+      if(!onEnd) audioEl.onerror = ()=>{ tryAltClip(audioEl,text); };
       const p = audioEl.play();
       if(p && p.catch) p.catch(()=>{ if(currentVoiceClipAudio === audioEl) currentVoiceClipAudio = null; if(onStart) onStart(); if(onEnd) onEnd(); });
       return;
@@ -1547,28 +1559,28 @@ const RECORDED_VOICE_CLIPS = {
   'INTRO:unodieci-k': "audio/UD-I-K.m4a",
   'INTRO:unodieci-a': "audio/UD-I-A.m4a",
   'Mettiti in piedi, con i piedi un po’ aperti. Respira piano.': "audio/UD-K01.m4a",
-  'Uno, un sorriso scende piano, dalla testa ai piedi: mi vedo più sano.': "audio/UD-K02.m4a",
-  'Due, i piedi si sciolgono giù, nella terra morbida, e mi radico di più.': "audio/UD-K03.m4a",
-  'Tre, radici come un re, lunghe e forti: ecco perché!': "audio/UD-K04.m4a",
-  'Quattro, arrivo in fondo in fondo, la luce dorata mi scalda tondo tondo.': "audio/UD-K05.m4a",
-  'Cinque, sono vivo, la luce parte via, esce dalle mani: che allegria!': "audio/UD-K06.m4a",
-  'Sei, l’aria è densa come il mare, da ogni lato mi sento abbracciare.': "audio/UD-K07.m4a",
-  'Sette, il cielo mi fa da cappello, i piedi sono radici: che bello!': "audio/UD-K08.m4a",
-  'Otto, apro le porte una per una, entra il sole, la terra, la luna.': "audio/UD-K09.m4a",
-  'Nove, la luce parte dal mio centro, e riempie la stanza, fuori e dentro.': "audio/UD-K10.m4a",
-  'Dieci, ora è la svolta, la giornata mi ascolta.': "audio/UD-K11.m4a",
+  'Il sorriso. Un sorriso scende piano, dalla testa ai piedi: mi vedo più sano.': "audio/UD-K02.m4a",
+  'I piedi. I piedi si sciolgono giù, nella terra morbida, e mi radico di più.': "audio/UD-K03.m4a",
+  'L’albero. Radici come un re, lunghe e forti: ecco perché!': "audio/UD-K04.m4a",
+  'Il cuore della terra. Arrivo in fondo in fondo, la luce dorata mi scalda tondo tondo.': "audio/UD-K05.m4a",
+  'Vivo. Sono vivo, la luce parte via, esce dalle mani: che allegria!': "audio/UD-K06.m4a",
+  'L’aria densa. L’aria è densa come il mare, da ogni lato mi sento abbracciare.': "audio/UD-K07.m4a",
+  'Il cielo. Il cielo mi fa da cappello, i piedi sono radici: che bello!': "audio/UD-K08.m4a",
+  'Le porte. Apro le porte una per una, entra il sole, la terra, la luna.': "audio/UD-K09.m4a",
+  'La luce. La luce parte dal mio centro, e riempie la stanza, fuori e dentro.': "audio/UD-K10.m4a",
+  'L’inizio. Ora è la svolta, la giornata mi ascolta.': "audio/UD-K11.m4a",
   'Metti le mani sul pancione e respira piano. Quando vuoi, apri gli occhi.': "audio/UD-K12.m4a",
   'Stai in piedi, con i piedi un po’ più larghi delle spalle e le ginocchia morbide. Appoggia la lingua al palato e respira con calma.': "audio/UD-A01.m4a",
-  'Uno. Un sorriso scende piano davanti al corpo, come olio caldo, e porta nella terra ogni tensione. Un secondo sorriso scende dietro. Un terzo scende dal centro della testa, attraverso spalle e braccia, fino alle mani e alle gambe.': "audio/UD-A02.m4a",
-  'Due. I piedi si sciolgono nella terra, come ghiaccio che diventa acqua. Senti i piedi che si fondono con la terra, in cinque direzioni: avanti, indietro, destra, sinistra, giù.': "audio/UD-A03.m4a",
-  'Tre. Dal corpo escono radici lunghe il doppio della tua altezza. Si allargano nelle cinque direzioni e ti rendono stabile.': "audio/UD-A04.m4a",
-  'Quattro. Le radici arrivano al nucleo del pianeta. Immagina la luce dorata della terra che sale come un fiume lungo la schiena, passa sopra la testa, scende sul petto ed entra nella pancia.': "audio/UD-A05.m4a",
-  'Cinque. La luce si accumula nella pancia fino a non starci più. Sale e si divide in due correnti che escono dai palmi verso la stanza.': "audio/UD-A06.m4a",
-  'Sei. La stanza si riempie di luce dorata, così densa che sembra di stare sott’acqua. A ogni inspirazione senti una pressione leggera da tutte le direzioni.': "audio/UD-A07.m4a",
-  'Sette. La testa è sospesa nel cielo, tra le stelle. La vita è tra le nuvole. I piedi sono radicati nella terra. Sei sospeso tra cielo e terra.': "audio/UD-A08.m4a",
-  'Otto. Immagina di aprire tutte le porte del corpo, ogni articolazione e ogni poro. Inspirando entrano il cielo e la terra. Espirando, il centro del corpo brilla come una luce bianca.': "audio/UD-A09.m4a",
-  'Nove. Il centro del corpo è tutto luce bianca, che esce dai pori e riempie la stanza.': "audio/UD-A10.m4a",
-  'Dieci. Sei radicato e connesso. Ora puoi cominciare la tua giornata o la tua attività.': "audio/UD-A11.m4a",
+  'Il sorriso. Un sorriso scende piano davanti al corpo, come olio caldo, e porta nella terra ogni tensione. Un secondo sorriso scende dietro. Un terzo scende dal centro della testa, attraverso spalle e braccia, fino alle mani e alle gambe.': "audio/UD-A02.m4a",
+  'I piedi. I piedi si sciolgono nella terra, come ghiaccio che diventa acqua. Senti i piedi che si fondono con la terra, in cinque direzioni: avanti, indietro, destra, sinistra, giù.': "audio/UD-A03.m4a",
+  'L’albero. Dal corpo escono radici lunghe il doppio della tua altezza. Si allargano nelle cinque direzioni e ti rendono stabile.': "audio/UD-A04.m4a",
+  'Il nucleo. Le radici arrivano al nucleo del pianeta. Immagina la luce dorata della terra che sale come un fiume lungo la schiena, passa sopra la testa, scende sul petto ed entra nella pancia.': "audio/UD-A05.m4a",
+  'La luce sale. La luce si accumula nella pancia fino a non starci più. Sale e si divide in due correnti che escono dai palmi verso la stanza.': "audio/UD-A06.m4a",
+  'L’aria densa. La stanza si riempie di luce dorata, così densa che sembra di stare sott’acqua. A ogni inspirazione senti una pressione leggera da tutte le direzioni.': "audio/UD-A07.m4a",
+  'Il cielo. La testa è sospesa nel cielo, tra le stelle. La vita è tra le nuvole. I piedi sono radicati nella terra. Sei sospeso tra cielo e terra.': "audio/UD-A08.m4a",
+  'Le porte. Immagina di aprire tutte le porte del corpo, ogni articolazione e ogni poro. Inspirando entrano il cielo e la terra. Espirando, il centro del corpo brilla come una luce bianca.': "audio/UD-A09.m4a",
+  'La luce. Il centro del corpo è tutto luce bianca, che esce dai pori e riempie la stanza.': "audio/UD-A10.m4a",
+  'L’inizio. Sei radicato e connesso. Ora puoi cominciare la tua giornata o la tua attività.': "audio/UD-A11.m4a",
   'Per chiudere, lascia scendere tutto come olio caldo fino alla terra e porta le mani sul ventre. Respira piano. Quando vuoi, apri gli occhi.': "audio/UD-A12.m4a",
   'INTRO:ghiaccio-k': "audio/GH-I-K.m4a",
   'INTRO:ghiaccio-a': "audio/GH-I-A.m4a",
@@ -1607,65 +1619,65 @@ const RECORDED_VOICE_CLIPS = {
   'Ora la luce che esce è grigia. Poi diventa bianca.': "audio/SL-A07.m4a",
   'Il tuo corpo irradia luce bianca in tutte le direzioni: davanti, dietro, a destra, a sinistra, sopra e sotto. Riempie tutta la stanza.': "audio/SL-A08.m4a",
   'Porta l’attenzione alla pancia, sotto l’ombelico. Respira piano. Quando vuoi, apri gli occhi.': "audio/SL-A09.m4a",
-  'INTRO:giardino-k': "audio/4/GI-I-K.m4a",
-  'INTRO:giardino-a': "audio/4/GI-I-A.m4a",
-  'Siediti comodo, in un posto tranquillo. Chiudi gli occhi. Respira piano: dentro dal naso, fuori dalla bocca.': "audio/4/GI-K01.m4a",
-  'Sei in un prato verde, in mezzo a un bosco di pini. Senti il profumo degli aghi di pino. Tocca con il pollice la punta dell’indice della mano sinistra. Inspira il verde e senti gentilezza e amore. Soffia fuori la rabbia, insieme a un verde scuro. Sei respiri.': "audio/4/GI-K02.m4a",
-  'Ora sei in un giardino di rose rosse. Senti il loro profumo. Tocca con il pollice la punta del dito medio. Inspira il rosso e senti gioia e pace. Soffia fuori il nervosismo, insieme a un rosso scuro. Sei respiri.': "audio/4/GI-K03.m4a",
-  'Ora sei in un campo di denti di leone gialli. Senti il loro profumo. Tocca con il pollice la base del dito medio e del dito anulare. Inspira il giallo e senti fiducia e accettazione. Soffia fuori le preoccupazioni e i dubbi su di te, insieme a un giallo scuro. Sei respiri.': "audio/4/GI-K04.m4a",
-  'Ora sei in un giardino di crisantemi bianchi. Senti il loro profumo. Tocca con il pollice la punta del dito anulare. Inspira il bianco e senti rispetto e dignità. Soffia fuori la tristezza e l’ansia, insieme a un bianco scuro. Sei respiri.': "audio/4/GI-K05.m4a",
-  'Ora sei in un giardino di orchidee blu scuro. Senti il loro profumo. Tocca con il pollice la punta del mignolo. Inspira il blu scuro e senti sicurezza e forza. Soffia fuori la paura e la solitudine, insieme a un blu scuro opaco. Sei respiri.': "audio/4/GI-K06.m4a",
-  'Ora respira pace e amore, pieni, in tutto il corpo. Soffia fuori questa sensazione, che riempie tutta la stanza. Sei respiri.': "audio/4/GI-K07.m4a",
-  'Respira normalmente. Quando vuoi, apri gli occhi.': "audio/4/GI-K08.m4a",
-  'Dirigi l’attenzione al fegato. Immagina un prato verde, circondato da un bosco di pini color smeraldo. Senti il profumo degli aghi di pino. Tocca con il pollice la punta dell’indice della mano sinistra. Inspira il profumo e il colore verde, e senti amore, gentilezza e compassione. Espira, lasciando uscire rabbia, irritazione e gelosia, insieme a un verde torbido. Diciotto respiri.': "audio/4/GI-A02.m4a",
-  'Dirigi l’attenzione al cuore. Immagina un giardino di rose che sbocciano. Senti il loro profumo. Se hai la pressione alta, scegli il rosa invece del rosso. Tocca con il pollice la punta del dito medio. Inspira il profumo e il colore, e senti gioia, appagamento e pace. Espira, lasciando uscire nervosismo ed eccitazione, insieme a un rosso torbido. Diciotto respiri.': "audio/4/GI-A03.m4a",
-  'Dirigi l’attenzione alla pancia, sotto le costole. Immagina un giardino di denti di leone gialli. Senti il loro profumo. Tocca con il pollice la base del medio e dell’anulare. Inspira il profumo e il giallo, e senti fiducia, apertura e accettazione. Espira, lasciando uscire preoccupazione, rimorso, rimpianto e dubbio su di te, insieme a un giallo torbido. Diciotto respiri.': "audio/4/GI-A04.m4a",
-  'Dirigi l’attenzione al petto, ai polmoni. Immagina un giardino di crisantemi bianchi. Senti il loro profumo. Tocca con il pollice la punta dell’anulare. Inspira il profumo e il bianco, e senti rettitudine, dignità e integrità. Espira, lasciando uscire lutto, dolore, ansia e disperazione, insieme a un bianco torbido. Diciotto respiri.': "audio/4/GI-A05.m4a",
-  'Dirigi l’attenzione alla zona lombare, ai reni. Immagina un giardino di orchidee viola e blu scuro. Senti il loro profumo. Tocca con il pollice la punta del mignolo. Inspira il profumo e il colore, e senti fiducia in te, forza interiore e potere. Espira, lasciando uscire paura, insicurezza e solitudine, insieme a un viola torbido. Diciotto respiri.': "audio/4/GI-A06.m4a",
-  'Infine inspira e senti una pace piena e un amore profondo in tutto il corpo. Espirando, fai vibrare questa sensazione nella stanza, riempiendo lo spazio intorno a te. Diciotto respiri.': "audio/4/GI-A07.m4a",
-  'INTRO:tredantian-a': "audio/4/TD-I-A.m4a",
-  'In piedi, con i piedi alla larghezza delle spalle e le ginocchia morbide. Respira dal naso, normalmente.': "audio/4/TD-A01.m4a",
-  'Porta le mani davanti alla fronte, in mezzo alle sopracciglia. Inspirando, allarga le braccia ai lati. Sempre inspirando, riportale davanti alla fronte.': "audio/4/TD-A02.m4a",
-  'Espirando, allontana le braccia; inspirando, riportale davanti a te. Ripeti ancora due volte, con calma.': "audio/4/TD-A03.m4a",
-  'Ora porta le mani davanti al petto, al centro. Inspirando, allarga le braccia ai lati. Sempre inspirando, riportale davanti al petto.': "audio/4/TD-A04.m4a",
-  'Espirando, allontana le braccia; inspirando, riportale. Ripeti ancora due volte.': "audio/4/TD-A05.m4a",
-  'Poi porta le mani davanti al basso ventre, un po’ sotto l’ombelico. Inspirando, allarga le braccia ai lati e riportale davanti al ventre.': "audio/4/TD-A06.m4a",
-  'Ora porta i palmi verso l’ombelico. Poi girali verso il suolo e immagina di raccogliere l’energia della terra nel ventre, per qualche respiro.': "audio/4/TD-A08.m4a",
-  'Gira i palmi verso il cielo e immagina di raccogliere luce dall’alto nel ventre, per qualche respiro.': "audio/4/TD-A09.m4a",
-  'Per chiudere, riporta i palmi sull’ombelico. Lascia tutto sedimentare nel ventre. Respira piano.': "audio/4/TD-A10.m4a",
-  'INTRO:seicolori-k': "audio/4/SC-I-K.m4a",
-  'INTRO:seicolori-a': "audio/4/SC-I-A.m4a",
-  'Mettiti in piedi, con i piedi un po’ aperti. Respira piano. Guarda davanti a te.': "audio/4/SC-K01.m4a",
-  'Immagina di essere dentro una nuvola di sei colori. Davanti a te c’è il rosso. Inspira il rosso.': "audio/4/SC-K02.m4a",
-  'Dietro di te c’è il blu notte. Inspira il blu notte.': "audio/4/SC-K03.m4a",
-  'A destra c’è il bianco. Inspira il bianco.': "audio/4/SC-K04.m4a",
-  'A sinistra c’è il verde. Inspira il verde.': "audio/4/SC-K05.m4a",
-  'Sotto i piedi c’è il giallo dorato, come la sabbia. Inspira il giallo.': "audio/4/SC-K06.m4a",
-  'Sopra la testa c’è l’argento, come una stella. Inspira l’argento.': "audio/4/SC-K07.m4a",
-  'Tutti i colori scendono insieme nella pancia e fanno una piccola palla di luce. Respira piano.': "audio/4/SC-K08.m4a",
-  'Ora lascia andare i colori. Metti le mani sul pancione. Quando vuoi, apri gli occhi.': "audio/4/SC-K09.m4a",
-  'In piedi, con i piedi alla larghezza delle spalle, rivolto a sud. Respira dal naso, lentamente. Immagina di essere avvolto da una nebbia di sei colori.': "audio/4/SC-A01.m4a",
-  'Dal centro del cielo scende una nebbia bianco argento. Entra dalla cima della testa e riempie l’asse al centro del corpo.': "audio/4/SC-A02.m4a",
-  'Dalla terra sale una nebbia giallo dorato. Entra dalla pianta dei piedi e riempie la pancia.': "audio/4/SC-A03.m4a",
-  'Davanti a te, dall’orizzonte, arriva una nebbia rosso rubino. Entra nel cuore e avvolge la parte davanti del corpo.': "audio/4/SC-A04.m4a",
-  'Dietro di te arriva una nebbia blu notte. Avvolge la schiena e la zona dei reni.': "audio/4/SC-A05.m4a",
-  'A destra arriva una nebbia bianco brillante. Riempie il petto, i polmoni.': "audio/4/SC-A06.m4a",
-  'A sinistra arriva una nebbia verde e blu. Riempie il lato sinistro, sotto le costole.': "audio/4/SC-A07.m4a",
-  'Immagina che le nebbie scendano insieme nel basso ventre, e lì si fermino e si stabilizzino.': "audio/4/SC-A08.m4a",
-  'Per chiudere, lascia scendere tutto come olio caldo fino alla terra. Porta le mani sul ventre e respira piano.': "audio/4/SC-A09.m4a",
-  'INTRO:acqua-k': "audio/4/AC-I-K.m4a",
-  'INTRO:acqua-a': "audio/4/AC-I-A.m4a",
-  'Siediti comodo e chiudi gli occhi. Respira piano.': "audio/4/AC-K01.m4a",
-  'Immagina di essere vicino a un lago. L’acqua è limpida e ferma, e brilla.': "audio/4/AC-K02.m4a",
-  'Entri piano piano nell’acqua. È tiepida e piena di luce e di colore.': "audio/4/AC-K03.m4a",
-  'L’acqua ti abbraccia, ti pulisce e ti fa sentire leggero. Respira piano.': "audio/4/AC-K04.m4a",
-  'Esci dall’acqua. Sei pulito, tranquillo e leggero. Muovi le dita e apri gli occhi quando vuoi.': "audio/4/AC-K05.m4a",
-  'Siediti comodo, a occhi chiusi, e respira lentamente.': "audio/4/AC-A01.m4a",
-  'Immagina di essere sulla riva di un lago, di un mare calmo o di un ruscello che scorre piano. L’acqua è chiara, pulita, luminosa.': "audio/4/AC-A02.m4a",
-  'Visualizzati immerso in una pozza d’acqua piena di energia, di colore e di luce.': "audio/4/AC-A03.m4a",
-  'Lascia che quest’acqua energizzata venga assorbita dal corpo, lo pulisca e lo rinvigorisca, dalla testa ai piedi.': "audio/4/AC-A04.m4a",
-  'Ascolta il suono dell’acqua. Lascia che il respiro prenda il suo ritmo.': "audio/4/AC-A05.m4a",
-  'Per chiudere, porta le mani sul ventre e lascia sedimentare tutto. Quando vuoi, apri gli occhi.': "audio/4/AC-A06.m4a",
+  'INTRO:giardino-k': "audio/GI-I-K.m4a",
+  'INTRO:giardino-a': "audio/GI-I-A.m4a",
+  'Siediti comodo, in un posto tranquillo. Chiudi gli occhi. Respira piano: dentro dal naso, fuori dalla bocca.': "audio/GI-K01.m4a",
+  'Sei in un prato verde, in mezzo a un bosco di pini. Senti il profumo degli aghi di pino. Tocca con il pollice la punta dell’indice della mano sinistra. Inspira il verde e senti gentilezza e amore. Soffia fuori la rabbia, insieme a un verde scuro. Sei respiri.': "audio/GI-K02.m4a",
+  'Ora sei in un giardino di rose rosse. Senti il loro profumo. Tocca con il pollice la punta del dito medio. Inspira il rosso e senti gioia e pace. Soffia fuori il nervosismo, insieme a un rosso scuro. Sei respiri.': "audio/GI-K03.m4a",
+  'Ora sei in un campo di denti di leone gialli. Senti il loro profumo. Tocca con il pollice la base del dito medio e del dito anulare. Inspira il giallo e senti fiducia e accettazione. Soffia fuori le preoccupazioni e i dubbi su di te, insieme a un giallo scuro. Sei respiri.': "audio/GI-K04.m4a",
+  'Ora sei in un giardino di crisantemi bianchi. Senti il loro profumo. Tocca con il pollice la punta del dito anulare. Inspira il bianco e senti rispetto e dignità. Soffia fuori la tristezza e l’ansia, insieme a un bianco scuro. Sei respiri.': "audio/GI-K05.m4a",
+  'Ora sei in un giardino di orchidee blu scuro. Senti il loro profumo. Tocca con il pollice la punta del mignolo. Inspira il blu scuro e senti sicurezza e forza. Soffia fuori la paura e la solitudine, insieme a un blu scuro opaco. Sei respiri.': "audio/GI-K06.m4a",
+  'Ora respira pace e amore, pieni, in tutto il corpo. Soffia fuori questa sensazione, che riempie tutta la stanza. Sei respiri.': "audio/GI-K07.m4a",
+  'Respira normalmente. Quando vuoi, apri gli occhi.': "audio/GI-K08.m4a",
+  'Dirigi l’attenzione al fegato. Immagina un prato verde, circondato da un bosco di pini color smeraldo. Senti il profumo degli aghi di pino. Tocca con il pollice la punta dell’indice della mano sinistra. Inspira il profumo e il colore verde, e senti amore, gentilezza e compassione. Espira, lasciando uscire rabbia, irritazione e gelosia, insieme a un verde torbido. Diciotto respiri.': "audio/GI-A02.m4a",
+  'Dirigi l’attenzione al cuore. Immagina un giardino di rose che sbocciano. Senti il loro profumo. Se hai la pressione alta, scegli il rosa invece del rosso. Tocca con il pollice la punta del dito medio. Inspira il profumo e il colore, e senti gioia, appagamento e pace. Espira, lasciando uscire nervosismo ed eccitazione, insieme a un rosso torbido. Diciotto respiri.': "audio/GI-A03.m4a",
+  'Dirigi l’attenzione alla pancia, sotto le costole. Immagina un giardino di denti di leone gialli. Senti il loro profumo. Tocca con il pollice la base del medio e dell’anulare. Inspira il profumo e il giallo, e senti fiducia, apertura e accettazione. Espira, lasciando uscire preoccupazione, rimorso, rimpianto e dubbio su di te, insieme a un giallo torbido. Diciotto respiri.': "audio/GI-A04.m4a",
+  'Dirigi l’attenzione al petto, ai polmoni. Immagina un giardino di crisantemi bianchi. Senti il loro profumo. Tocca con il pollice la punta dell’anulare. Inspira il profumo e il bianco, e senti rettitudine, dignità e integrità. Espira, lasciando uscire lutto, dolore, ansia e disperazione, insieme a un bianco torbido. Diciotto respiri.': "audio/GI-A05.m4a",
+  'Dirigi l’attenzione alla zona lombare, ai reni. Immagina un giardino di orchidee viola e blu scuro. Senti il loro profumo. Tocca con il pollice la punta del mignolo. Inspira il profumo e il colore, e senti fiducia in te, forza interiore e potere. Espira, lasciando uscire paura, insicurezza e solitudine, insieme a un viola torbido. Diciotto respiri.': "audio/GI-A06.m4a",
+  'Infine inspira e senti una pace piena e un amore profondo in tutto il corpo. Espirando, fai vibrare questa sensazione nella stanza, riempiendo lo spazio intorno a te. Diciotto respiri.': "audio/GI-A07.m4a",
+  'INTRO:tredantian-a': "audio/TD-I-A.m4a",
+  'In piedi, con i piedi alla larghezza delle spalle e le ginocchia morbide. Respira dal naso, normalmente.': "audio/TD-A01.m4a",
+  'Porta le mani davanti alla fronte, in mezzo alle sopracciglia. Inspirando, allarga le braccia ai lati. Sempre inspirando, riportale davanti alla fronte.': "audio/TD-A02.m4a",
+  'Espirando, allontana le braccia; inspirando, riportale davanti a te. Ripeti ancora due volte, con calma.': "audio/TD-A03.m4a",
+  'Ora porta le mani davanti al petto, al centro. Inspirando, allarga le braccia ai lati. Sempre inspirando, riportale davanti al petto.': "audio/TD-A04.m4a",
+  'Espirando, allontana le braccia; inspirando, riportale. Ripeti ancora due volte.': "audio/TD-A05.m4a",
+  'Poi porta le mani davanti al basso ventre, un po’ sotto l’ombelico. Inspirando, allarga le braccia ai lati e riportale davanti al ventre.': "audio/TD-A06.m4a",
+  'Ora porta i palmi verso l’ombelico. Poi girali verso il suolo e immagina di raccogliere l’energia della terra nel ventre, per qualche respiro.': "audio/TD-A08.m4a",
+  'Gira i palmi verso il cielo e immagina di raccogliere luce dall’alto nel ventre, per qualche respiro.': "audio/TD-A09.m4a",
+  'Per chiudere, riporta i palmi sull’ombelico. Lascia tutto sedimentare nel ventre. Respira piano.': "audio/TD-A10.m4a",
+  'INTRO:seicolori-k': "audio/SC-I-K.m4a",
+  'INTRO:seicolori-a': "audio/SC-I-A.m4a",
+  'Mettiti in piedi, con i piedi un po’ aperti. Respira piano. Guarda davanti a te.': "audio/SC-K01.m4a",
+  'Immagina di essere dentro una nuvola di sei colori. Davanti a te c’è il rosso. Inspira il rosso.': "audio/SC-K02.m4a",
+  'Dietro di te c’è il blu notte. Inspira il blu notte.': "audio/SC-K03.m4a",
+  'A destra c’è il bianco. Inspira il bianco.': "audio/SC-K04.m4a",
+  'A sinistra c’è il verde. Inspira il verde.': "audio/SC-K05.m4a",
+  'Sotto i piedi c’è il giallo dorato, come la sabbia. Inspira il giallo.': "audio/SC-K06.m4a",
+  'Sopra la testa c’è l’argento, come una stella. Inspira l’argento.': "audio/SC-K07.m4a",
+  'Tutti i colori scendono insieme nella pancia e fanno una piccola palla di luce. Respira piano.': "audio/SC-K08.m4a",
+  'Ora lascia andare i colori. Metti le mani sul pancione. Quando vuoi, apri gli occhi.': "audio/SC-K09.m4a",
+  'In piedi, con i piedi alla larghezza delle spalle, rivolto a sud. Respira dal naso, lentamente. Immagina di essere avvolto da una nebbia di sei colori.': "audio/SC-A01.m4a",
+  'Dal centro del cielo scende una nebbia bianco argento. Entra dalla cima della testa e riempie l’asse al centro del corpo.': "audio/SC-A02.m4a",
+  'Dalla terra sale una nebbia giallo dorato. Entra dalla pianta dei piedi e riempie la pancia.': "audio/SC-A03.m4a",
+  'Davanti a te, dall’orizzonte, arriva una nebbia rosso rubino. Entra nel cuore e avvolge la parte davanti del corpo.': "audio/SC-A04.m4a",
+  'Dietro di te arriva una nebbia blu notte. Avvolge la schiena e la zona dei reni.': "audio/SC-A05.m4a",
+  'A destra arriva una nebbia bianco brillante. Riempie il petto, i polmoni.': "audio/SC-A06.m4a",
+  'A sinistra arriva una nebbia verde e blu. Riempie il lato sinistro, sotto le costole.': "audio/SC-A07.m4a",
+  'Immagina che le nebbie scendano insieme nel basso ventre, e lì si fermino e si stabilizzino.': "audio/SC-A08.m4a",
+  'Per chiudere, lascia scendere tutto come olio caldo fino alla terra. Porta le mani sul ventre e respira piano.': "audio/SC-A09.m4a",
+  'INTRO:acqua-k': "audio/AC-I-K.m4a",
+  'INTRO:acqua-a': "audio/AC-I-A.m4a",
+  'Siediti comodo e chiudi gli occhi. Respira piano.': "audio/AC-K01.m4a",
+  'Immagina di essere vicino a un lago. L’acqua è limpida e ferma, e brilla.': "audio/AC-K02.m4a",
+  'Entri piano piano nell’acqua. È tiepida e piena di luce e di colore.': "audio/AC-K03.m4a",
+  'L’acqua ti abbraccia, ti pulisce e ti fa sentire leggero. Respira piano.': "audio/AC-K04.m4a",
+  'Esci dall’acqua. Sei pulito, tranquillo e leggero. Muovi le dita e apri gli occhi quando vuoi.': "audio/AC-K05.m4a",
+  'Siediti comodo, a occhi chiusi, e respira lentamente.': "audio/AC-A01.m4a",
+  'Immagina di essere sulla riva di un lago, di un mare calmo o di un ruscello che scorre piano. L’acqua è chiara, pulita, luminosa.': "audio/AC-A02.m4a",
+  'Visualizzati immerso in una pozza d’acqua piena di energia, di colore e di luce.': "audio/AC-A03.m4a",
+  'Lascia che quest’acqua energizzata venga assorbita dal corpo, lo pulisca e lo rinvigorisca, dalla testa ai piedi.': "audio/AC-A04.m4a",
+  'Ascolta il suono dell’acqua. Lascia che il respiro prenda il suo ritmo.': "audio/AC-A05.m4a",
+  'Per chiudere, porta le mani sul ventre e lascia sedimentare tutto. Quando vuoi, apri gli occhi.': "audio/AC-A06.m4a",
 };
 
 // ---------------- SCORE STORAGE ----------------
@@ -3301,30 +3313,30 @@ makeGuided('montagna', {pre:'mon', base:'#6b7280', introKey:'INTRO:montagna', st
 
 const UNO_KIDS = [
   {k:'Mettiti in piedi, con i piedi un po’ aperti. Respira piano.', t:'In piedi, respira piano', cap:'Piedi un po’ aperti, spalle morbide.', w:6},
-  {k:'Uno, un sorriso scende piano, dalla testa ai piedi: mi vedo più sano.', t:'1 · Il sorriso', c:'#d9a93a', d:true, cap:'Gesto: mano sul viso che sorride, poi scivola giù.', w:12},
-  {k:'Due, i piedi si sciolgono giù, nella terra morbida, e mi radico di più.', t:'2 · I piedi', c:'#8a6b3a', cap:'Gesto: pesta piano i piedi.', w:12},
-  {k:'Tre, radici come un re, lunghe e forti: ecco perché!', t:'3 · L’albero', c:'#3f9142', cap:'Gesto: braccia come rami, dita come radici.', w:12},
-  {k:'Quattro, arrivo in fondo in fondo, la luce dorata mi scalda tondo tondo.', t:'4 · Il cuore della terra', c:'#c98f2a', cap:'Gesto: mani sul cuore della terra, poi sulla pancia.', w:12},
-  {k:'Cinque, sono vivo, la luce parte via, esce dalle mani: che allegria!', t:'5 · Vivo', c:'#e8863a', cap:'Gesto: mani che si aprono come fiori.', w:12},
-  {k:'Sei, l’aria è densa come il mare, da ogni lato mi sento abbracciare.', t:'6 · L’aria densa', c:'#5aa9d6', cap:'Gesto: abbraccia l’aria.', w:12},
-  {k:'Sette, il cielo mi fa da cappello, i piedi sono radici: che bello!', t:'7 · Il cielo', c:'#8c6bc4', cap:'Gesto: braccia in alto, poi mani sul cappello immaginario.', w:12},
-  {k:'Otto, apro le porte una per una, entra il sole, la terra, la luna.', t:'8 · Le porte', c:'#5fae6b', cap:'Gesto: mani come due porte che si aprono.', w:12},
-  {k:'Nove, la luce parte dal mio centro, e riempie la stanza, fuori e dentro.', t:'9 · La luce', c:'#f4f1ea', d:true, cap:'Gesto: mani a stella, dita che scintillano.', w:12},
-  {k:'Dieci, ora è la svolta, la giornata mi ascolta.', t:'10 · L’inizio', c:'#6b7280', cap:'Gesto: braccia aperte, poi mani sul pancione.', w:12},
+  {k:'Il sorriso. Un sorriso scende piano, dalla testa ai piedi: mi vedo più sano.', t:'1 · Il sorriso', c:'#d9a93a', d:true, cap:'Gesto: mano sul viso che sorride, poi scivola giù.', w:12},
+  {k:'I piedi. I piedi si sciolgono giù, nella terra morbida, e mi radico di più.', t:'2 · I piedi', c:'#8a6b3a', cap:'Gesto: pesta piano i piedi.', w:12},
+  {k:'L’albero. Radici come un re, lunghe e forti: ecco perché!', t:'3 · L’albero', c:'#3f9142', cap:'Gesto: braccia come rami, dita come radici.', w:12},
+  {k:'Il cuore della terra. Arrivo in fondo in fondo, la luce dorata mi scalda tondo tondo.', t:'4 · Il cuore della terra', c:'#c98f2a', cap:'Gesto: mani sul cuore della terra, poi sulla pancia.', w:12},
+  {k:'Vivo. Sono vivo, la luce parte via, esce dalle mani: che allegria!', t:'5 · Vivo', c:'#e8863a', cap:'Gesto: mani che si aprono come fiori.', w:12},
+  {k:'L’aria densa. L’aria è densa come il mare, da ogni lato mi sento abbracciare.', t:'6 · L’aria densa', c:'#5aa9d6', cap:'Gesto: abbraccia l’aria.', w:12},
+  {k:'Il cielo. Il cielo mi fa da cappello, i piedi sono radici: che bello!', t:'7 · Il cielo', c:'#8c6bc4', cap:'Gesto: braccia in alto, poi mani sul cappello immaginario.', w:12},
+  {k:'Le porte. Apro le porte una per una, entra il sole, la terra, la luna.', t:'8 · Le porte', c:'#5fae6b', cap:'Gesto: mani come due porte che si aprono.', w:12},
+  {k:'La luce. La luce parte dal mio centro, e riempie la stanza, fuori e dentro.', t:'9 · La luce', c:'#f4f1ea', d:true, cap:'Gesto: mani a stella, dita che scintillano.', w:12},
+  {k:'L’inizio. Ora è la svolta, la giornata mi ascolta.', t:'10 · L’inizio', c:'#6b7280', cap:'Gesto: braccia aperte, poi mani sul pancione.', w:12},
   {k:'Metti le mani sul pancione e respira piano. Quando vuoi, apri gli occhi.', t:'Mani sul pancione', c:'#6b7280', cap:'', w:3}
 ];
 const UNO_ADULTS = [
   {k:'Stai in piedi, con i piedi un po’ più larghi delle spalle e le ginocchia morbide. Appoggia la lingua al palato e respira con calma.', t:'In piedi, ginocchia morbide', cap:'Respiro tranquillo.', w:8},
-  {k:'Uno. Un sorriso scende piano davanti al corpo, come olio caldo, e porta nella terra ogni tensione. Un secondo sorriso scende dietro. Un terzo scende dal centro della testa, attraverso spalle e braccia, fino alle mani e alle gambe.', t:'1 · Il sorriso', c:'#d9a93a', d:true, cap:'Il sorriso si scioglie davanti, dietro e al centro.', w:20},
-  {k:'Due. I piedi si sciolgono nella terra, come ghiaccio che diventa acqua. Senti i piedi che si fondono con la terra, in cinque direzioni: avanti, indietro, destra, sinistra, giù.', t:'2 · I piedi', c:'#8a6b3a', cap:'I piedi si fondono con la terra.', w:20},
-  {k:'Tre. Dal corpo escono radici lunghe il doppio della tua altezza. Si allargano nelle cinque direzioni e ti rendono stabile.', t:'3 · L’albero', c:'#3f9142', cap:'Radici lunghe e stabili.', w:20},
-  {k:'Quattro. Le radici arrivano al nucleo del pianeta. Immagina la luce dorata della terra che sale come un fiume lungo la schiena, passa sopra la testa, scende sul petto ed entra nella pancia.', t:'4 · Il nucleo', c:'#c98f2a', cap:'La luce dorata sale e riempie la pancia.', w:20},
-  {k:'Cinque. La luce si accumula nella pancia fino a non starci più. Sale e si divide in due correnti che escono dai palmi verso la stanza.', t:'5 · Vivo', c:'#e8863a', cap:'La luce esce dai palmi.', w:20},
-  {k:'Sei. La stanza si riempie di luce dorata, così densa che sembra di stare sott’acqua. A ogni inspirazione senti una pressione leggera da tutte le direzioni.', t:'6 · L’aria densa', c:'#5aa9d6', cap:'Pressione leggera da sei direzioni.', w:20},
-  {k:'Sette. La testa è sospesa nel cielo, tra le stelle. La vita è tra le nuvole. I piedi sono radicati nella terra. Sei sospeso tra cielo e terra.', t:'7 · Il cielo', c:'#8c6bc4', cap:'Testa nel cielo, piedi nella terra.', w:20},
-  {k:'Otto. Immagina di aprire tutte le porte del corpo, ogni articolazione e ogni poro. Inspirando entrano il cielo e la terra. Espirando, il centro del corpo brilla come una luce bianca.', t:'8 · Le porte', c:'#5fae6b', cap:'Inspira cielo e terra, espira luce.', w:20},
-  {k:'Nove. Il centro del corpo è tutto luce bianca, che esce dai pori e riempie la stanza.', t:'9 · La luce', c:'#f4f1ea', d:true, cap:'Luce bianca dal centro.', w:20},
-  {k:'Dieci. Sei radicato e connesso. Ora puoi cominciare la tua giornata o la tua attività.', t:'10 · L’inizio', c:'#6b7280', cap:'Radicato e presente.', w:10},
+  {k:'Il sorriso. Un sorriso scende piano davanti al corpo, come olio caldo, e porta nella terra ogni tensione. Un secondo sorriso scende dietro. Un terzo scende dal centro della testa, attraverso spalle e braccia, fino alle mani e alle gambe.', t:'1 · Il sorriso', c:'#d9a93a', d:true, cap:'Il sorriso si scioglie davanti, dietro e al centro.', w:20},
+  {k:'I piedi. I piedi si sciolgono nella terra, come ghiaccio che diventa acqua. Senti i piedi che si fondono con la terra, in cinque direzioni: avanti, indietro, destra, sinistra, giù.', t:'2 · I piedi', c:'#8a6b3a', cap:'I piedi si fondono con la terra.', w:20},
+  {k:'L’albero. Dal corpo escono radici lunghe il doppio della tua altezza. Si allargano nelle cinque direzioni e ti rendono stabile.', t:'3 · L’albero', c:'#3f9142', cap:'Radici lunghe e stabili.', w:20},
+  {k:'Il nucleo. Le radici arrivano al nucleo del pianeta. Immagina la luce dorata della terra che sale come un fiume lungo la schiena, passa sopra la testa, scende sul petto ed entra nella pancia.', t:'4 · Il nucleo', c:'#c98f2a', cap:'La luce dorata sale e riempie la pancia.', w:20},
+  {k:'La luce sale. La luce si accumula nella pancia fino a non starci più. Sale e si divide in due correnti che escono dai palmi verso la stanza.', t:'5 · La luce sale', c:'#e8863a', cap:'La luce esce dai palmi.', w:20},
+  {k:'L’aria densa. La stanza si riempie di luce dorata, così densa che sembra di stare sott’acqua. A ogni inspirazione senti una pressione leggera da tutte le direzioni.', t:'6 · L’aria densa', c:'#5aa9d6', cap:'Pressione leggera da sei direzioni.', w:20},
+  {k:'Il cielo. La testa è sospesa nel cielo, tra le stelle. La vita è tra le nuvole. I piedi sono radicati nella terra. Sei sospeso tra cielo e terra.', t:'7 · Il cielo', c:'#8c6bc4', cap:'Testa nel cielo, piedi nella terra.', w:20},
+  {k:'Le porte. Immagina di aprire tutte le porte del corpo, ogni articolazione e ogni poro. Inspirando entrano il cielo e la terra. Espirando, il centro del corpo brilla come una luce bianca.', t:'8 · Le porte', c:'#5fae6b', cap:'Inspira cielo e terra, espira luce.', w:20},
+  {k:'La luce. Il centro del corpo è tutto luce bianca, che esce dai pori e riempie la stanza.', t:'9 · La luce', c:'#f4f1ea', d:true, cap:'Luce bianca dal centro.', w:20},
+  {k:'L’inizio. Sei radicato e connesso. Ora puoi cominciare la tua giornata o la tua attività.', t:'10 · L’inizio', c:'#6b7280', cap:'Radicato e presente.', w:10},
   {k:'Per chiudere, lascia scendere tutto come olio caldo fino alla terra e porta le mani sul ventre. Respira piano. Quando vuoi, apri gli occhi.', t:'Mani sul ventre', c:'#6b7280', cap:'', w:3}
 ];
 const GHI_KIDS = [
@@ -3618,7 +3630,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=59;
+  const LOCAL=61;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
