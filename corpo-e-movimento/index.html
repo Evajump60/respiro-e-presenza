@@ -367,6 +367,9 @@
   .home-brand::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:5px;
     background:linear-gradient(90deg,var(--c-red) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-blue) 75% 100%); }
 
+  .postfig .base{ stroke:#9aa7b5; stroke-width:5; }
+  .postfig .z{ stroke:#c4ccd6; stroke-width:5; transition:stroke .4s, fill .4s; }
+  .postfig .z.on{ stroke:#d1523a; fill:rgba(209,82,58,.18); }
   .prog{ width:min(100%, 270px); height:9px; border-radius:99px; background:#dfe5ec; overflow:hidden; visibility:hidden; margin-top:-6px; }
   .prog.on{ visibility:visible; }
   .prog-fill{ height:100%; width:0; background:var(--sec, #3571b5); border-radius:99px; transition:width .9s linear; }
@@ -516,6 +519,18 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="speCircle" style="--fill:#2D4A6B;">Pronto</div>
       <div class="prog" id="speProg"><div class="prog-fill"></div></div><div class="prog-txt" id="speProgTxt"></div>
+      <div id="speFigure" aria-hidden="true" style="display:none;text-align:center;margin:2px 0 6px;"><svg viewBox="0 0 120 262" width="104" height="226" class="postfig">
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line class="z z4" x1="60" y1="50" x2="60" y2="148"/>
+          <line class="z z5" x1="30" y1="68" x2="90" y2="68"/>
+          <path class="base" d="M30 68 L24 130 M90 68 L96 130"/>
+          <circle class="z z6" cx="60" cy="28" r="17"/>
+          <ellipse class="z z3" cx="60" cy="118" rx="17" ry="24"/>
+          <path class="base" d="M48 148 L46 195 M72 148 L74 195"/>
+          <circle class="z z2" cx="46" cy="196" r="7"/><circle class="z z2" cx="74" cy="196" r="7"/>
+          <path class="base" d="M46 203 L44 238 M74 203 L76 238"/>
+          <ellipse class="z z1" cx="42" cy="246" rx="14" ry="6"/><ellipse class="z z1" cx="78" cy="246" rx="14" ry="6"/>
+        </g></svg></div>
       <div class="sub" id="speCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="speStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="speStop" type="button">⏹ Interrompi</button></div>
@@ -772,7 +787,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 15 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 16 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1103,19 +1118,25 @@ function playClipOrSpeak(key, text, onEnd){
     const p = a.play(); if(p && p.catch) p.catch(()=>{ if(done) return; done = true; speakCue(text, onEnd); });
   }catch(e){ speakCue(text, onEnd); }
 }
+function speFig(i){
+  const f=document.getElementById('speFigure'); if(!f) return;
+  if(i==null){ f.style.display='none'; f.querySelectorAll('.z.on').forEach(e=>e.classList.remove('on')); return; }
+  f.style.display='block';
+  f.querySelectorAll('.z').forEach(e=>e.classList.toggle('on', e.classList.contains('z'+(i+1))));
+}
 function makeGuidedLite(id,cfg){
   const g=GUIDED_LITE[id]={running:false,runId:0,timeout:null};
   const $=suf=>document.getElementById(cfg.pre+suf);
   g.stop=function(){ g.runId++; g.running=false; if(g.timeout){clearTimeout(g.timeout);g.timeout=null;} if('speechSynthesis' in window) speechSynthesis.cancel(); try{ stopVoice(); }catch(e){} };
-  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; progReset(cfg.pre); }
+  function reset(){ if(cfg.onStep) cfg.onStep(null); $('Circle').textContent='Pronto'; $('Caption').textContent=''; progReset(cfg.pre); }
   $('Start').addEventListener('click',()=>{
     if(g.running) return; g.running=true; const my=++g.runId; const steps=cfg.steps(); const circle=$('Circle');
     progStart(cfg.pre); const tot=steps.reduce((a,x)=>a+(x.w||0)+5,0)+6; let acc=6;
     const frac=steps.map(x=>{ const r=acc/tot; acc+=(x.w||0)+5; return r; });
     function step(i){
       if(my!==g.runId) return;
-      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; progEnd(cfg.pre); g.running=false; return; }
-      const st=steps[i];
+      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; progEnd(cfg.pre); if(cfg.onStep) cfg.onStep(null); g.running=false; return; }
+      const st=steps[i]; if(cfg.onStep) cfg.onStep(i);
       setProgress(cfg.pre, frac[i], 'Passo '+(i+1)+' di '+steps.length);
       circle.textContent=st.k; $('Caption').textContent='';
       playClipOrSpeak(st.k, st.k, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(i+1), (st.w||0)*1000+400); });
@@ -1153,7 +1174,7 @@ const SPE_A=[{k:'Primo passo: i piedi. Alla larghezza delle spalle, con il peso 
  {k:'Quarto passo: la colonna. Immagina un filo che tira piano il centro della testa verso l’alto, e lascia che la schiena si allunghi.', w:12},
  {k:'Quinto passo: le spalle. Alzale verso le orecchie e lasciale cadere, aperte e rilassate.', w:8},
  {k:'Sesto passo: la testa e lo sguardo. Mento leggermente rientrato, sguardo morbido all’orizzonte, lingua appoggiata al palato.', w:12}];
-makeGuidedLite('specchio',{pre:'spe', intro:()=> document.body.dataset.mode==='kids' ? 'Ora ci guardiamo allo specchio con il corpo, partendo dai piedi fino alla testa. Seguiamo sei passi.' : 'Un controllo della postura in sei passi, dal basso verso l’alto, da fare in piedi, davanti a uno specchio oppure a occhi chiusi.', introKey:()=> 'INTRO:specchio-' + (document.body.dataset.mode==='kids'?'k':'a'), steps:()=> document.body.dataset.mode==='kids' ? SPE_K : SPE_A});
+makeGuidedLite('specchio',{pre:'spe', onStep:speFig, intro:()=> document.body.dataset.mode==='kids' ? 'Ora ci guardiamo allo specchio con il corpo, partendo dai piedi fino alla testa. Seguiamo sei passi.' : 'Un controllo della postura in sei passi, dal basso verso l’alto, da fare in piedi, davanti a uno specchio oppure a occhi chiusi.', introKey:()=> 'INTRO:specchio-' + (document.body.dataset.mode==='kids'?'k':'a'), steps:()=> document.body.dataset.mode==='kids' ? SPE_K : SPE_A});
 const CAM_K=[{k:'Stai in piedi e respira piano. Pronto a camminare lentamente.', w:6},
  {k:'Inspira camminando: uno, due, tre.', w:6},
  {k:'Espira camminando: uno, due, tre.', w:6},
