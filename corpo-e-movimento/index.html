@@ -2330,7 +2330,6 @@ window.LAB_ITEMS = [{"titolo": "Massaggio dei piedi prima di dormire", "origine"
     let h = '<button class="ghost small" id="labBack" type="button">← Laboratorio</button><h3 style="margin:12px 0 4px;">'+esc(it.titolo)+'</h3>';
     h += '<div class="sub">'+(it.origine?'Da dove viene: '+esc(it.origine)+'<br>':'')+'Per chi: '+(it.per==='adulti'?'solo adulti':'tutti')+(it.durata?' · Durata: '+esc(it.durata):'')+'</div>';
     (it.cosa||[]).forEach(p=>{ h += '<p>'+esc(p)+'</p>'; });
-    if(it.cautele) h += '<p class="sub"><strong>Cautele:</strong> '+esc(it.cautele)+'</p>';
     h += '<p class="sub" style="font-size:12px;">'+esc(SHORT)+'</p>';
     h += '<h4 style="margin:18px 0 6px;">Dopo l’esperimento: il tuo diario</h4>';
     QUESTIONS.forEach((q,i)=>{ h += '<label class="sub" style="display:block;margin-top:8px;">'+(i+1)+'. '+esc(q)+'<textarea rows="2" class="lab-q" style="width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid var(--line,#ccd);font:inherit;"></textarea></label>'; });
