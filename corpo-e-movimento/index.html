@@ -502,6 +502,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="diff-row" id="crossSteps" style="margin-top:14px;"></div>
     <div class="breath-zone">
       <div id="crossIllustration" style="text-align:center; margin-bottom:4px;"></div>
+      <div class="prog" id="crossProg" style="margin:0 auto 10px;"><div class="prog-fill" style="transition:none;"></div></div><div class="prog-txt" id="crossProgTxt" style="margin-bottom:6px;"></div>
       <div class="breath-circle" id="crossCircle" style="background:radial-gradient(circle at 35% 30%, #3B8C5A, #245C3A);">Pronto</div>
       <div class="sub" id="crossCaption" style="text-align:center; min-height:40px;"></div>
     </div>
@@ -514,7 +515,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="sub">Controlla la postura dai piedi alla testa</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="speCircle" style="--fill:#2D4A6B;">Pronto</div>
-      <div class="sub" id="speProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="speProg"><div class="prog-fill"></div></div><div class="prog-txt" id="speProgTxt"></div>
       <div class="sub" id="speCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="speStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="speStop" type="button">⏹ Interrompi</button></div>
@@ -529,7 +530,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="sub">Tre passi dentro, tre passi fuori</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="camCircle" style="--fill:#3f9142;">Pronto</div>
-      <div class="sub" id="camProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="camProg"><div class="prog-fill"></div></div><div class="prog-txt" id="camProgTxt"></div>
       <div class="sub" id="camCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="camStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="camStop" type="button">⏹ Interrompi</button></div>
@@ -544,7 +545,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="sub">Le mani seguono il respiro</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="manCircle" style="--fill:#d9a93a;">Pronto</div>
-      <div class="sub" id="manProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="manProg"><div class="prog-fill"></div></div><div class="prog-txt" id="manProgTxt"></div>
       <div class="sub" id="manCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="manStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="manStop" type="button">⏹ Interrompi</button></div>
@@ -559,7 +560,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="sub">All’aperto: radici, tronco, respiro</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="albCircle" style="--fill:#5fae6b;">Pronto</div>
-      <div class="sub" id="albProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="albProg"><div class="prog-fill"></div></div><div class="prog-txt" id="albProgTxt"></div>
       <div class="sub" id="albCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="albStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="albStop" type="button">⏹ Interrompi</button></div>
@@ -574,7 +575,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="sub">Un piccolo auto-massaggio per chiudere</div>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="chiCircle" style="--fill:#8c6bc4;">Pronto</div>
-      <div class="sub" id="chiProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="chiProg"><div class="prog-fill"></div></div><div class="prog-txt" id="chiProgTxt"></div>
       <div class="sub" id="chiCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="chiStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="chiStop" type="button">⏹ Interrompi</button></div>
@@ -771,7 +772,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 13 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 14 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1063,6 +1064,30 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
 });
 
 // ---------------- NAV ----------------
+
+// ---- barra di avanzamento ----
+const PROG = {};
+function progStart(id){ PROG[id] = {t0: Date.now()}; const w = document.getElementById(id+'Prog'); if(w) w.classList.add('on'); setProgress(id, 0, ''); }
+function progReset(id){
+  delete PROG[id];
+  const w = document.getElementById(id+'Prog'); if(w){ w.classList.remove('on'); const f = w.firstElementChild; if(f){ f.style.transition = 'none'; f.style.width = '0%'; void f.offsetWidth; f.style.transition = ''; } }
+  const t = document.getElementById(id+'ProgTxt'); if(t) t.textContent = '';
+}
+function fmtRemaining(sec){
+  if(sec < 45) return 'meno di un minuto';
+  const m = Math.round(sec/30)/2;
+  return 'circa ' + (m % 1 ? (Math.floor(m)>0 ? Math.floor(m)+' min e mezzo' : 'mezzo minuto') : (m === 1 ? '1 minuto' : m+' minuti'));
+}
+function setProgress(id, frac, label){
+  const w = document.getElementById(id+'Prog'), t = document.getElementById(id+'ProgTxt'); if(!w || !PROG[id]) return;
+  frac = Math.max(0, Math.min(1, frac));
+  w.firstElementChild.style.width = (frac*100).toFixed(1)+'%';
+  let txt = label || '';
+  const el = (Date.now() - PROG[id].t0)/1000;
+  if(frac > 0.12 && frac < 1 && el > 15) txt += (txt ? ' · ' : '') + 'ancora ' + fmtRemaining(el*(1-frac)/frac);
+  if(t) t.textContent = txt;
+}
+function progEnd(id){ if(!PROG[id]) return; setProgress(id, 1, 'Completato ✓'); }
 const GUIDED_LITE = {};
 const CLIPS = {};
 function playClipOrSpeak(key, text, onEnd){
@@ -1082,18 +1107,20 @@ function makeGuidedLite(id,cfg){
   const g=GUIDED_LITE[id]={running:false,runId:0,timeout:null};
   const $=suf=>document.getElementById(cfg.pre+suf);
   g.stop=function(){ g.runId++; g.running=false; if(g.timeout){clearTimeout(g.timeout);g.timeout=null;} if('speechSynthesis' in window) speechSynthesis.cancel(); try{ stopVoice(); }catch(e){} };
-  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; $('ProgTxt').textContent=''; }
+  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; progReset(cfg.pre); }
   $('Start').addEventListener('click',()=>{
     if(g.running) return; g.running=true; const my=++g.runId; const steps=cfg.steps(); const circle=$('Circle');
+    progStart(cfg.pre); const tot=steps.reduce((a,x)=>a+(x.w||0)+5,0)+6; let acc=6;
+    const frac=steps.map(x=>{ const r=acc/tot; acc+=(x.w||0)+5; return r; });
     function step(i){
       if(my!==g.runId) return;
-      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; $('ProgTxt').textContent=''; g.running=false; return; }
+      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; progEnd(cfg.pre); g.running=false; return; }
       const st=steps[i];
-      $('ProgTxt').textContent='Passo '+(i+1)+' di '+steps.length;
+      setProgress(cfg.pre, frac[i], 'Passo '+(i+1)+' di '+steps.length);
       circle.textContent=st.k; $('Caption').textContent='';
       playClipOrSpeak(st.k, st.k, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(i+1), (st.w||0)*1000+400); });
     }
-    const intro=cfg.intro(); circle.textContent=intro; $('ProgTxt').textContent='Spiegazione';
+    const intro=cfg.intro(); circle.textContent=intro; setProgress(cfg.pre, 0.01, 'Spiegazione');
     playClipOrSpeak(cfg.introKey(), intro, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(0),600); });
   });
   $('Stop').addEventListener('click',()=>{ g.stop(); reset(); });
@@ -2084,10 +2111,24 @@ function crossClearTimer(){
   if(crossTimerHandle){ clearTimeout(crossTimerHandle); crossTimerHandle = null; }
 }
 
+function crossBar(go){
+  const w = document.getElementById('crossProg'); if(!w) return; const f = w.firstElementChild;
+  const tot = CROSS_PHASES.reduce((a,x)=>a+x.dur,0);
+  const before = CROSS_PHASES.slice(0, crossIdx).reduce((a,x)=>a+x.dur,0);
+  const ph = CROSS_PHASES[crossIdx].dur;
+  const t = document.getElementById('crossProgTxt'); if(t) t.textContent = 'Fase '+(crossIdx+1)+' di '+CROSS_PHASES.length;
+  w.classList.add('on');
+  f.style.transition = 'none';
+  if(!go){ f.style.width = getComputedStyle(f).width; return; }
+  f.style.width = ((before + ph - crossRemaining)/tot*100).toFixed(1)+'%'; void f.offsetWidth;
+  f.style.transition = 'width '+crossRemaining+'ms linear';
+  f.style.width = ((before + ph)/tot*100).toFixed(1)+'%';
+}
 function crossStartTimerForCurrentPhase(){
   crossClearTimer();
   crossPhaseStart = Date.now();
   crossTimerHandle = setTimeout(crossAdvance, crossRemaining);
+  crossBar(true);
 }
 
 function crossAdvance(){
@@ -2103,6 +2144,7 @@ function crossFinish(){
   crossStopMarciaAnim();
   document.getElementById('crossCircle').textContent = 'Fatto ✓';
   document.getElementById('crossCaption').textContent = 'Routine completata — buona ripresa!';
+  { const f = document.getElementById('crossProg').firstElementChild; f.style.transition='none'; f.style.width='100%'; document.getElementById('crossProgTxt').textContent='Completato ✓'; }
   document.getElementById('crossIllustration').innerHTML = '';
   if(crossVoiceOn) playClipOrSpeak('INTRO:incrociato-6', 'Routine completata. Buona ripresa!');
   crossRunning = false;
@@ -2154,7 +2196,7 @@ document.getElementById('crossPauseResume').addEventListener('click', function()
     // metti in pausa: calcola quanto tempo resta davvero nella fase corrente
     crossClearTimer();
     crossRemaining = Math.max(0, crossRemaining - (Date.now() - crossPhaseStart));
-    crossPaused = true;
+    crossPaused = true; crossBar(false);
     this.textContent = '▶ Riprendi';
   } else {
     crossPaused = false;
