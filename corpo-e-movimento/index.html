@@ -787,7 +787,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 16 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 17 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2255,6 +2255,33 @@ crossRenderPhase(0);
 
 
 
+
+/* ---- Controllo aggiornamenti ---- */
+(function(){
+  const LOCAL=17;
+  const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
+  function reloadFresh(){
+    try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
+    const u=location.pathname+'?u='+Date.now();
+    location.replace(u);
+  }
+  async function check(manual){
+    if(manual&&msg) msg.textContent='Controllo in corso…';
+    try{
+      const r=await fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'});
+      const t=await r.text();
+      const m=t.match(/id="appVersion"[^>]*>\s*Versione\s+(\d+)/);
+      if(!m) throw 0;
+      const remote=parseInt(m[1],10);
+      if(remote>LOCAL){ banner.style.display='flex'; if(msg) msg.textContent='Nuova versione '+remote+' disponibile.'; }
+      else if(manual&&msg) msg.textContent='Hai già l\'ultima versione ('+LOCAL+').';
+    }catch(e){ if(manual&&msg) msg.textContent='Impossibile controllare ora (serve connessione).'; }
+  }
+  document.getElementById('updGo').onclick=reloadFresh;
+  document.getElementById('updBtn').onclick=function(){ check(true); };
+  setTimeout(function(){check(false);},2500);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(false); });
+})();
 </script>
 </body>
 </html>
