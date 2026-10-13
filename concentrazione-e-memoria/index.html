@@ -578,7 +578,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <svg viewBox="0 0 100 100" width="150" height="150" style="margin:6px auto 0;display:block" aria-label="Mandala"><g fill="none" stroke="#8c6bc4" stroke-width="1.6"><circle cx="50" cy="50" r="6" fill="#d9a93a"/><circle cx="50" cy="50" r="16"/><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="44"/></g><g fill="#5fae6b"><circle cx="50" cy="26" r="5"/><circle cx="50" cy="74" r="5"/><circle cx="26" cy="50" r="5"/><circle cx="74" cy="50" r="5"/></g><g fill="#d9473f"><circle cx="33" cy="33" r="4"/><circle cx="67" cy="33" r="4"/><circle cx="33" cy="67" r="4"/><circle cx="67" cy="67" r="4"/></g><g fill="#5aa9d6"><circle cx="50" cy="8" r="3.5"/><circle cx="50" cy="92" r="3.5"/><circle cx="8" cy="50" r="3.5"/><circle cx="92" cy="50" r="3.5"/></g></svg>
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="mmCircle" style="--fill:#8c6bc4;">Pronto</div>
-      <div class="sub" id="mmProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="mmProg"><div class="prog-fill"></div></div><div class="prog-txt" id="mmProgTxt"></div>
       <div class="sub" id="mmCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="mmStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="mmStop" type="button">⏹ Interrompi</button></div>
@@ -594,7 +594,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="omCircle" style="--fill:#2D4A6B;">Pronto</div>
-      <div class="sub" id="omProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="omProg"><div class="prog-fill"></div></div><div class="prog-txt" id="omProgTxt"></div>
       <div class="sub" id="omCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="omStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="omStop" type="button">⏹ Interrompi</button></div>
@@ -610,7 +610,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     
     <div class="breath-zone">
       <div class="breath-circle arc-circle" id="ppCircle" style="--fill:#5fae6b;">Pronto</div>
-      <div class="sub" id="ppProgTxt" style="text-align:center;min-height:18px;"></div>
+      <div class="prog" id="ppProg"><div class="prog-fill"></div></div><div class="prog-txt" id="ppProgTxt"></div>
       <div class="sub" id="ppCaption" style="min-height:20px; text-align:center;"></div>
       <div class="startwrap"><button class="primary" id="ppStart" type="button">Avvia</button></div>
       <div class="actions"><button class="ghost" id="ppStop" type="button">⏹ Interrompi</button></div>
@@ -1026,7 +1026,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 9 · 12 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 10 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1336,27 +1336,65 @@ document.getElementById('modeToggle').addEventListener('click', e=>{
 });
 
 // ---------------- NAV ----------------
+// ---- barra di avanzamento ----
+const PROG = {};
+function progStart(id){ PROG[id] = {t0: Date.now()}; const w = document.getElementById(id+'Prog'); if(w) w.classList.add('on'); setProgress(id, 0, ''); }
+function progReset(id){
+  delete PROG[id];
+  const w = document.getElementById(id+'Prog'); if(w){ w.classList.remove('on'); const f = w.firstElementChild; if(f){ f.style.transition = 'none'; f.style.width = '0%'; void f.offsetWidth; f.style.transition = ''; } }
+  const t = document.getElementById(id+'ProgTxt'); if(t) t.textContent = '';
+}
+function fmtRemaining(sec){
+  if(sec < 45) return 'meno di un minuto';
+  const m = Math.round(sec/30)/2;
+  return 'circa ' + (m % 1 ? (Math.floor(m)>0 ? Math.floor(m)+' min e mezzo' : 'mezzo minuto') : (m === 1 ? '1 minuto' : m+' minuti'));
+}
+function setProgress(id, frac, label){
+  const w = document.getElementById(id+'Prog'), t = document.getElementById(id+'ProgTxt'); if(!w || !PROG[id]) return;
+  frac = Math.max(0, Math.min(1, frac));
+  w.firstElementChild.style.width = (frac*100).toFixed(1)+'%';
+  let txt = label || '';
+  const el = (Date.now() - PROG[id].t0)/1000;
+  if(frac > 0.12 && frac < 1 && el > 15) txt += (txt ? ' · ' : '') + 'ancora ' + fmtRemaining(el*(1-frac)/frac);
+  if(t) t.textContent = txt;
+}
+function progEnd(id){ if(!PROG[id]) return; setProgress(id, 1, 'Completato ✓'); }
 const GUIDED_LITE = {};
 function makeGuidedLite(id,cfg){
   const g=GUIDED_LITE[id]={running:false,runId:0,timeout:null};
   const $=suf=>document.getElementById(cfg.pre+suf);
   g.stop=function(){ g.runId++; g.running=false; if(g.timeout){clearTimeout(g.timeout);g.timeout=null;} stopGlVoice(); if('speechSynthesis' in window) speechSynthesis.cancel(); };
-  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; $('ProgTxt').textContent=''; }
+  function reset(){ $('Circle').textContent='Pronto'; $('Caption').textContent=''; progReset(cfg.pre); }
   $('Start').addEventListener('click',()=>{
     if(g.running) return; g.running=true; const my=++g.runId; const steps=cfg.steps(); const circle=$('Circle');
+    progStart(cfg.pre); const tot=steps.reduce((a,x)=>a+(x.w||0)+5,0)+6; let acc=6;
+    const frac=steps.map(x=>{ const r=acc/tot; acc+=(x.w||0)+5; return r; });
     function step(i){
       if(my!==g.runId) return;
-      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; $('ProgTxt').textContent=''; g.running=false; return; }
+      if(i>=steps.length){ circle.textContent='Fatto ✓'; $('Caption').textContent=''; progEnd(cfg.pre); g.running=false; return; }
       const st=steps[i];
-      $('ProgTxt').textContent='Passo '+(i+1)+' di '+steps.length;
+      setProgress(cfg.pre, frac[i], 'Passo '+(i+1)+' di '+steps.length);
       circle.textContent=st.k; $('Caption').textContent='';
       speakCue(st.k, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(i+1), (st.w||0)*1000+400); });
     }
-    const intro=cfg.intro(); circle.textContent=intro; $('ProgTxt').textContent='Spiegazione';
+    const intro=cfg.intro(); circle.textContent=intro; setProgress(cfg.pre, 0.01, 'Spiegazione');
     speakCue(intro, ()=>{ if(my!==g.runId) return; g.timeout=setTimeout(()=>step(0),600); });
   });
   $('Stop').addEventListener('click',()=>{ g.stop(); reset(); });
 }
+// Simbolo (seme di visionecosciente.ch) al posto delle scritte "Pronto / Inizia / Ascolta" prima dell'esercizio: pulsa piano
+(function(){
+  const IDLE = {'Pronto':1, 'Inizia':1, 'Ascolta':1};
+  function mark(){
+    document.querySelectorAll('.breath-circle').forEach(c=>{
+      const idle = !!IDLE[(c.textContent||'').trim()];
+      if(idle){ if(c.dataset.idle !== '1'){ c.dataset.idle = '1'; c.setAttribute('aria-label', (c.textContent||'').trim()); } }
+      else if(c.dataset.idle){ delete c.dataset.idle; c.removeAttribute('aria-label'); }
+    });
+  }
+  new MutationObserver(mark).observe(document.body, {subtree:true, childList:true, characterData:true});
+  mark();
+})();
 function stopGuidedLiteAll(){ Object.keys(GUIDED_LITE).forEach(k=>GUIDED_LITE[k].stop()); }
 const MM_K=[{k:'Siediti comodo. Respira piano e guarda il disegno davanti a te.', w:6},
  {k:'Guarda il centro del disegno. Poi guarda i colori intorno, uno alla volta.', w:15},
@@ -3407,7 +3445,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=9;
+  const LOCAL=10;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
