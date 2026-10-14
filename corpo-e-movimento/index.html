@@ -792,7 +792,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 25 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 26 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2263,7 +2263,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=25;
+  const LOCAL=26;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -2362,6 +2362,46 @@ window.LAB_ITEMS = [{"titolo": "Massaggio dei piedi prima di dormire", "origine"
     if(location.hash === '#laboratorio'){ try{ localStorage.setItem('pcd_lab','1'); }catch(e){} }
     door.style.display = on ? '' : 'none'; }
   reveal(); window.addEventListener('hashchange', reveal);
+})();
+/* ---- PRATICHE (conteggio condiviso con la schermata Palestra) ---- */
+(function(){
+  var D = {"specchio": "corpo", "hands": "corpo", "camminata": "corpo", "trace": "corpo", "cross": "corpo", "maniresp": "corpo", "alberoamico": "corpo", "chiusura": "corpo"};
+  var cur = null, t0 = 0, done = false;
+  function norm(s){ return (s||'').replace(/\u2019/g,"'").trim(); }
+  function key(){
+    var p = document.querySelector('.panel.active'); if(!p) return null;
+    var id = p.id.replace('panel-','');
+    if(id==='pranayama' || id==='autoreg'){ var h=p.querySelector('h2'); return id+':'+norm(h&&h.textContent); }
+    return id;
+  }
+  function record(door){
+    try{
+      var raw = localStorage.getItem('pcd_prac'); var o = raw ? JSON.parse(raw) : {};
+      var day = new Date().toLocaleDateString('sv-SE');
+      var a = o[door] || [];
+      if(a.indexOf(day) < 0){ a.push(day); o[door] = a; localStorage.setItem('pcd_prac', JSON.stringify(o)); }
+    }catch(e){}
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.panel.active button.primary') : null;
+    if(!b) return;
+    var k = key(); if(!k || !D[k]) return;
+    if(cur !== k){ cur = k; done = false; }
+    if(!t0) t0 = Date.now();
+  }, true);
+  setInterval(function(){
+    var k = key();
+    if(k !== cur){ cur = k; t0 = 0; done = false; return; }
+    if(t0 && !done && D[k] && Date.now() - t0 >= 90000){ done = true; record(D[k]); }
+  }, 3000);
+  // collegamenti diretti dalla schermata Palestra: #vai=pannello oppure #vai=pannello:tecnica
+  function vai(){
+    var m = /^#vai=([^:&]+)(?::(.+))?$/.exec(decodeURIComponent(location.hash||'')); if(!m) return;
+    var sel = '.seal-card[data-panel="'+m[1]+'"]' + (m[2] ? '[data-tech="'+m[2]+'"]' : '');
+    var c = document.querySelector(sel); if(c){ c.click(); }
+  }
+  window.addEventListener('hashchange', vai);
+  setTimeout(vai, 50);
 })();
 </script>
 </body>
