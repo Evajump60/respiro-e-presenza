@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>/* collegamento dalla Palestra: tiene la pagina nascosta finché l'esercizio non è aperto, per evitare il lampo della schermata iniziale */
+(function(){try{if(decodeURIComponent(location.hash||'').indexOf('#vai=')===0){var d=document.documentElement;d.classList.add('vai-attesa');setTimeout(function(){d.classList.remove('vai-attesa');},3500);}}catch(e){}})();</script>
+<style>html.vai-attesa body{visibility:hidden}</style>
 <title>Palestra del Cervello Destro</title>
 <style>
   :root{
@@ -1066,7 +1069,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 67 · 13 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 68 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -3630,7 +3633,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=67;
+  const LOCAL=68;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -3780,11 +3783,12 @@ window.LAB_ITEMS = [{"titolo": "Tre lune", "origine": "Meditazione cinese del �
     parts.slice(1).forEach(function(x){ if(x.indexOf('p=') === 0) hubDoor = x.slice(2); });
     var sel = '.seal-card[data-panel="'+mt[1]+'"]' + (mt[2] ? '[data-tech="'+mt[2]+'"]' : ''), tries = 0, want = 'panel-'+mt[1];
     // riprova finché la schermata giusta è aperta (su iPhone la pagina può ancora stare partendo)
+    function rivela(){ requestAnimationFrame(function(){ document.documentElement.classList.remove('vai-attesa'); }); }
     (function go(){
       var a = document.querySelector('.panel.active');
-      if(a && a.id === want) return;
-      var c = document.querySelector(sel); if(c){ c.click(); }
-      if(++tries < 15) setTimeout(go, 200);
+      if(a && a.id === want){ rivela(); return; }
+      var c = document.querySelector(sel); if(c){ c.click(); a = document.querySelector('.panel.active'); if(a && a.id === want){ rivela(); return; } }
+      if(++tries < 15) setTimeout(go, 200); else rivela();
     })();
   }
   // se si arriva dalla Palestra, "Indietro" riporta alla porta, non alla pagina iniziale dell'app
