@@ -1,6 +1,56 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+<script>
+/* Interruttore audio generale: "Solo scritte" silenzia voce, campanello, metronomo e sottofondi senza cambiare i tempi. Valore condiviso tra le app (pcd_audio). */
+(function(){
+  var KEY='pcd_audio', off=false;
+  try{ off = localStorage.getItem(KEY)==='0'; }catch(e){}
+  var media=[], ctxs=[];
+  try{
+    var P=HTMLMediaElement.prototype, md=Object.getOwnPropertyDescriptor(P,'muted'), op=P.play;
+    if(md && md.set){
+      Object.defineProperty(P,'muted',{configurable:true,enumerable:md.enumerable,get:function(){return md.get.call(this);},set:function(v){ md.set.call(this, off ? true : v); }});
+    }
+    P.play=function(){ try{ if(media.indexOf(this)<0) media.push(this); if(off) this.muted=true; }catch(e){} return op.apply(this,arguments); };
+  }catch(e){}
+  try{
+    if(window.SpeechSynthesis || window.speechSynthesis){
+      var SP=(window.SpeechSynthesis||Object.getPrototypeOf(window.speechSynthesis)).prototype||Object.getPrototypeOf(window.speechSynthesis);
+      var os=SP.speak; SP.speak=function(u){ try{ if(off) u.volume=0; }catch(e){} return os.call(this,u); };
+    }
+  }catch(e){}
+  try{
+    var BC=window.BaseAudioContext||window.webkitAudioContext||window.AudioContext, pr=BC.prototype, ds=null;
+    while(pr && !(ds=Object.getOwnPropertyDescriptor(pr,'destination'))) pr=Object.getPrototypeOf(pr);
+    if(ds && ds.get){
+      Object.defineProperty(pr,'destination',{configurable:true,enumerable:ds.enumerable,get:function(){
+        if(!this.__pcdM){ var real=ds.get.call(this), g=this.createGain(); g.gain.value=off?0:1; g.connect(real); this.__pcdM=g; ctxs.push(this); }
+        return this.__pcdM;
+      }});
+    }
+  }catch(e){}
+  window.__audioOff=function(){return off;};
+  function paint(b){ b.textContent = off ? '🔇 Solo scritte' : '🔊 Audio'; b.setAttribute('aria-pressed', off ? 'true':'false'); b.title = off ? 'Audio spento: tocca per riattivarlo' : 'Tocca per spegnere l’audio e usare solo le scritte'; b.className='aud-sw'+(off?' off':''); }
+  function set(v){
+    off=v; try{ if(v) localStorage.setItem(KEY,'0'); else localStorage.removeItem(KEY); }catch(e){}
+    media.forEach(function(m){ try{ m.muted=off; }catch(e){} });
+    ctxs.forEach(function(c){ try{ c.__pcdM.gain.value=off?0:1; }catch(e){} });
+    var b=document.getElementById('audSw'); if(b) paint(b);
+  }
+  function mk(){
+    if(document.getElementById('audSw')) return;
+    var st=document.createElement('style');
+    st.textContent='.aud-sw{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:45;border:1.5px solid #2D4A6B;background:#fff;color:#2D4A6B;font:600 13px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;padding:9px 14px;border-radius:99px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);}.aud-sw.off{background:#2D4A6B;color:#fff;}body.path-on .aud-sw{top:calc(env(safe-area-inset-top,0px) + 56px);}@media print{.aud-sw{display:none}}';
+    document.head.appendChild(st);
+    var b=document.createElement('button'); b.type='button'; b.id='audSw'; paint(b);
+    b.addEventListener('click',function(){ set(!off); });
+    document.body.appendChild(b);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mk); else mk();
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>/* collegamento dalla Palestra: tiene la pagina nascosta finché l'esercizio non è aperto, per evitare il lampo della schermata iniziale */
@@ -795,7 +845,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 29 · 14 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 30 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2266,7 +2316,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=29;
+  const LOCAL=30;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
