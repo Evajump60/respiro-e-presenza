@@ -1075,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 73 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 74 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1535,10 +1535,10 @@ const RECORDED_VOICE_CLIPS = {
   "Inspira": "audio/2/75d4c4b2f92f.m4a",
   "Trattieni": "audio/2/2e2792229331.m4a",
   "Espira": "audio/2/76c51a10bafd.m4a",
-  "Espira da sinistra": "audio/2/2efb7ea73eec.m4a",
-  "Inspira da sinistra": "audio/2/8c61c0c2b8f7.m4a",
-  "Espira da destra": "audio/2/b89f11d1e83e.m4a",
-  "Inspira da destra": "audio/2/8a4289852da6.m4a",
+  "Espira da sinistra": "audio/2/0d8d28926956.m4a",
+  "Inspira da sinistra": "audio/2/c521ea9d02ce.m4a",
+  "Espira da destra": "audio/2/e3623f1c7867.m4a",
+  "Inspira da destra": "audio/2/80dd2b48cea9.m4a",
   "Inspira — pancia": "audio/2/7a93377b138b.m4a",
   "Inspira — torace": "audio/2/805928aa98ed.m4a",
   "Inspira — petto alto": "audio/2/98fd64796e8c.m4a",
@@ -3694,7 +3694,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=73;
+  const LOCAL=74;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
