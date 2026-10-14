@@ -1,7 +1,7 @@
-/* Service worker — Respiro e Concentrazione (v66)
+/* Service worker — Respiro e Concentrazione (v67)
    Salva solo la pagina e le icone, per aprirla anche senza rete.
    Gli audio NON passano da qui: li scarica direttamente il telefono. */
-const VERSION = 'v66';
+const VERSION = 'v67';
 const SHELL_CACHE = 'shell-' + VERSION;
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 

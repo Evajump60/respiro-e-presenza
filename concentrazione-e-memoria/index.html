@@ -3582,8 +3582,14 @@ window.LAB_ITEMS = [{"titolo": "Un suono ripetuto", "origine": "Ripetizione di u
     var h = decodeURIComponent(location.hash||''); if(h.indexOf('#vai=') !== 0) return;
     var parts = h.slice(5).split('&'), g = parts[0], mt = /^([^:]+)(?::(.+))?$/.exec(g); if(!mt) return;
     parts.slice(1).forEach(function(x){ if(x.indexOf('p=') === 0) hubDoor = x.slice(2); });
-    var sel = '.seal-card[data-panel="'+mt[1]+'"]' + (mt[2] ? '[data-tech="'+mt[2]+'"]' : '');
-    var c = document.querySelector(sel); if(c){ c.click(); }
+    var sel = '.seal-card[data-panel="'+mt[1]+'"]' + (mt[2] ? '[data-tech="'+mt[2]+'"]' : ''), tries = 0, want = 'panel-'+mt[1];
+    // riprova finché la schermata giusta è aperta (su iPhone la pagina può ancora stare partendo)
+    (function go(){
+      var a = document.querySelector('.panel.active');
+      if(a && a.id === want) return;
+      var c = document.querySelector(sel); if(c){ c.click(); }
+      if(++tries < 15) setTimeout(go, 200);
+    })();
   }
   // se si arriva dalla Palestra, "Indietro" riporta alla porta, non alla pagina iniziale dell'app
   document.addEventListener('click', function(e){
@@ -3593,6 +3599,7 @@ window.LAB_ITEMS = [{"titolo": "Un suono ripetuto", "origine": "Ripetizione di u
     location.href = HUB + '#' + hubDoor;
   }, true);
   window.addEventListener('hashchange', vai);
+  window.addEventListener('pageshow', function(e){ if(e.persisted) vai(); });
   setTimeout(vai, 50);
 })();
 </script>
