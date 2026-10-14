@@ -848,7 +848,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 
   <div class="fb-line"><button type="button" id="fbBtn">✉ Scrivi allo sviluppatore · dai un feedback</button><small>Siamo in fase di prova: ogni suggerimento è prezioso.</small></div>
 <script>(function(){var b=document.getElementById("fbBtn");if(!b)return;b.addEventListener("click",function(){var v="";try{var e=document.getElementById("appVersion");v=(e?e.textContent:"").replace(/\s+/g," ").trim();}catch(x){}var a=["evajump","proton.me"].join("@");var s="Feedback Corpo e Movimento "+v;var t="Ciao Eva,\n\n(scrivi qui il tuo messaggio)\n\nCosa mi è piaciuto:\nCosa non funziona o non è chiaro:\nSuggerimenti:\n\n---\nApp: Corpo e Movimento\nVersione: "+v+"\nDispositivo: "+navigator.userAgent;location.href="mailto:"+a+"?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(t);});})();</script>
-<footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 35 · 14 ottobre</span>
+<footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 36 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2319,7 +2319,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=35;
+  const LOCAL=36;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
