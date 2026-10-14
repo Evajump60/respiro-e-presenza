@@ -1069,7 +1069,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 68 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 69 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2267,7 +2267,7 @@ const PRANA_TECHNIQUES = {
       {label:'Inspira — pancia', caption:"Inspira lentamente dal naso, gonfiando prima la pancia.", dur:3000, scale:1.15, lvl:0.34},
       {label:'Inspira — torace', caption:"Continua a inspirare: ora si espande il torace.", dur:2000, scale:1.3, lvl:0.67},
       {label:'Inspira — petto alto', caption:"Ultimo tratto: si solleva anche la parte alta del petto.", dur:1500, scale:1.45, lvl:1},
-      {label:'Espira lentamente', caption:"Espira svuotando tutto, dall'alto verso il basso, lentamente.", dur:5000, scale:0.85, lvl:0}
+      {label:'Espira lentamente', caption:"Espira svuotando tutto, dall'alto verso il basso, lentamente.", dur:5000, scale:0.85, lvl:0, pause:3000}
     ]
   },
   bhramari: {
@@ -2369,6 +2369,7 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     phases = tech.phases.map(p=>{
       const q = {...p};
       if(lvl.mult && q.dur && !q.hold) q.dur = Math.round(q.dur*lvl.mult/100)*100;
+      if(q.pause && lvl.mult) q.pause = Math.round(q.pause*lvl.mult/100)*100;
       if(lvl.dur){ q.dur = lvl.dur; q.hold = lvl.hold; }
       if(q.sound) q.hold = q.dur; // dopo la voce si aspetta la fine del suono
       if(q.rapid && lvl.count) q.count = lvl.count;
@@ -2397,6 +2398,15 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
   }
   function showPhase(p, onDone){
     if(myPranaRun !== pranaRunId) return; // interrotto dall'esterno (es. cambio modulo)
+    if(p.pause){
+      // pausa a polmoni vuoti dopo l'espirazione, prima della nuova inspirazione
+      const dopoFase = onDone;
+      onDone = ()=>{
+        if(myPranaRun !== pranaRunId) return;
+        circle.textContent = 'Pausa'; caption.textContent = 'Resta un momento a polmoni vuoti, senza forzare.';
+        pranaPhaseTimeout = setTimeout(dopoFase, p.pause);
+      };
+    }
     function showText(){
       if(myPranaRun !== pranaRunId) return;
       circle.style.setProperty('--d', (p.dur/1000)+'s');
@@ -2482,8 +2492,9 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     }
     pranaPhaseTimeout = setTimeout(onDone, p.dur);
   }
-  const phaseStart = progWeights(phases, p=> p.section ? p.section/1000 : (p.rapid ? (p.count||10)*2*(p.step||1000)/1000 : ((p.dur||2000)/1000)));
-  const phaseTotal = phases.reduce((a,p)=> a + (p.section ? p.section/1000 : (p.rapid ? (p.count||10)*2*(p.step||1000)/1000 : ((p.dur||2000)/1000))), 0);
+  const durFase = p=> p.section ? p.section/1000 : (p.rapid ? (p.count||10)*2*(p.step||1000)/1000 : ((p.dur||2000)/1000)) + (p.pause||0)/1000;
+  const phaseStart = progWeights(phases, durFase);
+  const phaseTotal = phases.reduce((a,p)=> a + durFase(p), 0);
   function runPhase(idx){
     if(myPranaRun !== pranaRunId) return;
     setProgress('prana', (cycle + phaseStart[idx])/maxCycles, maxCycles > 1 ? 'Ciclo '+(cycle+1)+' di '+maxCycles : '');
@@ -3633,7 +3644,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=68;
+  const LOCAL=69;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
