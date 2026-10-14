@@ -82,7 +82,7 @@
 <body>
 <div class="wrap">
   <div id="view"></div>
-  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 5</p>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 6</p>
   <div class="foot"><span id="ver"></span><a href="../">Vai a Respiro e Presenza</a></div>
 </div>
 <div class="toast" id="toast"><div id="toastTxt"></div><button id="toastOk" type="button">Continua</button></div>
@@ -174,9 +174,11 @@
       box.appendChild(b);
     });
     view.appendChild(box);
-    var bn = el('button','bn','Le tre bottiglie · un invito'); bn.type = 'button';
-    bn.addEventListener('click', function(){ apriBottiglie('libero'); });
-    view.appendChild(bn);
+    if(fioreRaggiunto()){
+      var bn = el('button','bn','Le tre bottiglie · un invito'); bn.type = 'button';
+      bn.addEventListener('click', function(){ apriBottiglie('libero'); });
+      view.appendChild(bn);
+    }
     checkNew();
     checkRemind();
   }
@@ -214,19 +216,19 @@
   // messaggio quando si apre una tappa nuova
   function checkNew(){
     var seen; try{ seen = JSON.parse(ls('pcd_hub_seen')||'{}'); }catch(e){ seen = {}; }
-    var msg = null;
+    var msg = null, newL = 0;
     Object.keys(DOORS).forEach(function(d){
       var L = livello(d);
       if(seen[d] === undefined){ seen[d] = L; return; }
-      if(L > seen[d] && !msg){ msg = 'Porta '+DOORS[d].nome+': '+STAGES[L-1].n+' → '+STAGES[L].n+'. Si è aperta una nuova tappa.'; }
+      if(L > seen[d] && !msg){ newL = L; msg = 'Porta '+DOORS[d].nome+': '+STAGES[L-1].n+' → '+STAGES[L].n+'. Si è aperta una nuova tappa.'; }
       seen[d] = L;
     });
     ls('pcd_hub_seen', JSON.stringify(seen));
-    if(msg){ var t = document.getElementById('toast'); document.getElementById('toastTxt').textContent = msg; t.style.display = 'block'; pendBott = bottPerTappa(); }
+    if(msg){ var t = document.getElementById('toast'); document.getElementById('toastTxt').textContent = msg; t.style.display = 'block'; pendBott = bottPerTappa(newL); pendLiv = newL; }
   }
-  document.getElementById('toastOk').addEventListener('click', function(){ document.getElementById('toast').style.display = 'none'; if(pendBott){ pendBott = false; apriBottiglie('nuova'); } });
+  document.getElementById('toastOk').addEventListener('click', function(){ document.getElementById('toast').style.display = 'none'; if(pendBott){ pendBott = false; apriBottiglie('nuova', pendLiv); } });
   // ---- le tre bottiglie: invito gentile, mai una condizione ----
-  var DAY = 86400000, BK = 'pcd_bott', pendBott = false, prova = false, modoBott = 'libero';
+  var DAY = 86400000, BK = 'pcd_bott', pendBott = false, pendLiv = 0, prova = false, modoBott = 'libero';
   var BOTT = [
     {n:'Respiro', v:10, f:.35, c:'#8FC1E3', t:'Per chi in questo periodo fatica. Nessuna prova richiesta.'},
     {n:'Equilibrio', v:20, f:.62, c:'#9CD3A2', t:'Il valore del percorso così com\'è.'},
@@ -246,16 +248,17 @@
   }
   var INTRO = {
     nuova: 'Si è aperta una nuova tappa. Se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. Scegli quella più sincera per te in questo momento. È solo un invito, mai una condizione: le tappe sono tue in ogni caso.',
+    primo: 'Se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. Scegli quella più sincera per te in questo momento. È solo un invito, mai una condizione: le tappe sono tue in ogni caso.',
     promemoria: 'Un piccolo promemoria, se ti fosse sfuggito: se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. È sempre e solo un invito.',
     libero: 'Ognuno sceglie in modo sincero, in base alla propria situazione di questo momento. È solo un invito, mai una condizione.'
   };
-  function apriBottiglie(modo){
+  function apriBottiglie(modo, liv){
     modoBott = modo;
     document.getElementById('bottIntro').textContent = INTRO[modo] || INTRO.libero;
     document.getElementById('bottLater').textContent = (modo === 'libero') ? 'Chiudi' : 'Più tardi';
     var sh = document.getElementById('bott'), bs = document.getElementById('bots');
     sh.style.display = 'flex'; bs.classList.remove('go'); void bs.offsetWidth; bs.classList.add('go');
-    if(!prova && modo !== 'libero'){ var o = bot(); if(modo === 'nuova') o.shown = (o.shown||0) + 1; o.last = Date.now(); botSalva(o); }
+    if(!prova && modo !== 'libero'){ var o = bot(); if(modo === 'nuova' && liv !== undefined){ o.st = o.st || {}; o.st[liv] = Date.now(); } o.last = Date.now(); botSalva(o); }
   }
   function chiudiBottiglie(){ document.getElementById('bott').style.display = 'none'; }
   document.getElementById('bottLater').addEventListener('click', chiudiBottiglie);
@@ -266,9 +269,13 @@
     setTimeout(chiudiBottiglie, 1600);
   });
   // la prima volta l'invito completo accompagna l'apertura delle prime due tappe
-  function bottPerTappa(){
+  // l'invito completo compare solo all'apertura di Fiore e di Frutto: Seme, Germoglio e Albero restano senza invito
+  var LIV_INVITO = 3;
+  function fioreRaggiunto(){ return Object.keys(DOORS).some(function(d){ return livello(d) >= LIV_INVITO; }); }
+  function bottPerTappa(L){
+    if(L < LIV_INVITO) return false;
     var o = bot(); if(o.done && Date.now() - o.done < 180*DAY) return false;
-    return (o.shown||0) < 2;
+    return !(o.st && o.st[L]);
   }
   function praticaRecente(){
     try{
@@ -280,12 +287,12 @@
   // dopo le prime volte: al massimo un promemoria al mese, solo se si sta ancora praticando
   function checkRemind(){
     if(document.getElementById('toast').style.display === 'block') return;
+    if(!fioreRaggiunto()) return;
     var o = bot(), now = Date.now();
-    if((o.shown||0) < 2) return;
     if(o.done && now - o.done < 180*DAY) return;
     if(o.last && now - o.last < 30*DAY) return;
     if(!praticaRecente()) return;
-    apriBottiglie('promemoria');
+    apriBottiglie(o.last ? 'promemoria' : 'primo');
   }
   buildBottles();
   // valuta: euro se si naviga dall'Italia, altrimenti franchi svizzeri
@@ -303,8 +310,8 @@
   function provaTappa(){
     var hh = location.hash, q = location.search;
     if(hh === '#prova-tappa' || /[?&]prova=1/.test(q)){
-      prova = true; pendBott = true;
-      document.getElementById('toastTxt').textContent = 'Porta Corpo: Seme → Germoglio. Si è aperta una nuova tappa.';
+      prova = true; pendBott = true; pendLiv = 3;
+      document.getElementById('toastTxt').textContent = 'Porta Corpo: Albero → Fiore. Si è aperta una nuova tappa.';
       document.getElementById('toast').style.display = 'block';
     } else if(hh === '#prova-promemoria' || /[?&]prova=2/.test(q)){ prova = true; apriBottiglie('promemoria'); }
     else if(hh === '#prova-bottiglie' || /[?&]prova=3/.test(q)){ prova = true; apriBottiglie('libero'); }
