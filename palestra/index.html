@@ -56,6 +56,12 @@
   .mt button{border:0;background:#fff;color:var(--indigo);font:inherit;font-weight:600;padding:9px 24px;cursor:pointer;}
   .mt button.on{background:var(--indigo);color:#fff;}
   .mp .mn{font-size:13px;color:var(--ink-soft);margin-top:7px;}
+  .ip{margin:4px 0 18px;text-align:center;}
+  .ip .lb{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:6px;}
+  .ip .it{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .ip .it button{border:1.5px solid var(--indigo);background:#fff;color:var(--indigo);font:inherit;font-weight:600;padding:8px 18px;border-radius:99px;cursor:pointer;}
+  .ip .it button.on{background:var(--indigo);color:#fff;}
+  .ip .in{font-size:13px;color:var(--ink-soft);margin-top:7px;line-height:1.45;}
   .bn{display:block;margin:22px auto 0;border:0;background:none;color:var(--indigo);font:inherit;font-size:14px;text-decoration:underline;padding:10px;cursor:pointer;}
   :root{ --idle-glyph: url(seme.png); --c-red:#d12b27; --c-green:#3f9142; --c-yellow:#f2c230; --c-blue:#3571b5; }
   @keyframes seedBreath{ 0%,100%{transform:scale(1); opacity:.92;} 50%{transform:scale(1.045); opacity:1;} }
@@ -88,7 +94,7 @@
 <body>
 <div class="wrap">
   <div id="view"></div>
-  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 7</p>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 8</p>
   <div class="foot"><span id="ver"></span><a href="../">Vai a Respiro e Presenza</a></div>
 </div>
 <div class="toast" id="toast"><div id="toastTxt"></div><button id="toastOk" type="button">Continua</button></div>
@@ -147,6 +153,20 @@
     box.appendChild(el('div','mn', m === 'kids' ? 'Modalità bambini: esercizi più leggeri e giocosi, adatti ai più piccoli.' : 'Modalità adulti: tutti gli esercizi.'));
     return box;
   }
+  var INTEL = {corpo:['Corpo','Parti dal corpo: sentire, muovere, appoggiare i piedi a terra.'], cuore:['Cuore','Parti dal cuore: un respiro piano, un sorriso, gioia e accoglienza.'], mente:['Mente','Parti dalla mente: un obiettivo chiaro, un metodo, un confronto.']};
+  function intelBar(){
+    var box = el('div','ip'), cur = ls('pcd_intel');
+    box.appendChild(el('span','lb','Da dove vuoi entrare oggi? (facoltativo)'));
+    var t = el('div','it');
+    Object.keys(INTEL).forEach(function(k){
+      var b = el('button', k === cur ? 'on' : '', INTEL[k][0]); b.type = 'button';
+      b.addEventListener('click', function(){ ls('pcd_intel', k === cur ? null : k); rerender(); });
+      t.appendChild(b);
+    });
+    box.appendChild(t);
+    box.appendChild(el('div','in', INTEL[cur] ? INTEL[cur][1] + ' Negli esercizi di Concentrazione e Memoria troverai la frase di apertura e la domanda finale di questa porta.' : 'Cambia solo la frase di apertura e la domanda finale di alcuni esercizi: puoi cambiare ogni volta.'));
+    return box;
+  }
   function rerender(){ var d = (location.hash||'').replace('#',''); var y = window.scrollY; if(DOORS[d]) porta(d); else home(); window.scrollTo(0, y); }
   function header(){
     var v = (/[?&]v=([ABC])/.exec(location.search)||[])[1] || 'C';
@@ -182,6 +202,7 @@
     header();
     view.appendChild(el('p','lead','Scegli una porta. Le tappe si aprono man mano che pratichi: ogni giorno in cui ti alleni in una porta conta una pratica.'));
     view.appendChild(modeBar());
+    view.appendChild(intelBar());
     var box = el('div','doors');
     Object.keys(DOORS).forEach(function(d){
       var L = livello(d), n = pratiche(d), b = el('button','door '+d);
