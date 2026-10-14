@@ -118,6 +118,10 @@
   .field .val{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; color:var(--indigo); font-weight:600;}
 
   .diff-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .ritmo{max-width:420px; margin:2px auto 14px; text-align:center; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-size:13px; color:var(--ink-soft);}
+  .ritmo b{color:#2f6f93;}
+  .ritmo input[type=range]{width:100%; accent-color:#2f6f93; margin:6px 0 0;}
+  .ritmo .ends{display:flex; justify-content:space-between; font-size:11px; opacity:.75;}
   .diff-btn{
     padding:7px 15px; border-radius:999px; border:1.5px solid var(--line);
     background:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:13px;
@@ -754,6 +758,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="diff-btn" data-l="avanzato" type="button">Avanzato</button>
     </div>
     <div class="sub" id="breathLevelInfo" style="text-align:center;"></div>
+    <div class="ritmo" id="breathRitmo"><div>Ritmo: <b class="rn">Normale</b></div><input type="range" min="0" max="4" step="1" value="2" aria-label="Ritmo"><div class="ends"><span>più lento</span><span>più veloce</span></div></div>
     <div class="breath-zone">
       <div class="breath-circle" id="breathCircle">Inizia</div>
       <div class="prog" id="breathProg"><div class="prog-fill"></div></div><div class="prog-txt" id="breathProgTxt"></div>
@@ -842,6 +847,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="diff-btn" data-l="avanzato" type="button">Avanzato</button>
     </div>
     <div class="sub" id="pranaLevelInfo" style="text-align:center;"></div>
+    <div class="ritmo" id="pranaRitmo"><div>Ritmo: <b class="rn">Normale</b></div><input type="range" min="0" max="4" step="1" value="2" aria-label="Ritmo"><div class="ends"><span>più lento</span><span>più veloce</span></div></div>
 
     <div class="breath-zone">
       <div class="breath-circle" id="pranaCircle" style="--fill:linear-gradient(135deg,#2f6f93,#1d4a66);">Pronto</div>
@@ -1069,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 69 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 70 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2076,13 +2082,36 @@ document.getElementById('breathVoiceToggle').addEventListener('click', function(
   this.classList.toggle('on', breathVoiceOn);
 });
 
+// Ritmo: l'utente può rallentare o accelerare i tempi (ricordato sul telefono, per esercizio)
+const RITMI = [{n:'Molto lento',f:1.5},{n:'Più lento',f:1.25},{n:'Normale',f:1},{n:'Più veloce',f:0.85},{n:'Molto veloce',f:0.7}];
+function ritmoGet(key){ try{ const v = parseInt(localStorage.getItem('pcd_ritmo_'+key),10); if(v>=0 && v<=4) return v; }catch(e){} return 2; }
+function ritmoSet(key,i){ try{ localStorage.setItem('pcd_ritmo_'+key, String(i)); }catch(e){} }
+function ritmoFactor(key){ return RITMI[ritmoGet(key)].f; }
+function ritmoScale(ms, f){ return f===1 ? ms : Math.max(100, Math.round(ms*f/50)*50); }
+function wireRitmo(boxId, getKey, isRunning, onChange){
+  const box = document.getElementById(boxId), inp = box.querySelector('input'), nm = box.querySelector('.rn');
+  function sync(){ const i = ritmoGet(getKey()); inp.value = i; nm.textContent = RITMI[i].n; }
+  inp.addEventListener('input', ()=>{
+    if(isRunning()){ sync(); return; }
+    ritmoSet(getKey(), parseInt(inp.value,10)); sync(); if(onChange) onChange();
+  });
+  sync();
+  return sync;
+}
+
 const BREATH_LEVELS = {
   principiante: {dur:3000, cycles:5, info:'Ritmo 3-3-3-3 · 5 cicli'},
   intermedio:   {dur:4000, cycles:5, info:'Ritmo 4-4-4-4 · 5 cicli'},
   avanzato:     {dur:6000, cycles:8, info:'Ritmo 6-6-6-6 · 8 cicli'}
 };
 let breathLevel = 'intermedio';
-function updateBreathLevelInfo(){ document.getElementById('breathLevelInfo').textContent = BREATH_LEVELS[breathLevel].info; }
+function updateBreathLevelInfo(){
+  const b = BREATH_LEVELS[breathLevel], f = ritmoFactor('breath');
+  let t = b.info;
+  if(f !== 1){ const sec = (ritmoScale(b.dur,f)/1000).toString().replace('.',','); t = 'Ritmo '+[sec,sec,sec,sec].join('-')+' · '+b.cycles+' cicli'; }
+  document.getElementById('breathLevelInfo').textContent = t;
+}
+const syncBreathRitmo = wireRitmo('breathRitmo', ()=>'breath', ()=>breathRunning, updateBreathLevelInfo);
 wireDiffRow('breathLevel', btn=>{ if(breathRunning) return; breathLevel = btn.dataset.l; updateBreathLevelInfo(); });
 updateBreathLevelInfo();
 
@@ -2099,11 +2128,12 @@ document.getElementById('breathStart').addEventListener('click', ()=>{
     Espira: "l'aria viziata esce, la tensione se ne va"
   };
   const bPlan = BREATH_LEVELS[breathLevel];
+  const bDur = ritmoScale(bPlan.dur, ritmoFactor('breath'));
   const phases = [
-    {label:'Inspira', scale:1.5, dur:bPlan.dur},
-    {label:'Trattieni', scale:1.5, dur:bPlan.dur},
-    {label:'Espira', scale:0.85, dur:bPlan.dur},
-    {label:'Trattieni', scale:0.85, dur:bPlan.dur, cap:"a polmoni vuoti, resta in quiete"}
+    {label:'Inspira', scale:1.5, dur:bDur},
+    {label:'Trattieni', scale:1.5, dur:bDur},
+    {label:'Espira', scale:0.85, dur:bDur},
+    {label:'Trattieni', scale:0.85, dur:bDur, cap:"a polmoni vuoti, resta in quiete"}
   ];
   let cycle = 0;
   const maxCycles = bPlan.cycles;
@@ -2328,11 +2358,13 @@ function updatePranaLevelInfo(){
   document.getElementById('pranaLevelInfo').textContent = t;
 }
 wireDiffRow('pranaLevel', btn=>{ if(pranaRunning) return; pranaLevel = btn.dataset.l; updatePranaLevelInfo(); });
+const syncPranaRitmo = wireRitmo('pranaRitmo', ()=>'prana_'+pranaCurrentTech, ()=>pranaRunning, null);
 wireDiffRow('pranaTechnique', btn=>{
   if(pranaRunning) return;
   pranaCurrentTech = btn.dataset.t;
   updatePranaDescription();
   updatePranaLevelInfo();
+  syncPranaRitmo();
 });
 updatePranaLevelInfo();
 updatePranaDescription();
@@ -2376,6 +2408,19 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
       return q;
     });
     maxCycles = lvl.cycles;
+  }
+  // ritmo scelto dall'utente: allunga o accorcia attese e fasi (non i blocchi da 30 s né le registrazioni)
+  const rf = ritmoFactor('prana_'+pranaCurrentTech);
+  if(rf !== 1){
+    phases = phases.map(p=>{
+      const q = {...p};
+      if(q.section) return q;
+      if(q.dur) q.dur = ritmoScale(q.dur, rf);
+      if(q.hold) q.hold = ritmoScale(q.hold, rf);
+      if(q.pause) q.pause = ritmoScale(q.pause, rf);
+      if(q.step) q.step = ritmoScale(q.step, rf);
+      return q;
+    });
   }
   let cycle = 0;
   function playPhaseSound(p){
@@ -3644,7 +3689,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=69;
+  const LOCAL=70;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
