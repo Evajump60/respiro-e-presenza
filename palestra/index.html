@@ -66,6 +66,7 @@
 <body>
 <div class="wrap">
   <div id="view"></div>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 2</p>
   <div class="foot"><span id="ver">Palestra v1</span><a href="../">Vai a Respiro e Presenza</a></div>
 </div>
 <div class="toast" id="toast"><div id="toastTxt"></div><div id="toastBottles" style="margin-top:10px;font-size:.92em;line-height:1.45;opacity:.92">Se questo cammino ti fa bene, puoi riempire una delle tre bottiglie: Sostegno/Equilibrio/Respiro, Fuori e Dentro, Economia Sacra. È solo un invito, mai una condizione: le tappe restano tue in ogni caso. <a href="https://visionecosciente.ch/donazioni" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Scopri le tre bottiglie</a></div><button id="toastOk" type="button">Continua</button></div>
@@ -194,10 +195,16 @@
     if(msg){ var t = document.getElementById('toast'); document.getElementById('toastTxt').textContent = msg; t.style.display = 'block'; }
   }
   document.getElementById('toastOk').addEventListener('click', function(){ document.getElementById('toast').style.display = 'none'; });
-  window.addEventListener('hashchange', route);
+  // comando nascosto per vedere l'avviso senza aspettare una nuova tappa (?prova=1 oppure #prova-tappa)
+  function provaTappa(){
+    if(location.hash === '#prova-tappa' || /[?&]prova=1/.test(location.search)){
+      document.getElementById('toastTxt').textContent = 'Porta Corpo: Seme → Germoglio. Si è aperta una nuova tappa.';
+      document.getElementById('toast').style.display = 'block';
+    }
+  }
+  window.addEventListener('hashchange', function(){ route(); provaTappa(); });
   route();
-  // comando nascosto per vedere l'avviso senza aspettare una nuova tappa
-  if(h === '#prova-tappa'){ document.getElementById('toastTxt').textContent = 'Porta Corpo: Seme → Germoglio. Si è aperta una nuova tappa.'; document.getElementById('toast').style.display = 'block'; }
+  provaTappa();
 })();
 </script>
 </body>
