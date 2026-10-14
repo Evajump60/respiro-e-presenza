@@ -10,7 +10,8 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{background:var(--paper); color:var(--ink); font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:760px;margin:0 auto;padding:20px 18px 80px;}
+  body::before{content:'';position:fixed;inset:0;background:url(seme.png) no-repeat center 46% / auto min(78vh,640px);opacity:.11;pointer-events:none;z-index:0;}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:20px 18px 80px;}
   h1{font-size:1.7rem;margin:6px 0 4px;} h2{font-size:1.05rem;margin:22px 0 6px;color:var(--indigo);} h3{margin:12px 0 4px;}
   .eyebrow{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
   .sub{color:var(--ink-soft);font-size:.92rem;}
@@ -32,7 +33,7 @@
   <h1>Laboratorio</h1>
   <div class="notice" id="notice"></div>
   <div id="main"></div>
-  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:34px 0 20px">Laboratorio · Versione 1</p>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:34px 0 20px">Laboratorio · Versione 2</p>
 </div>
 <script>
 (function(){
