@@ -34,13 +34,37 @@
   .ex b{display:block;font-size:16px;color:var(--indigo-deep);} .ex span{font-size:13.5px;color:var(--ink-soft);} .ex em{font-style:normal;font-size:11.5px;color:var(--ink-soft);opacity:.8;}
   .toast{position:fixed;left:14px;right:14px;bottom:18px;max-width:560px;margin:0 auto;background:var(--indigo-deep);color:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);display:none;}
   .toast button{margin-top:8px;border:0;border-radius:99px;padding:8px 16px;font:inherit;font-weight:600;background:#fff;color:var(--indigo-deep);cursor:pointer;}
+
+  :root{ --idle-glyph: url(seme.png); --c-red:#d12b27; --c-green:#3f9142; --c-yellow:#f2c230; --c-blue:#3571b5; }
+  @keyframes seedBreath{ 0%,100%{transform:scale(1); opacity:.92;} 50%{transform:scale(1.045); opacity:1;} }
+  @media (prefers-reduced-motion: reduce){ .seedg{animation:none !important;} }
+  .seedg{background:var(--idle-glyph) no-repeat center / contain; animation:seedBreath 6s ease-in-out infinite;}
+  .strip{height:5px;background:linear-gradient(90deg,var(--c-red) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-blue) 75% 100%);}
+  .tag2{font-family:Georgia,"Times New Roman",serif;letter-spacing:.2em;font-size:13px;}
+  /* A: banda scura come le altre app */
+  .vA .top{background:linear-gradient(160deg,#425a70,#27465a);color:#fff;border-radius:var(--radius);overflow:hidden;margin-bottom:18px;box-shadow:0 8px 22px rgba(28,50,75,.22);}
+  .vA .top .in{display:flex;align-items:center;gap:16px;padding:18px 18px 16px;}
+  .vA .top .seedg{width:70px;height:106px;flex:0 0 auto;}
+  .vA .top h1{color:#fff;margin:2px 0 4px;font-size:28px;line-height:1.1;}
+  .vA .top .tag2{color:rgba(255,255,255,.88);}
+  .vA .top .eyebrow{color:rgba(255,255,255,.75);}
+  /* B: seme grande al centro */
+  .vB .top{text-align:center;padding:6px 0 10px;}
+  .vB .top .seedg{width:150px;height:200px;margin:0 auto;background-color:#27465a;border-radius:90px 90px 70px 70px;background-origin:content-box;padding:22px;box-shadow:0 12px 30px rgba(28,50,75,.28);}
+  .vB .top h1{margin:14px 0 4px;} .vB .top .tag2{color:var(--indigo);} .vB .top .lead{margin:10px auto 0;}
+  /* C: seme dentro un anello a tre archi che si riempie con la pratica */
+  .vC .top{text-align:center;padding:4px 0 6px;}
+  .ring{position:relative;width:190px;height:190px;margin:0 auto;}
+  .ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);}
+  .ring .seedg{position:absolute;inset:34px;}
+  .ring .core{position:absolute;inset:24px;border-radius:50%;background:linear-gradient(160deg,#425a70,#27465a);}
+  .vC .top h1{margin:10px 0 2px;} .vC .top .tag2{color:var(--indigo);}
   .foot{margin-top:28px;font-size:12.5px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
   .foot a{color:var(--indigo);}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">Palestra del Cervello Destro</div>
   <div id="view"></div>
   <div class="foot"><span id="ver">Palestra v1</span><a href="../">Vai a Respiro e Presenza</a></div>
 </div>
@@ -73,9 +97,39 @@
     return BASE[it.app] + '#vai=' + encodeURIComponent(g);
   }
   function el(t,c,x){ var e = document.createElement(t); if(c) e.className = c; if(x!==undefined) e.textContent = x; return e; }
+
+  function header(){
+    var v = (/[?&]v=([ABC])/.exec(location.search)||[])[1] || 'A';
+    document.body.className = 'v'+v;
+    var top = el('div','top');
+    var tag = el('div','tag2','vedere · sentire · essere');
+    if(v==='A'){
+      var inn = el('div','in'); inn.appendChild(el('div','seedg'));
+      var t = el('div'); t.appendChild(el('div','eyebrow','Visione Cosciente'));
+      t.appendChild(el('h1',null,'Tre porte,\nun cammino')); t.appendChild(tag); inn.appendChild(t);
+      top.appendChild(inn); top.appendChild(el('div','strip'));
+    } else if(v==='B'){
+      top.appendChild(el('div','seedg')); top.appendChild(el('h1',null,'Tre porte, un cammino')); top.appendChild(tag);
+    } else {
+      var ring = el('div','ring');
+      var NS='http://www.w3.org/2000/svg', svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 100 100');
+      var cols = {corpo:'#C1442E',mente:'#2D4A6B',spirito:'#B8935A'}, R=46, C=2*Math.PI*R, seg=C/3;
+      Object.keys(DOORS).forEach(function(d,i){
+        var bg = document.createElementNS(NS,'circle'); bg.setAttribute('cx',50); bg.setAttribute('cy',50); bg.setAttribute('r',R);
+        bg.setAttribute('fill','none'); bg.setAttribute('stroke',cols[d]); bg.setAttribute('stroke-opacity','.22'); bg.setAttribute('stroke-width',5);
+        bg.setAttribute('stroke-dasharray',(seg-3)+' '+(C-seg+3)); bg.setAttribute('stroke-dashoffset',-i*seg); svg.appendChild(bg);
+        var f = Math.min(1, pratiche(d)/STAGES[4].soglia), fg = document.createElementNS(NS,'circle');
+        fg.setAttribute('cx',50); fg.setAttribute('cy',50); fg.setAttribute('r',R); fg.setAttribute('fill','none'); fg.setAttribute('stroke',cols[d]); fg.setAttribute('stroke-width',5); fg.setAttribute('stroke-linecap','round');
+        fg.setAttribute('stroke-dasharray',Math.max(0.01,(seg-3)*f)+' '+C); fg.setAttribute('stroke-dashoffset',-i*seg); svg.appendChild(fg);
+      });
+      ring.appendChild(svg); ring.appendChild(el('div','core')); ring.appendChild(el('div','seedg'));
+      top.appendChild(ring); top.appendChild(el('h1',null,'Tre porte, un cammino')); top.appendChild(tag);
+    }
+    view.appendChild(top);
+  }
   function home(){
     view.innerHTML = '';
-    view.appendChild(el('h1',null,'Tre porte, un cammino'));
+    header();
     view.appendChild(el('p','lead','Scegli una porta. Le tappe si aprono man mano che pratichi: ogni giorno in cui ti alleni in una porta conta una pratica.'));
     var box = el('div','doors');
     Object.keys(DOORS).forEach(function(d){
