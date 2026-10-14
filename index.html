@@ -1075,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 70 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 71 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1312,7 +1312,9 @@ function metroStart(){
   metroBeat = 0; metroNext = metroCtx.currentTime + 0.15;
   metroTimer = setInterval(()=>{
     if(!metroOn || !metroRunning()){ metroStop(); return; }
-    const spb = 60 / metroBpm;
+    // il metronomo segue il Ritmo scelto: più lento = battiti più distanziati
+    let rf = 1; try{ rf = (typeof pranaRunning !== 'undefined' && pranaRunning) ? ritmoFactor('prana_'+pranaCurrentTech) : ritmoFactor('breath'); }catch(e){}
+    const spb = 60 / metroBpm * rf;
     while(metroNext < metroCtx.currentTime + 0.3){
       metroClick(metroNext);
       metroNext += spb; metroBeat++;
@@ -2522,10 +2524,13 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     if(hasRecording){
       // C'è una registrazione vera: si aspetta che finisca davvero prima di avanzare,
       // invece di un tempo fisso che rischierebbe di tagliarla a metà se dura di più.
+      const t0 = Date.now();
       speakCue(text, ()=>{
         if(myPranaRun !== pranaRunId) return;
         playPhaseSound(p);
-        pranaPhaseTimeout = setTimeout(onDone, (p.hold !== undefined ? p.hold : 500));
+        // con un Ritmo diverso da Normale la frase registrata si "incastra" nel tempo della fase
+        const attesa = (rf !== 1 && !p.sound) ? Math.max(400, p.dur - (Date.now()-t0)) : (p.hold !== undefined ? p.hold : 500);
+        pranaPhaseTimeout = setTimeout(onDone, attesa);
       }, showText);
       return;
     }
@@ -3689,7 +3694,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=70;
+  const LOCAL=71;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
