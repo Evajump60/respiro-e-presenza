@@ -1075,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 76 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 77 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1510,7 +1510,7 @@ const RECORDED_VOICE_CLIPS = {
   "Ora lascia libere entrambe le narici e respira in modo naturale.": "audio/2/b227cf0d8e04.m4a",
   "INTRO:dirgha": "audio/2/661d0da4c90c.m4a",
   "INTRO:nadi": "audio/2/02d30101c5f0.m4a",
-  "INTRO:bhramari": "audio/2/a4b4d701a7ca.m4a",
+  "INTRO:bhramari": "audio/2/e97b467f3f4f.m4a",
   "INTRO:leone": "audio/2/39cb5d6ea1cc.m4a",
   "Stringi i pugni e tienili serrati.": "audio/2/0bea2c0e7b5f.m4a",
   "Rilascia i pugni.": "audio/2/4313d50196fa.m4a",
@@ -2305,7 +2305,7 @@ const PRANA_TECHNIQUES = {
   bhramari: {
     desc: "Respiro dell'ape (Bhramari): l'espirazione diventa un ronzio continuo a bocca chiusa. Molto usata per calmare rapidamente il sistema nervoso.",
     phases: [
-      {label:'Inspira dal naso', voice:'Ape: Inspira profondamente.', caption:"Inspira lentamente dal naso, bocca chiusa.", dur:4000, hold:2200, scale:1.4},
+      {label:'Inspira dal naso', voice:'Ape: Inspira profondamente.', caption:"Pollici sulle orecchie per chiuderle, il resto delle mani sugli occhi. Inspira lentamente dal naso, bocca chiusa.", dur:4000, hold:2200, scale:1.4},
       {label:'Espira ronzando: mmmm', voice:'Ape: Espira ronzando.', caption:"Espira lentamente producendo un ronzio continuo, come un'ape.", dur:8000, hold:7000, scale:0.85}
     ]
   },
@@ -3710,7 +3710,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=76;
+  const LOCAL=77;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
