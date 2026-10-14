@@ -35,6 +35,22 @@
   .toast{position:fixed;left:14px;right:14px;bottom:18px;max-width:560px;margin:0 auto;background:var(--indigo-deep);color:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);display:none;max-height:82vh;overflow-y:auto;}
   .toast button{margin-top:8px;border:0;border-radius:99px;padding:8px 16px;font:inherit;font-weight:600;background:#fff;color:var(--indigo-deep);cursor:pointer;}
 
+  .sheet{position:fixed;inset:0;background:rgba(15,25,40,.62);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:14px;}
+  .sheet .card{background:var(--indigo-deep);color:#fff;border-radius:18px;padding:18px 16px 16px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 14px 40px rgba(0,0,0,.4);}
+  .sheet h3{margin:0 0 8px;font-size:22px;color:#fff;}
+  .sheet p{margin:0 0 10px;font-size:14.5px;line-height:1.5;opacity:.93;}
+  .bots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 8px;text-align:center;}
+  .bt svg{width:64px;height:auto;display:block;margin:0 auto 6px;}
+  .bt b{display:block;font-size:15px;} .bt .amt{display:block;font-size:17px;font-weight:700;color:#F2C230;margin:2px 0 4px;}
+  .bt small{display:block;font-size:12px;line-height:1.35;opacity:.85;}
+  .liq{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(1);}
+  .go .liq{animation:rise 1.5s ease-out both;} .go .bt:nth-child(2) .liq{animation-delay:.2s;} .go .bt:nth-child(3) .liq{animation-delay:.4s;}
+  @keyframes rise{ from{transform:scaleY(0);} to{transform:scaleY(1);} }
+  @media (prefers-reduced-motion: reduce){ .go .liq{animation:none !important;} }
+  .sheet .note{font-size:13px;opacity:.8;margin-top:6px;}
+  .sheet .kofi{display:block;text-align:center;margin-top:10px;border-radius:99px;padding:11px 16px;background:#fff;color:var(--indigo-deep);font-weight:700;text-decoration:none;}
+  .sheet .row{display:flex;gap:8px;margin-top:10px;} .sheet .row button{flex:1;border:1px solid rgba(255,255,255,.5);border-radius:99px;padding:10px 8px;font:inherit;font-size:14px;font-weight:600;background:none;color:#fff;cursor:pointer;}
+  .bn{display:block;margin:22px auto 0;border:0;background:none;color:var(--indigo);font:inherit;font-size:14px;text-decoration:underline;padding:10px;cursor:pointer;}
   :root{ --idle-glyph: url(seme.png); --c-red:#d12b27; --c-green:#3f9142; --c-yellow:#f2c230; --c-blue:#3571b5; }
   @keyframes seedBreath{ 0%,100%{transform:scale(1); opacity:.92;} 50%{transform:scale(1.045); opacity:1;} }
   @media (prefers-reduced-motion: reduce){ .seedg{animation:none !important;} }
@@ -66,17 +82,20 @@
 <body>
 <div class="wrap">
   <div id="view"></div>
-  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 4</p>
-  <div class="foot"><span id="ver">Palestra v1</span><a href="../">Vai a Respiro e Presenza</a></div>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:24px 0 90px">Palestra · Versione 5</p>
+  <div class="foot"><span id="ver"></span><a href="../">Vai a Respiro e Presenza</a></div>
 </div>
-<div class="toast" id="toast"><div id="toastTxt"></div><div id="toastBottles" style="margin-top:12px;font-size:.92em;line-height:1.45">
-<div style="opacity:.92">Se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. Scegli quella più sincera per te in questo momento. È solo un invito, mai una condizione: la tappa è tua in ogni caso.</div>
-<div style="margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.12)"><b>Sostegno · <span class="amt" data-v="30">30 CHF</span></b><br>Per chi oggi ha più spazio: il di più aiuta chi ne ha meno.</div>
-<div style="margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.12)"><b>Equilibrio · <span class="amt" data-v="20">20 CHF</span></b><br>Il valore del percorso così com'è.</div>
-<div style="margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.12)"><b>Respiro · <span class="amt" data-v="10">10 CHF</span></b><br>Per chi in questo periodo fatica. Nessuna prova richiesta.</div>
-<div style="margin-top:10px;opacity:.85">Sono cifre simboliche, pensate per questa app. L'importo lo inserisci tu su Ko-fi, la pagina di Visione Cosciente.</div>
-<a href="https://ko-fi.com/visionecoscientech" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;border-radius:99px;padding:9px 16px;background:#fff;color:var(--indigo-deep);font-weight:600;text-decoration:none">Apri Ko-fi di Visione Cosciente</a>
-</div><button id="toastOk" type="button">Continua</button></div>
+<div class="toast" id="toast"><div id="toastTxt"></div><button id="toastOk" type="button">Continua</button></div>
+<div class="sheet" id="bott" role="dialog" aria-modal="true" aria-labelledby="bottT">
+  <div class="card">
+    <h3 id="bottT">Le tre bottiglie</h3>
+    <p id="bottIntro"></p>
+    <div class="bots" id="bots"></div>
+    <p class="note">Sono cifre simboliche, pensate per questa app: non sono quelle dei percorsi. L'importo lo inserisci tu su Ko-fi, la pagina di Visione Cosciente.</p>
+    <a class="kofi" href="https://ko-fi.com/visionecoscientech" target="_blank" rel="noopener">Apri Ko-fi di Visione Cosciente</a>
+    <div class="row"><button type="button" id="bottDone">Ho già contribuito</button><button type="button" id="bottLater">Più tardi</button></div>
+  </div>
+</div>
 <script>
 (function(){
   var ITEMS = [{"door": "corpo", "stage": 0, "app": "b", "go": "specchio", "t": "Specchio dei sei passi", "sub": "Controlla la postura dai piedi alla testa"}, {"door": "corpo", "stage": 0, "app": "b", "go": "hands", "t": "Ginnastica delle mani", "sub": "Un gesto alla volta, o a due mani"}, {"door": "corpo", "stage": 0, "app": "r", "go": "pranayama:dirgha", "t": "Respiro a tre stadi", "sub": "Pancia, torace, petto"}, {"door": "corpo", "stage": 1, "app": "r", "go": "relax", "t": "Rilassamento", "sub": "Contrai e rilascia"}, {"door": "corpo", "stage": 1, "app": "b", "go": "camminata", "t": "Camminata 3–3", "sub": "Tre passi dentro, tre passi fuori"}, {"door": "corpo", "stage": 1, "app": "b", "go": "trace", "t": "Traccia le forme", "sub": "Motricità fine, con tutte e due le mani"}, {"door": "corpo", "stage": 1, "app": "r", "go": "pranayama:leone", "t": "Respiro del leone", "sub": "Scioglie il viso"}, {"door": "corpo", "stage": 3, "app": "b", "go": "cross", "t": "Movimento incrociato", "sub": "Routine di circa 3 minuti, corpo intero"}, {"door": "corpo", "stage": 3, "app": "r", "go": "ghiaccio", "t": "Sciogliersi come ghiaccio", "sub": "Il corpo si scioglie come ghiaccio al sole"}, {"door": "corpo", "stage": 3, "app": "b", "go": "maniresp", "t": "Mani che salgono e scendono", "sub": "Le mani seguono il respiro"}, {"door": "corpo", "stage": 2, "app": "b", "go": "alberoamico", "t": "L’albero amico", "sub": "All’aperto: radici, tronco, respiro"}, {"door": "corpo", "stage": 2, "app": "r", "go": "autoreg:tensione", "t": "Soglia di Tensione", "sub": "Nota e sciogli la tensione"}, {"door": "corpo", "stage": 2, "app": "r", "go": "pranayama:bhastrika", "t": "Respiro del mantice", "sub": "Energia vivace"}, {"door": "corpo", "stage": 4, "app": "b", "go": "chiusura", "t": "Gesti di chiusura", "sub": "Un piccolo auto-massaggio per chiudere"}, {"door": "corpo", "stage": 4, "app": "b", "go": "laboratorio", "t": "Laboratorio", "sub": "Sperimentiamo insieme, senza garanzie"}, {"door": "mente", "stage": 0, "app": "r", "go": "breath", "t": "Respirazione yogica quadrata", "sub": "Dentro · ferma · fuori · ferma"}, {"door": "mente", "stage": 0, "app": "r", "go": "contemplare", "t": "Contemplare il respiro", "sub": "Osservare il respiro senza cambiarlo"}, {"door": "mente", "stage": 0, "app": "c", "go": "flash", "t": "Flashcard Lampo", "sub": "Immagini veloci: guarda e ricorda l’ordine"}, {"door": "mente", "stage": 0, "app": "r", "go": "kn", "t": "Il vento nel naso", "sub": "Narici alternate in versione gioco (bambini)"}, {"door": "mente", "stage": 1, "app": "c", "go": "memory", "t": "Catena della Memoria", "sub": "Collega le parole con immagini buffe"}, {"door": "mente", "stage": 1, "app": "c", "go": "occhimorbidi", "t": "Occhi morbidi e linea di ancoraggio", "sub": "Sguardo morbido, visione larga"}, {"door": "mente", "stage": 1, "app": "r", "go": "mandala", "t": "Mandala", "sub": "Guarda e visualizza"}, {"door": "mente", "stage": 3, "app": "c", "go": "grid", "t": "Occhio di Kim", "sub": "Guarda la griglia e ritrova le coppie"}, {"door": "mente", "stage": 3, "app": "c", "go": "fixation", "t": "Fissazione e immagine residua", "sub": "Tre esercizi di training visivo"}, {"door": "mente", "stage": 3, "app": "c", "go": "mmemoria", "t": "Mandala-memoria", "sub": "Guarda un mandala, poi ricostruiscilo"}, {"door": "mente", "stage": 3, "app": "c", "go": "paesaggio", "t": "Portarsi dentro il paesaggio", "sub": "Guarda un paesaggio, poi ricrealo nella mente"}, {"door": "mente", "stage": 2, "app": "c", "go": "corsi", "t": "Test di Corsi", "sub": "Ripeti la sequenza di blocchi"}, {"door": "mente", "stage": 2, "app": "c", "go": "pair", "t": "Gioco in coppia", "sub": "Concentrazione condivisa tra due persone"}, {"door": "mente", "stage": 2, "app": "c", "go": "listen", "t": "Ascolto rapido", "sub": "Una voce che accelera, poi qualche domanda"}, {"door": "mente", "stage": 2, "app": "c", "go": "speed", "t": "Lettura veloce", "sub": "Leggi una volta sola, poi la verifica"}, {"door": "mente", "stage": 4, "app": "c", "go": "nback", "t": "N-Back", "sub": "Memoria di lavoro: cosa hai visto N turni fa?"}, {"door": "mente", "stage": 4, "app": "c", "go": "stroop", "t": "Parola e colore", "sub": "Le due mani, i colori e le parole"}, {"door": "mente", "stage": 4, "app": "c", "go": "percorsi", "t": "Percorsi di circa 10 minuti", "sub": "Una sequenza di esercizi, uno dopo l’altro"}, {"door": "mente", "stage": 4, "app": "c", "go": "laboratorio", "t": "Laboratorio", "sub": "Sperimentiamo insieme, senza garanzie"}, {"door": "spirito", "stage": 0, "app": "r", "go": "bambini", "t": "Gioco e calma", "sub": "Per i bambini: onda, vento, seme e animale amico"}, {"door": "spirito", "stage": 0, "app": "r", "go": "pranayama:bhramari", "t": "Respiro dell’ape", "sub": "Un ronzio che calma"}, {"door": "spirito", "stage": 0, "app": "r", "go": "unodieci", "t": "Uno–Dieci", "sub": "Radicarsi: dieci immagini"}, {"door": "spirito", "stage": 0, "app": "r", "go": "pranayama:nadi", "t": "Narici alternate", "sub": "Calma e equilibrio"}, {"door": "spirito", "stage": 1, "app": "r", "go": "arcobaleno", "t": "Respirazione arcobaleno", "sub": "I sette colori entrano nel corpo con il respiro"}, {"door": "spirito", "stage": 1, "app": "r", "go": "montagna", "t": "La montagna", "sub": "Visualizzazione guidata: le stagioni passano"}, {"door": "spirito", "stage": 1, "app": "r", "go": "acqua", "t": "Immergersi nell’acqua di luce", "sub": "Un bagno di acqua piena di luce e colore"}, {"door": "spirito", "stage": 1, "app": "r", "go": "kv", "t": "Fantasia calma", "sub": "Una cosa che agita, resa facile e bella"}, {"door": "spirito", "stage": 3, "app": "r", "go": "soleluna", "t": "Sole e Luna", "sub": "Luce dorata e luce argentata che si incontrano"}, {"door": "spirito", "stage": 3, "app": "r", "go": "giardino", "t": "Giardino dei cinque colori", "sub": "Cinque giardini, cinque colori, cinque emozioni"}, {"door": "spirito", "stage": 3, "app": "r", "go": "autoreg:visualizzazione", "t": "Visualizzazione positiva", "sub": "Prepara una situazione"}, {"door": "spirito", "stage": 2, "app": "r", "go": "tredantian", "t": "Aprire e chiudere i tre Dan Tian", "sub": "In piedi: tre altezze"}, {"door": "spirito", "stage": 2, "app": "r", "go": "seicolori", "t": "Le sei porte dei colori", "sub": "Una nuvola di sei colori"}, {"door": "spirito", "stage": 2, "app": "r", "go": "percorsi", "t": "Percorsi di circa 10 minuti", "sub": "Una sequenza di esercizi, un solo tocco per partire"}, {"door": "spirito", "stage": 4, "app": "r", "go": "laboratorio", "t": "Laboratorio", "sub": "Sperimentiamo insieme, senza garanzie"}];
@@ -155,7 +174,11 @@
       box.appendChild(b);
     });
     view.appendChild(box);
+    var bn = el('button','bn','Le tre bottiglie · un invito'); bn.type = 'button';
+    bn.addEventListener('click', function(){ apriBottiglie('libero'); });
+    view.appendChild(bn);
     checkNew();
+    checkRemind();
   }
   function porta(d){
     view.innerHTML = '';
@@ -199,9 +222,72 @@
       seen[d] = L;
     });
     ls('pcd_hub_seen', JSON.stringify(seen));
-    if(msg){ var t = document.getElementById('toast'); document.getElementById('toastTxt').textContent = msg; t.style.display = 'block'; }
+    if(msg){ var t = document.getElementById('toast'); document.getElementById('toastTxt').textContent = msg; t.style.display = 'block'; pendBott = bottPerTappa(); }
   }
-  document.getElementById('toastOk').addEventListener('click', function(){ document.getElementById('toast').style.display = 'none'; });
+  document.getElementById('toastOk').addEventListener('click', function(){ document.getElementById('toast').style.display = 'none'; if(pendBott){ pendBott = false; apriBottiglie('nuova'); } });
+  // ---- le tre bottiglie: invito gentile, mai una condizione ----
+  var DAY = 86400000, BK = 'pcd_bott', pendBott = false, prova = false, modoBott = 'libero';
+  var BOTT = [
+    {n:'Respiro', v:10, f:.35, c:'#8FC1E3', t:'Per chi in questo periodo fatica. Nessuna prova richiesta.'},
+    {n:'Equilibrio', v:20, f:.62, c:'#9CD3A2', t:'Il valore del percorso così com\'è.'},
+    {n:'Sostegno', v:30, f:.92, c:'#F2C230', t:'Per chi oggi ha più spazio: il di più aiuta chi ne ha meno.'}
+  ];
+  function bot(){ try{ return JSON.parse(ls(BK)||'{}'); }catch(e){ return {}; } }
+  function botSalva(o){ ls(BK, JSON.stringify(o)); }
+  function buildBottles(){
+    var D = 'M22 2 H38 V20 C38 28 54 32 54 48 V100 Q54 110 44 110 H16 Q6 110 6 100 V48 C6 32 22 28 22 20 Z';
+    document.getElementById('bots').innerHTML = BOTT.map(function(B,i){
+      var h = 80*B.f;
+      return '<div class="bt"><svg viewBox="0 0 60 112" aria-hidden="true"><defs><clipPath id="cp'+i+'"><path d="'+D+'"/></clipPath></defs>'
+        + '<g clip-path="url(#cp'+i+')"><rect class="liq" x="0" y="'+(110-h)+'" width="60" height="'+(h+2)+'" fill="'+B.c+'"/></g>'
+        + '<path d="'+D+'" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>'
+        + '<b>'+B.n+'</b><span class="amt" data-v="'+B.v+'">'+B.v+' CHF</span><small>'+B.t+'</small></div>';
+    }).join('');
+  }
+  var INTRO = {
+    nuova: 'Si è aperta una nuova tappa. Se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. Scegli quella più sincera per te in questo momento. È solo un invito, mai una condizione: le tappe sono tue in ogni caso.',
+    promemoria: 'Un piccolo promemoria, se ti fosse sfuggito: se questo cammino ti fa bene, puoi sostenerlo con una delle tre bottiglie. È sempre e solo un invito.',
+    libero: 'Ognuno sceglie in modo sincero, in base alla propria situazione di questo momento. È solo un invito, mai una condizione.'
+  };
+  function apriBottiglie(modo){
+    modoBott = modo;
+    document.getElementById('bottIntro').textContent = INTRO[modo] || INTRO.libero;
+    document.getElementById('bottLater').textContent = (modo === 'libero') ? 'Chiudi' : 'Più tardi';
+    var sh = document.getElementById('bott'), bs = document.getElementById('bots');
+    sh.style.display = 'flex'; bs.classList.remove('go'); void bs.offsetWidth; bs.classList.add('go');
+    if(!prova && modo !== 'libero'){ var o = bot(); if(modo === 'nuova') o.shown = (o.shown||0) + 1; o.last = Date.now(); botSalva(o); }
+  }
+  function chiudiBottiglie(){ document.getElementById('bott').style.display = 'none'; }
+  document.getElementById('bottLater').addEventListener('click', chiudiBottiglie);
+  document.getElementById('bott').addEventListener('click', function(e){ if(e.target === this) chiudiBottiglie(); });
+  document.getElementById('bottDone').addEventListener('click', function(){
+    if(!prova){ var o = bot(); o.done = Date.now(); botSalva(o); }
+    document.getElementById('bottIntro').textContent = 'Grazie di cuore. 💛';
+    setTimeout(chiudiBottiglie, 1600);
+  });
+  // la prima volta l'invito completo accompagna l'apertura delle prime due tappe
+  function bottPerTappa(){
+    var o = bot(); if(o.done && Date.now() - o.done < 180*DAY) return false;
+    return (o.shown||0) < 2;
+  }
+  function praticaRecente(){
+    try{
+      var o = JSON.parse(ls('pcd_prac')||'{}'), lim = Date.now() - 30*DAY, ok = false;
+      Object.keys(o).forEach(function(d){ (o[d]||[]).forEach(function(g){ if(new Date(g).getTime() >= lim) ok = true; }); });
+      return ok;
+    }catch(e){ return false; }
+  }
+  // dopo le prime volte: al massimo un promemoria al mese, solo se si sta ancora praticando
+  function checkRemind(){
+    if(document.getElementById('toast').style.display === 'block') return;
+    var o = bot(), now = Date.now();
+    if((o.shown||0) < 2) return;
+    if(o.done && now - o.done < 180*DAY) return;
+    if(o.last && now - o.last < 30*DAY) return;
+    if(!praticaRecente()) return;
+    apriBottiglie('promemoria');
+  }
+  buildBottles();
   // valuta: euro se si naviga dall'Italia, altrimenti franchi svizzeri
   function soloItalia(){
     var tz = ''; try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; }catch(e){}
@@ -215,10 +301,13 @@
   valuta();
   // comando nascosto per vedere l'avviso senza aspettare una nuova tappa (?prova=1 oppure #prova-tappa)
   function provaTappa(){
-    if(location.hash === '#prova-tappa' || /[?&]prova=1/.test(location.search)){
+    var hh = location.hash, q = location.search;
+    if(hh === '#prova-tappa' || /[?&]prova=1/.test(q)){
+      prova = true; pendBott = true;
       document.getElementById('toastTxt').textContent = 'Porta Corpo: Seme → Germoglio. Si è aperta una nuova tappa.';
       document.getElementById('toast').style.display = 'block';
-    }
+    } else if(hh === '#prova-promemoria' || /[?&]prova=2/.test(q)){ prova = true; apriBottiglie('promemoria'); }
+    else if(hh === '#prova-bottiglie' || /[?&]prova=3/.test(q)){ prova = true; apriBottiglie('libero'); }
   }
   window.addEventListener('hashchange', function(){ route(); provaTappa(); });
   route();
