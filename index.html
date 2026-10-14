@@ -1075,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 74 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 75 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1500,7 +1500,7 @@ const RECORDED_VOICE_CLIPS = {
   "Leone: Espira come un leone.": "audio/2/af7a78a28701.m4a",
   "INTRO:relax": "audio/2/9b06f4462d53.m4a",
   "INTRO:breath": "audio/2/9377b95bd0aa.m4a",
-  "INTRO:bhastrika": "audio/2/2c39df22bc46.m4a",
+  "INTRO:bhastrika": "audio/2/2fbe91162490.m4a",
   "INTRO:tensione": "audio/2/fbdac8ca1297.m4a",
   "INTRO:visualizzazione": "audio/2/dfd6fdf8f412.m4a",
   "INTRO:mandala": "audio/2/b20a380287b6.m4a",
@@ -2317,10 +2317,10 @@ const PRANA_TECHNIQUES = {
     ]
   },
   bhastrika: {
-    desc: "Respiro del mantice (Bhastrika): inspirazioni ed espirazioni rapide e forzate dal naso, energizzante. Da evitare in gravidanza o con la pressione alta.",
+    desc: "Respiro del mantice (Bhastrika): inspirazioni ed espirazioni rapide e forzate dal naso, con la pancia che si gonfia inspirando e si tira dentro espirando. Energizzante. Si ispira al Kapalabhati. Da evitare in gravidanza o con la pressione alta.",
     phases: [
-      {label:'Inspira rapido', caption:"Inspira rapidamente dal naso, un colpo secco e deciso.", dur:2500, hold:600, scale:1.2},
-      {label:'Espira rapido', caption:"Espira rapidamente dal naso, un colpo secco, come un mantice.", dur:2500, hold:600, scale:1.05},
+      {label:'Inspira rapido', caption:"Inspira rapidamente dal naso, gonfiando la pancia, un colpo secco e deciso.", dur:2500, hold:600, scale:1.2},
+      {label:'Espira rapido', caption:"Espira rapidamente dal naso, tirando la pancia dentro, un colpo secco, come un mantice.", dur:2500, hold:600, scale:1.05},
       {label:'Mantice', rapid:true, count:20, step:450, caption:"Continua così, veloce e regolare: inspira, espira, inspira, espira…"},
       {label:'Pausa naturale', caption:"Torna a un respiro naturale e osserva le sensazioni prima del prossimo ciclo.", dur:8000, hold:8000, scale:1}
     ]
@@ -2568,9 +2568,25 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     const introKey = 'INTRO:'+pranaCurrentTech;
     function startPhases(){
       if(myPranaRun !== pranaRunId) return;
-      progStart('prana');
-      metroStart();
-      if(tech.primer){ showPhase(tech.primer, ()=> runPhase(0)); } else { runPhase(0); }
+      const via = ()=>{
+        if(myPranaRun !== pranaRunId) return;
+        progStart('prana');
+        metroStart();
+        if(tech.primer){ showPhase(tech.primer, ()=> runPhase(0)); } else { runPhase(0); }
+      };
+      if(pranaCurrentTech === 'bhastrika'){
+        // due respiri lenti di prova (pancia che si gonfia e si tira dentro) prima di cominciare
+        const prove = [];
+        for(let i=0;i<2;i++){
+          prove.push({label:'Prova — inspira', voice:'Inspira', caption:'Prova lenta: inspira dal naso e gonfia la pancia.', dur:3000, scale:1.2, lvl:1});
+          prove.push({label:'Prova — espira', voice:'Espira', caption:'Prova lenta: espira dal naso e tira la pancia dentro.', dur:3000, scale:0.85, lvl:0});
+        }
+        (function next(i){
+          if(myPranaRun !== pranaRunId) return;
+          if(i >= prove.length){ pranaPhaseTimeout = setTimeout(via, 900); return; }
+          showPhase(prove[i], ()=> next(i+1));
+        })(0);
+      } else via();
     }
     if(pranaVoiceOn && RECORDED_VOICE_CLIPS[introKey] && !introSeen(introKey) && !(pathMode && pathSkipIntro)){
       // spiegazione vocale iniziale: l'esercizio parte solo quando è finita (segnata come ascoltata solo alla fine)
@@ -3694,7 +3710,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=74;
+  const LOCAL=75;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
