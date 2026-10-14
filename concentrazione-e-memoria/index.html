@@ -1026,7 +1026,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="result" id="importResult"></div>
   </div>
 
-  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 13 · 13 ottobre</span>
+  <footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 14 · 13 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -3445,7 +3445,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=13;
+  const LOCAL=14;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -3576,12 +3576,22 @@ window.LAB_ITEMS = [{"titolo": "Un suono ripetuto", "origine": "Ripetizione di u
     if(k !== cur){ cur = k; t0 = 0; done = false; return; }
     if(t0 && !done && D[k] && Date.now() - t0 >= 90000){ done = true; record(D[k]); }
   }, 3000);
-  // collegamenti diretti dalla schermata Palestra: #vai=pannello oppure #vai=pannello:tecnica
+  // collegamenti diretti dalla schermata Palestra: #vai=pannello[:tecnica]&p=porta
+  var HUB = '../palestra/', hubDoor = '';
   function vai(){
-    var m = /^#vai=([^:&]+)(?::(.+))?$/.exec(decodeURIComponent(location.hash||'')); if(!m) return;
-    var sel = '.seal-card[data-panel="'+m[1]+'"]' + (m[2] ? '[data-tech="'+m[2]+'"]' : '');
+    var h = decodeURIComponent(location.hash||''); if(h.indexOf('#vai=') !== 0) return;
+    var parts = h.slice(5).split('&'), g = parts[0], mt = /^([^:]+)(?::(.+))?$/.exec(g); if(!mt) return;
+    parts.slice(1).forEach(function(x){ if(x.indexOf('p=') === 0) hubDoor = x.slice(2); });
+    var sel = '.seal-card[data-panel="'+mt[1]+'"]' + (mt[2] ? '[data-tech="'+mt[2]+'"]' : '');
     var c = document.querySelector(sel); if(c){ c.click(); }
   }
+  // se si arriva dalla Palestra, "Indietro" riporta alla porta, non alla pagina iniziale dell'app
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('.back-btn') : null;
+    if(!b || !hubDoor) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    location.href = HUB + '#' + hubDoor;
+  }, true);
   window.addEventListener('hashchange', vai);
   setTimeout(vai, 50);
 })();

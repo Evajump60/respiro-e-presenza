@@ -94,7 +94,7 @@
   function url(it){
     var g = it.go;
     if(g === 'laboratorio') return BASE[it.app] + '#laboratorio';
-    return BASE[it.app] + '#vai=' + encodeURIComponent(g);
+    return BASE[it.app] + '#vai=' + encodeURIComponent(g) + '&p=' + it.door;
   }
   function el(t,c,x){ var e = document.createElement(t); if(c) e.className = c; if(x!==undefined) e.textContent = x; return e; }
 
