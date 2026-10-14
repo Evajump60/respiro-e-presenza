@@ -1075,7 +1075,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
   </div>
 
 
-  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 72 · 14 ottobre</span>
+  <footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 73 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1494,10 +1494,10 @@ const RECORDED_VOICE_CLIPS = {
   "Mandala: 1": "audio/1/7b41386f511b.m4a",
   "Mandala: 2": "audio/1/8f1d60401626.m4a",
   "Mandala: 3": "audio/1/c64d63f3b199.m4a",
-  "Ape: Inspira profondamente.": "audio/2/aecd9d769b0b.m4a",
-  "Ape: Espira ronzando.": "audio/2/c45a15b60a77.m4a",
-  "Leone: Inspira profondamente.": "audio/2/1b51150bf184.m4a",
-  "Leone: Espira come un leone.": "audio/2/7daacc3454be.m4a",
+  "Ape: Inspira profondamente.": "audio/2/ca7ba65124de.m4a",
+  "Ape: Espira ronzando.": "audio/2/7636c42ec1b8.m4a",
+  "Leone: Inspira profondamente.": "audio/2/ca9e3e4d7a43.m4a",
+  "Leone: Espira come un leone.": "audio/2/af7a78a28701.m4a",
   "INTRO:relax": "audio/2/9b06f4462d53.m4a",
   "INTRO:breath": "audio/2/9377b95bd0aa.m4a",
   "INTRO:bhastrika": "audio/2/2c39df22bc46.m4a",
@@ -1529,20 +1529,20 @@ const RECORDED_VOICE_CLIPS = {
   "Tendi le gambe in avanti e tienile tese.": "audio/2/192c57feae6d.m4a",
   "Rilascia le gambe.": "audio/2/e2ccce40a8dd.m4a",
   "Ora riposa. Lascia che il tuo corpo sia tutto pesante e rilassato.": "audio/2/a5ca02b3d014.m4a",
-  "Inspira rapido": "audio/2/3b1b4a8f045f.m4a",
-  "Espira rapido": "audio/2/2c0357771633.m4a",
-  "Pausa naturale": "audio/2/d4fc7f5f3b8a.m4a",
-  "Inspira": "audio/2/4c84a96bf9a0.m4a",
-  "Trattieni": "audio/2/53dfbcdf7772.m4a",
-  "Espira": "audio/2/73daf09b3bbf.m4a",
-  "Espira da sinistra": "audio/2/647ad3a33d01.m4a",
-  "Inspira da sinistra": "audio/2/e1473f850243.m4a",
-  "Espira da destra": "audio/2/e14a3de8a2d3.m4a",
-  "Inspira da destra": "audio/2/c5543d8b572e.m4a",
-  "Inspira — pancia": "audio/2/0c9f73886e8d.m4a",
-  "Inspira — torace": "audio/2/894aae5cc660.m4a",
-  "Inspira — petto alto": "audio/2/47f313e64492.m4a",
-  "Espira lentamente": "audio/2/cf1d145207e0.m4a",
+  "Inspira rapido": "audio/2/bc7191089cb3.m4a",
+  "Espira rapido": "audio/2/83899e9afee4.m4a",
+  "Pausa naturale": "audio/2/19c170f0467f.m4a",
+  "Inspira": "audio/2/75d4c4b2f92f.m4a",
+  "Trattieni": "audio/2/2e2792229331.m4a",
+  "Espira": "audio/2/76c51a10bafd.m4a",
+  "Espira da sinistra": "audio/2/2efb7ea73eec.m4a",
+  "Inspira da sinistra": "audio/2/8c61c0c2b8f7.m4a",
+  "Espira da destra": "audio/2/b89f11d1e83e.m4a",
+  "Inspira da destra": "audio/2/8a4289852da6.m4a",
+  "Inspira — pancia": "audio/2/7a93377b138b.m4a",
+  "Inspira — torace": "audio/2/805928aa98ed.m4a",
+  "Inspira — petto alto": "audio/2/98fd64796e8c.m4a",
+  "Espira lentamente": "audio/2/10b8f0ce8d41.m4a",
   "Inspira dal naso": "audio/2/ce199f9aced9.m4a",
   "Ora espira lentamente facendo un ronzio continuo con la bocca chiusa, come un'ape.": "audio/2/d3285dc6fdba.m4a",
   "Ora spalanca la bocca ed espira con un verso liberatorio.": "audio/2/96e57f06575a.m4a",
@@ -3694,7 +3694,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=72;
+  const LOCAL=73;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
