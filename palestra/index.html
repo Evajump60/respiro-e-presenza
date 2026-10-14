@@ -99,7 +99,7 @@
   function el(t,c,x){ var e = document.createElement(t); if(c) e.className = c; if(x!==undefined) e.textContent = x; return e; }
 
   function header(){
-    var v = (/[?&]v=([ABC])/.exec(location.search)||[])[1] || 'A';
+    var v = (/[?&]v=([ABC])/.exec(location.search)||[])[1] || 'C';
     document.body.className = 'v'+v;
     var top = el('div','top');
     var tag = el('div','tag2','vedere · sentire · essere');
