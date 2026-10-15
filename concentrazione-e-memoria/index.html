@@ -1162,6 +1162,7 @@ function silhouette(name,sc){
   while(st.length){i=st.pop();x=i%W;y=(i/W)|0;[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var X=x+d[0],Y=y+d[1];if(X<0||Y<0||X>=W||Y>=H)return;var j=Y*W+X;if(!out[j]&&!m[j]){out[j]=1;st.push(j);}});}
   for(i=0;i<W*H;i++)z[i]=out[i]?0:1;
  }
+ for(var yy=0;yy<H;yy++){var rp=.28*yy/H;for(var xx=0;xx<W;xx++){var q=yy*W+xx;if(z[q]<1)z[q]=rp;}}
  return z;
 }
 var GREY=[40,90,150,215];
@@ -1181,7 +1182,10 @@ function render(withShape){
      while(k!==left&&k!==right){if(k<right){left=k;}else{var t=left;left=right;right=k;}k=same[left];}
      same[left]=right;}
   }
-  for(x=W-1;x>=0;x--){ if(same[x]===x) row[x]=((Math.random()*4)|0)*16+((Math.random()*4)|0)*4+((Math.random()*4)|0); else row[x]=row[same[x]]; }
+  var ch=new Uint8Array(W); /* catena corta: ogni puntino si ripete una sola volta, così non nascono copie a distanze multiple */
+  for(x=W-1;x>=0;x--){ var sx=same[x];
+   if(sx===x||ch[sx]>=1&&Math.random()<.9){ row[x]=((Math.random()*4)|0)*16+((Math.random()*4)|0)*4+((Math.random()*4)|0); ch[x]=0; }
+   else { row[x]=row[sx]; ch[x]=ch[sx]+1; } }
   for(x=0;x<W;x++){var col=[GREY[row[x]>>4],GREY[(row[x]>>2)&3],GREY[row[x]&3]];
    for(var dy=0;dy<CELL;dy++)for(var dx=0;dx<CELL;dx++){var idx=(((y*CELL+dy)*W*CELL)+(x*CELL+dx))*4;out[idx]=col[0];out[idx+1]=col[1];out[idx+2]=col[2];out[idx+3]=255;}}
  }
@@ -1192,7 +1196,7 @@ function render(withShape){
  [gx-gap,gx+gap].forEach(function(px){ctx.beginPath();ctx.arc(px,gy,3*CELL,0,6.2832);ctx.fill();ctx.stroke();});
  if(withShape){
   var o=document.createElement('canvas');o.width=W;o.height=H;var c=o.getContext('2d');var im=c.createImageData(W,H);
-  for(var i=0;i<W*H;i++){var a=depth[i]?150:0;im.data[i*4]=255;im.data[i*4+1]=255;im.data[i*4+2]=255;im.data[i*4+3]=a;}
+  for(var i=0;i<W*H;i++){var a=depth[i]>.9?150:0;im.data[i*4]=255;im.data[i*4+1]=255;im.data[i*4+2]=255;im.data[i*4+3]=a;}
   c.putImageData(im,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(o,0,0,W*CELL,H*CELL);
  }
 }
