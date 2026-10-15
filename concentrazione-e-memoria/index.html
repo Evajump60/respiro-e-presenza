@@ -546,14 +546,14 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     </div>
     <div class="diff-row" id="stShape">
       <button class="diff-btn on" data-sh="rnd" type="button">A sorpresa</button>
-      <button class="diff-btn" data-sh="palla" type="button">Palla</button>
-      <button class="diff-btn" data-sh="seme" type="button">Seme</button>
-      <button class="diff-btn" data-sh="cuore" type="button">Cuore</button>
-      <button class="diff-btn" data-sh="mano" type="button">Mano</button>
-      <button class="diff-btn" data-sh="pesce" type="button">Pesce</button>
-      <button class="diff-btn" data-sh="gatto" type="button">Gatto</button>
-      <button class="diff-btn" data-sh="fiore" type="button">Fiore</button>
       <button class="diff-btn" data-sh="stella" type="button">Stella</button>
+      <button class="diff-btn" data-sh="palla" type="button">Palla</button>
+      <button class="diff-btn" data-sh="triangolo" type="button">Triangolo</button>
+      <button class="diff-btn" data-sh="cubo" type="button">Cubo</button>
+      <button class="diff-btn" data-sh="seme" type="button">Seme</button>
+      <button class="diff-btn" data-sh="gatto" type="button">Gatto</button>
+      <button class="diff-btn" data-sh="pesce" type="button">Pesce</button>
+      <button class="diff-btn" data-sh="cuore" type="button">Cuore</button>
     </div>
     <div style="text-align:center;">
       <canvas id="stCanvas" style="max-width:100%;border-radius:14px;border:1px solid var(--line);touch-action:manipulation;"></canvas>
@@ -1124,8 +1124,8 @@ var ctx=cv.getContext('2d');
 var CELL=3, E=46, GW=470, GH=270;
 var LV=[{mu:.42,sc:.34},{mu:.33,sc:.33},{mu:.2,sc:.32}];
 var lv=1, shape='rnd', cur=null, depth=null, W=0, H=0, shown=false;
-var NAMES={seme:'il Seme',cuore:'un Cuore',mano:'una Mano',pesce:'un Pesce',gatto:'un Gatto',fiore:'un Fiore',stella:'una Stella',palla:'una Palla'};
-var KEYS=['palla','stella','gatto','pesce','cuore','mano','fiore','seme'];
+var NAMES={seme:'il Seme',cuore:'un Cuore',mano:'una Mano',pesce:'un Pesce',gatto:'un Gatto',fiore:'un Fiore',stella:'una Stella',palla:'una Palla',triangolo:'un Triangolo',cubo:'un Cubo'};
+var KEYS=['stella','palla','triangolo','cubo','seme','gatto','pesce','cuore'];
 var semeImg=new Image(); semeImg.src='../laboratorio/seme.png';
 function cap(c,x1,y1,x2,y2,w){c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
 function ell(c,x,y,rx,ry,r){c.beginPath();c.ellipse(x,y,rx,ry,r||0,0,6.2832);c.fill();}
@@ -1133,6 +1133,9 @@ var DRAW={
  cuore:function(c){ell(c,-.34,-.25,.42,.42);ell(c,.34,-.25,.42,.42);c.beginPath();c.moveTo(-.74,-.12);c.lineTo(.74,-.12);c.lineTo(0,.88);c.closePath();c.fill();},
  stella:function(c){c.beginPath();for(var i=0;i<10;i++){var r=i%2?.4:.95,a=-1.5708+i*.62832;c.lineTo(Math.cos(a)*r,Math.sin(a)*r);}c.closePath();c.fill();},
  palla:function(c){ell(c,0,0,.82,.82);},
+ triangolo:function(c){c.beginPath();c.moveTo(0,-.88);c.lineTo(.98,.72);c.lineTo(-.98,.72);c.closePath();c.fill();},
+ cubo:function(c){function f(col,pts){c.fillStyle=col;c.beginPath();c.moveTo(pts[0],pts[1]);for(var i=2;i<pts.length;i+=2)c.lineTo(pts[i],pts[i+1]);c.closePath();c.fill();}
+   f('#fff',[0,-.92,.8,-.46,0,0,-.8,-.46]);f('#aaa',[-.8,-.46,0,0,0,.92,-.8,.46]);f('#d4d4d4',[0,0,.8,-.46,.8,.46,0,.92]);},
  fiore:function(c){for(var i=0;i<5;i++){var a=-1.5708+i*1.2566;ell(c,Math.cos(a)*.5,Math.sin(a)*.5,.36,.36);}ell(c,0,0,.4,.4);},
  mano:function(c){ell(c,0,.3,.5,.46);cap(c,-.3,.0,-.32,-.45,.24);cap(c,-.1,-.05,-.1,-.6,.24);cap(c,.1,-.02,.12,-.5,.24);cap(c,.3,.05,.34,-.3,.24);cap(c,-.45,.3,-.75,.0,.26);},
  pesce:function(c){ell(c,-.1,0,.7,.42);c.beginPath();c.moveTo(.45,0);c.lineTo(.98,-.4);c.lineTo(.98,.4);c.closePath();c.fill();},
@@ -1143,7 +1146,9 @@ var DRAW={
 };
 function drawShape(c,name){
  c.fillStyle='#fff';c.strokeStyle='#fff';
- if(name==='seme'){ell(c,0,0,.4,.4);for(var i=0;i<6;i++){var a=i*1.0472;ell(c,Math.cos(a)*.42,Math.sin(a)*.42,.4,.4);}return;}
+ if(name==='seme'){
+  if(semeImg.complete&&semeImg.naturalWidth){var ar=semeImg.naturalWidth/semeImg.naturalHeight,h=1.7,w=h*ar;c.drawImage(semeImg,-w/2,-h/2,w,h);return;}
+  ell(c,0,0,.4,.4);for(var i=0;i<6;i++){var a=i*1.0472;ell(c,Math.cos(a)*.42,Math.sin(a)*.42,.4,.4);}return;}
  DRAW[name](c);
 }
 function silhouette(name,sc){
@@ -1152,7 +1157,7 @@ function silhouette(name,sc){
  var s=H*sc; /* scala unità -> celle */
  c.setTransform(s,0,0,s,W/2,H*.52);drawShape(c,name);
  var d=c.getImageData(0,0,W,H).data,z=new Float32Array(W*H);
- for(var i=0;i<W*H;i++)z[i]=d[i*4]>110?1:0;
+ for(var i=0;i<W*H;i++)z[i]=d[i*4]>20?d[i*4]/255:0;
  if(name==='seme'&&semeImg.complete&&semeImg.naturalWidth){ /* il seme è un contorno: lo ispessisco e riempio l'interno */
   var m=new Uint8Array(W*H),r=4,x,y,i;
   for(y=0;y<H;y++)for(x=0;x<W;x++)if(z[y*W+x]){for(var dy=-r;dy<=r;dy++)for(var dx=-r;dx<=r;dx++){var X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<W&&Y<H)m[Y*W+X]=1;}}
@@ -1165,7 +1170,9 @@ function silhouette(name,sc){
 var GREY=[40,90,150,215];
 function render(withShape){
  W=GW; H=GH;
- cv.width=W*CELL;cv.height=H*CELL;cv.style.width='100%';cv.style.maxWidth='940px';cv.style.height='auto';
+ var dpr=window.devicePixelRatio||1, availCss=Math.min(cv.parentNode.clientWidth||360,940);
+ CELL=Math.max(1,Math.floor(availCss*dpr/GW)); /* celle di pixel interi del dispositivo: la grana resta nitida */
+ cv.width=W*CELL;cv.height=H*CELL;cv.style.width=(W*CELL/dpr)+'px';cv.style.maxWidth='none';cv.style.height=(H*CELL/dpr)+'px';
  if(!depth||depth.length!==W*H||depth._n!==cur) { depth=silhouette(cur,LV[lv].sc);depth._n=cur; }
  var mu=LV[lv].mu, img=ctx.createImageData(W*CELL,H*CELL), out=img.data;
  var seedRow=0; 
@@ -1190,7 +1197,7 @@ function render(withShape){
  [gx-gap,gx+gap].forEach(function(px){ctx.beginPath();ctx.arc(px,gy,3*CELL,0,6.2832);ctx.fill();ctx.stroke();});
  if(withShape){
   var o=document.createElement('canvas');o.width=W;o.height=H;var c=o.getContext('2d');var im=c.createImageData(W,H);
-  for(var i=0;i<W*H;i++){var a=depth[i]>.9?150:0;im.data[i*4]=255;im.data[i*4+1]=255;im.data[i*4+2]=255;im.data[i*4+3]=a;}
+  for(var i=0;i<W*H;i++){var a=depth[i]>.2?150:0;im.data[i*4]=255;im.data[i*4+1]=255;im.data[i*4+2]=255;im.data[i*4+3]=a;}
   c.putImageData(im,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(o,0,0,W*CELL,H*CELL);
  }
 }
