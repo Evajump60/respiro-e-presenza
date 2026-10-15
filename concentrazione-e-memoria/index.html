@@ -1157,7 +1157,7 @@ function silhouette(name,sc){
  var s=H*sc; /* scala unità -> celle */
  c.setTransform(s,0,0,s,W/2,H*.52);drawShape(c,name);
  var d=c.getImageData(0,0,W,H).data,z=new Float32Array(W*H);
- for(var i=0;i<W*H;i++)z[i]=d[i*4]>20?d[i*4]/255:0;
+ for(var i=0;i<W*H;i++){var v=d[i*4]; z[i]= name==='cubo' ? (v>=235?1:v>=190?.83:v>=130?.67:0) : (v>127?1:0);}
  if(name==='seme'&&semeImg.complete&&semeImg.naturalWidth){ /* il seme è un contorno: lo ispessisco e riempio l'interno */
   var m=new Uint8Array(W*H),r=4,x,y,i;
   for(y=0;y<H;y++)for(x=0;x<W;x++)if(z[y*W+x]){for(var dy=-r;dy<=r;dy++)for(var dx=-r;dx<=r;dx++){var X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<W&&Y<H)m[Y*W+X]=1;}}
@@ -1181,12 +1181,15 @@ function render(withShape){
   for(var x=0;x<W;x++)same[x]=x;
   for(x=0;x<W;x++){
    var zz=depth[y*W+x],sep=Math.round((1-mu*zz)*E/(2-mu*zz));
-   var left=x-((sep+(sep&1))>>1),right=left+sep;
-   if(left>=0&&right<W){var k=same[left];
-     while(k!==left&&k!==right){if(k<right){left=k;}else{var t=left;left=right;right=k;}k=same[left];}
-     same[left]=right;}
+   var left=x-Math.floor(sep/2),right=left+sep;
+   if(left>=0&&right<W){
+     var l=same[left]; while(l!==left&&l!==same[l]) l=same[l];
+     var r=same[right]; while(r!==right&&r!==same[r]) r=same[r];
+     if(l!==r){ if(l<r) same[r]=l; else same[l]=r; }
+   }
   }
-  for(x=W-1;x>=0;x--){ if(same[x]===x) row[x]=((Math.random()*4)|0)*16+((Math.random()*4)|0)*4+((Math.random()*4)|0); else row[x]=row[same[x]]; }
+  if(window.__stDbg&&y===135) window.__stSame=Array.from(same);
+  for(x=0;x<W;x++){ if(same[x]===x) row[x]=((Math.random()*4)|0)*16+((Math.random()*4)|0)*4+((Math.random()*4)|0); else row[x]=row[same[x]]; }
   for(x=0;x<W;x++){var col=[GREY[row[x]>>4],GREY[(row[x]>>2)&3],GREY[row[x]&3]];
    for(var dy=0;dy<CELL;dy++)for(var dx=0;dx<CELL;dx++){var idx=(((y*CELL+dy)*W*CELL)+(x*CELL+dx))*4;out[idx]=col[0];out[idx+1]=col[1];out[idx+2]=col[2];out[idx+3]=255;}}
  }
