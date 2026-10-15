@@ -544,6 +544,13 @@ body[data-mode="kids"] .adults-only{display:none !important;}
       <button class="diff-btn on" data-lv="1" type="button">Medio</button>
       <button class="diff-btn" data-lv="2" type="button">Difficile</button>
     </div>
+    <div class="diff-row" id="stSize">
+      <span style="align-self:center;font-size:13px;color:var(--ink-soft);margin-right:4px;">Dimensione dei motivi:</span>
+      <button class="diff-btn" data-sz="0" type="button">Piccola</button>
+      <button class="diff-btn" data-sz="1" type="button">Media</button>
+      <button class="diff-btn on" data-sz="2" type="button">Grande</button>
+      <button class="diff-btn" data-sz="3" type="button">Molto grande</button>
+    </div>
     <div class="diff-row" id="stShape">
       <button class="diff-btn on" data-sh="rnd" type="button">A sorpresa</button>
       <button class="diff-btn" data-sh="stella" type="button">Stella</button>
@@ -1121,8 +1128,8 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 (function(){
 var cv=document.getElementById('stCanvas'); if(!cv) return;
 var ctx=cv.getContext('2d');
-var CELL=3, SEP0=50, GW=330, GH=250; /* proporzioni dello stereogramma di Stefano: periodo ≈ 15% della larghezza */
-var LV=[{d:14,sc:.34},{d:10,sc:.34},{d:6,sc:.34}];
+var CELL=3, SEP0=50, SEPS=[25,38,50,65], sepi=2, GW=330, GH=250; /* proporzioni dello stereogramma di Stefano: periodo ≈ 15% della larghezza */
+var LV=[{r:.28,sc:.34},{r:.2,sc:.34},{r:.12,sc:.34}];
 var lv=1, shape='rnd', cur=null, depth=null, W=0, H=0, shown=false;
 var NAMES={seme:'il Seme',cuore:'un Cuore',mano:'una Mano',pesce:'un Pesce',gatto:'un Gatto',fiore:'un Fiore',stella:'una Stella',palla:'una Palla',triangolo:'un Triangolo',cubo:'un Cubo'};
 var KEYS=['stella','palla','triangolo','cubo','seme','gatto','pesce','cuore'];
@@ -1154,7 +1161,7 @@ function drawShape(c,name){
 function silhouette(name,sc){
  var o=document.createElement('canvas');o.width=W;o.height=H;var c=o.getContext('2d');
  c.fillStyle='#000';c.fillRect(0,0,W,H);
- var s=H*sc; /* scala unità -> celle */
+ var s=H*(name==='seme'?.42:sc); /* scala unità -> celle */
  c.setTransform(s,0,0,s,W/2,H*.52);drawShape(c,name);
  var d=c.getImageData(0,0,W,H).data,z=new Float32Array(W*H);
  for(var i=0;i<W*H;i++){var v=d[i*4]; z[i]= name==='cubo' ? (v>=235?1:v>=190?.83:v>=130?.67:0) : (v>127?1:0);}
@@ -1174,7 +1181,7 @@ function render(withShape){
  CELL=Math.max(1,Math.floor(availCss*dpr/GW)); /* celle di pixel interi del dispositivo: la grana resta nitida */
  cv.width=W*CELL;cv.height=H*CELL;cv.style.width=(W*CELL/dpr)+'px';cv.style.maxWidth='none';cv.style.height=(H*CELL/dpr)+'px';
  if(!depth||depth.length!==W*H||depth._n!==cur) { depth=silhouette(cur,LV[lv].sc);depth._n=cur; }
- var DD=LV[lv].d, img=ctx.createImageData(W*CELL,H*CELL), out=img.data;
+ SEP0=SEPS[sepi]; var DD=Math.max(2,Math.round(SEP0*LV[lv].r)), img=ctx.createImageData(W*CELL,H*CELL), out=img.data;
  var seedRow=0; 
  for(var y=0;y<H;y++){
   var same=new Int32Array(W),row=new Int32Array(W);
@@ -1219,6 +1226,8 @@ function toggle(){
 }
 document.getElementById('stDiff').addEventListener('click',function(e){var b=e.target.closest('.diff-btn');if(!b)return;
  this.querySelectorAll('.diff-btn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');lv=+b.dataset.lv;fresh();});
+document.getElementById('stSize').addEventListener('click',function(e){var b=e.target.closest('.diff-btn');if(!b)return;
+ this.querySelectorAll('.diff-btn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');sepi=+b.dataset.sz;depth=null;render(shown);});
 document.getElementById('stShape').addEventListener('click',function(e){var b=e.target.closest('.diff-btn');if(!b)return;
  this.querySelectorAll('.diff-btn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');shape=b.dataset.sh;fresh();});
 document.getElementById('stNew').addEventListener('click',fresh);
