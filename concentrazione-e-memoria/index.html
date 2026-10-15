@@ -539,6 +539,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
     <div class="eyebrow">立 · Vedere in profondità</div>
     <h2>Stereogrammi</h2>
     <div class="sub">Un disegno di puntini che sembra solo rumore. Se rilassi lo sguardo, come guardando lontano <em>attraverso</em> lo schermo, dal disegno emerge una forma in rilievo. Non si forza: si lascia accadere.</div>
+    <div style="margin:0 0 16px;"><div style="font-size:13px;color:var(--ink-soft);margin-bottom:4px;">🎧 Ascolta la guida (circa 1 minuto)</div><audio controls preload="none" src="audio/STEREO.m4a" style="width:100%;max-width:420px;"></audio></div>
     <div class="diff-row" id="stDiff">
       <button class="diff-btn" data-lv="0" type="button">Facile</button>
       <button class="diff-btn on" data-lv="1" type="button">Medio</button>
@@ -1643,6 +1644,7 @@ const PP_A=[{k:'Guarda il paesaggio con attenzione morbida. Distingui il lontano
  {k:'Apri gli occhi e confronta. Nota cosa ricordavi con precisione e cosa era sfumato, senza giudicare.', w:12}];
 makeGuidedLite('paesaggio',{pre:'pp', intro:()=> document.body.dataset.mode==='kids' ? 'Ora guardiamo un paesaggio, poi lo portiamo dentro di noi per ritrovarlo quando serve.' : 'In questo esercizio guardi con attenzione un paesaggio, vero o in immagine, e poi lo ricrei nella mente, con colori, suoni e sensazioni. È una pratica di attenzione e di memoria visiva.', steps:()=> document.body.dataset.mode==='kids' ? PP_K : PP_A});
 function stopEverything(){
+  try{ document.querySelectorAll('#panel-stereo audio').forEach(function(x){x.pause();}); }catch(e){}
   if('speechSynthesis' in window) speechSynthesis.cancel();
   try{ stopGuidedLiteAll(); }catch(e){}
   try{ stopVoice(); }catch(e){}
