@@ -54,8 +54,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>/* collegamento dalla Palestra: tiene la pagina nascosta finché l'esercizio non è aperto, per evitare il lampo della schermata iniziale */
-(function(){try{if(decodeURIComponent(location.hash||'').indexOf('#vai=')===0){var d=document.documentElement;d.classList.add('vai-attesa');setTimeout(function(){d.classList.remove('vai-attesa');},3500);}}catch(e){}})();</script>
-<style>html.vai-attesa body{visibility:hidden}.fb-line{text-align:center;margin:26px auto 8px;font-size:14px;}.fb-line button{border:1.5px solid #2D4A6B;background:#fff;color:#2D4A6B;font:600 14px/1.2 "Helvetica Neue",Helvetica,Arial,sans-serif;padding:10px 18px;border-radius:99px;cursor:pointer;}.fb-line small{display:block;margin-top:6px;opacity:.7;font-size:12px;}@media print{.fb-line{display:none}}
+(function(){try{if(decodeURIComponent(location.hash||'').indexOf('#vai=')===0){var d=document.documentElement;d.classList.add('vai-attesa');setTimeout(function(){d.classList.remove('vai-attesa');},12000);}}catch(e){}})();</script>
+<style>html.vai-attesa body{visibility:hidden}html.vai-attesa::before{content:"Sto aprendo l\2019 esercizio\2026";position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font:600 16px "Helvetica Neue",Helvetica,Arial,sans-serif;color:#27465A;background:#fff;z-index:99999}.fb-line{text-align:center;margin:26px auto 8px;font-size:14px;}.fb-line button{border:1.5px solid #2D4A6B;background:#fff;color:#2D4A6B;font:600 14px/1.2 "Helvetica Neue",Helvetica,Arial,sans-serif;padding:10px 18px;border-radius:99px;cursor:pointer;}.fb-line small{display:block;margin-top:6px;opacity:.7;font-size:12px;}@media print{.fb-line{display:none}}
 </style>
 <title>Corpo e Movimento</title>
 <style>
@@ -848,7 +848,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 
   <div class="fb-line"><button type="button" id="fbBtn">✉ Scrivi allo sviluppatore · dai un feedback</button><small>Siamo in fase di prova: ogni suggerimento è prezioso.</small></div>
 <script>(function(){var b=document.getElementById("fbBtn");if(!b)return;b.addEventListener("click",function(){var v="";try{var e=document.getElementById("appVersion");v=(e?e.textContent:"").replace(/\s+/g," ").trim();}catch(x){}var a=["evajump","proton.me"].join("@");var s="Feedback Corpo e Movimento "+v;var t="Ciao Eva,\n\n(scrivi qui il tuo messaggio)\n\nCosa mi è piaciuto:\nCosa non funziona o non è chiaro:\nSuggerimenti:\n\n---\nApp: Corpo e Movimento\nVersione: "+v+"\nDispositivo: "+navigator.userAgent;location.href="mailto:"+a+"?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(t);});})();</script>
-<footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 36 · 14 ottobre</span>
+<footer>Ispirato liberamente alle attività di educazione del cervello destro descritte nei libri di Makoto Shichida, ai movimenti della Brain Gym e a test di psicologia cognitiva (Corsi, N-Back, Stroop). Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 37 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -2319,7 +2319,7 @@ crossRenderPhase(0);
 
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=36;
+  const LOCAL=37;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
@@ -2464,7 +2464,7 @@ window.LAB_ITEMS = [];
       var a = document.querySelector('.panel.active');
       if(a && a.id === want){ rivela(); return; }
       var c = document.querySelector(sel); if(c){ c.click(); a = document.querySelector('.panel.active'); if(a && a.id === want){ rivela(); return; } }
-      if(++tries < 15) setTimeout(go, 200); else rivela();
+      if(++tries < 60) setTimeout(go, 200); else rivela();
     })();
   }
   // se si arriva dalla Palestra, "Indietro" riporta alla porta, non alla pagina iniziale dell'app
@@ -2477,6 +2477,7 @@ window.LAB_ITEMS = [];
   window.addEventListener('hashchange', vai);
   window.addEventListener('pageshow', function(e){ if(e.persisted) vai(); });
   setTimeout(vai, 50);
+  window.addEventListener('load', vai);
 })();
 </script>
 </body>
