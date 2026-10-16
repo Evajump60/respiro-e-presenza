@@ -1128,7 +1128,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 
   <div class="fb-line"><button type="button" id="fbBtn">✉ Scrivi allo sviluppatore · dai un feedback</button><small>Siamo in fase di prova: ogni suggerimento è prezioso.</small></div>
 <script>(function(){var b=document.getElementById("fbBtn");if(!b)return;b.addEventListener("click",function(){var v="";try{var e=document.getElementById("appVersion");v=(e?e.textContent:"").replace(/\s+/g," ").trim();}catch(x){}var a=["evajump","proton.me"].join("@");var s="Feedback Respiro e Presenza "+v;var t="Ciao Eva,\n\n(scrivi qui il tuo messaggio)\n\nCosa mi è piaciuto:\nCosa non funziona o non è chiaro:\nSuggerimenti:\n\n---\nApp: Respiro e Presenza\nVersione: "+v+"\nDispositivo: "+navigator.userAgent;location.href="mailto:"+a+"?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(t);});})();</script>
-<footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 87 · 14 ottobre</span>
+<footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <button id="haloBtn" type="button" style="display:block; margin-top:8px; background:none; border:1px solid rgba(0,0,0,.25); border-radius:999px; padding:6px 12px; font:inherit; font-size:13px; color:inherit; cursor:pointer;">Alone di luce: sì</button><span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 88 · 16 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -3763,6 +3763,52 @@ function startPath(key){
 })();
 
 
+// Alone di luce attorno al cerchio del respiro: segue lo stesso movimento del cerchio (si apre e si chiude con lui)
+(function(){
+  let on=true, rm=false;
+  try{ rm=!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); }catch(e){}
+  try{ const v=localStorage.getItem('pcd_halo'); on = v===null ? !rm : v==='1'; }catch(e){ on=!rm; }
+  const btn=document.getElementById('haloBtn');
+  function ui(){ if(btn){ btn.textContent = on ? 'Alone di luce: sì' : 'Alone di luce: no'; btn.setAttribute('aria-pressed', on); } }
+  if(btn){ btn.addEventListener('click', ()=>{ on=!on; try{ localStorage.setItem('pcd_halo', on?'1':'0'); }catch(e){} ui(); if(!on) clear(); }); }
+  ui();
+  const colCache=new WeakMap(), rng=new WeakMap();
+  function colour(c){
+    let v=colCache.get(c);
+    if(!v){
+      const f=getComputedStyle(c).getPropertyValue('--fill')||'';
+      const m=f.match(/#([0-9a-f]{6})/i);
+      const h=m?m[1]:'e8c98a';
+      v=[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+      colCache.set(c,v);
+    }
+    return v;
+  }
+  function clear(){ document.querySelectorAll('.breath-circle').forEach(c=>{ c.style.boxShadow=''; }); }
+  let last=0;
+  function tick(t){
+    requestAnimationFrame(tick);
+    if(!on || t-last<33) return; last=t;
+    document.querySelectorAll('.breath-circle').forEach(c=>{
+      if(!c.offsetParent) return;
+      if(c.dataset.idle==='1'){ if(c.style.boxShadow) c.style.boxShadow=''; rng.delete(c); return; }
+      let k=0;
+      try{
+        const tr=getComputedStyle(c,'::before').transform;
+        const m=tr&&tr!=='none'&&tr.match(/matrix\(([^,]+),/);
+        const sx=m?parseFloat(m[1]):1;
+        let r=rng.get(c); if(!r){ r={lo:sx,hi:sx}; rng.set(c,r); }
+        if(sx<r.lo) r.lo=sx; if(sx>r.hi) r.hi=sx;
+        k = (r.hi-r.lo)<0.02 ? 0.5 : (sx-r.lo)/(r.hi-r.lo);
+      }catch(e){}
+      const rgb=colour(c);
+      c.style.boxShadow='0 0 '+(16+34*k).toFixed(1)+'px '+(2+12*k).toFixed(1)+'px rgba('+rgb.join(',')+','+(.16+.26*k).toFixed(2)+')';
+    });
+  }
+  requestAnimationFrame(tick);
+})();
+
+
 // Colori del seme per sezione: la sezione e le sue schermate prendono lo stesso colore
 (function(){
   const COL = [ ['#3571b5','#3571b5'], ['#3f9142','#3f9142'], ['#d12b27','#d12b27'], ['#f2c230','#b58900'], ['#3571b5','#3571b5'] ];
@@ -3784,7 +3830,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=87;
+  const LOCAL=88;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
