@@ -1128,7 +1128,7 @@ body[data-mode="kids"] .adults-only{display:none !important;}
 
   <div class="fb-line"><button type="button" id="fbBtn">✉ Scrivi allo sviluppatore · dai un feedback</button><small>Siamo in fase di prova: ogni suggerimento è prezioso.</small></div>
 <script>(function(){var b=document.getElementById("fbBtn");if(!b)return;b.addEventListener("click",function(){var v="";try{var e=document.getElementById("appVersion");v=(e?e.textContent:"").replace(/\s+/g," ").trim();}catch(x){}var a=["evajump","proton.me"].join("@");var s="Feedback Respiro e Presenza "+v;var t="Ciao Eva,\n\n(scrivi qui il tuo messaggio)\n\nCosa mi è piaciuto:\nCosa non funziona o non è chiaro:\nSuggerimenti:\n\n---\nApp: Respiro e Presenza\nVersione: "+v+"\nDispositivo: "+navigator.userAgent;location.href="mailto:"+a+"?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(t);});})();</script>
-<footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 86 · 14 ottobre</span>
+<footer>Ispirato liberamente al pranayama dell'Art of Living e a concetti di psicologia dello sport su respiro, visualizzazione e autoregolazione. Nessun contenuto originale dei testi è riprodotto: gli esercizi sono ricreazioni pratiche basate sui princìpi generali di ciascun metodo. <span id="appVersion" style="display:block; margin-top:6px; opacity:.7;">Versione 87 · 14 ottobre</span>
   <button id="updBtn" type="button" style="display:block;margin:8px 0 0;padding:8px 14px;border:1px solid var(--indigo,#3571b5);background:#fff;color:var(--indigo,#3571b5);border-radius:10px;font:inherit;font-size:.9rem;">Controlla aggiornamenti</button><span id="updMsg" style="display:block;margin-top:4px;font-size:.85rem;"></span></footer>
 </div>
 
@@ -1302,14 +1302,31 @@ function maybeIntro(key, voiceOn, valid, circleEl, captionEl, cont){
   } else bellThen(()=>{ if(valid()) cont(); });
 }
 // riascolto della sola spiegazione
-function playIntroOnly(key, running, circleId, captionId, idleLabel){
+let introOnlyTok = 0;
+// dopo la spiegazione riascoltata, l'esercizio parte da solo (come la prima volta): si è già in posizione
+function autoStartAfterIntro(tok, key, running, startBtnId, capEl){
+  if(tok !== introOnlyTok || running()) return;
+  markIntroSeen(key);
+  if(capEl) capEl.textContent = 'Ora comincia l’esercizio.';
+  setTimeout(()=>{
+    if(tok !== introOnlyTok || running()) return;
+    const btn = document.getElementById(startBtnId), panel = btn && btn.closest('.panel');
+    if(btn && panel && panel.classList.contains('active')) btn.click();
+  }, 900);
+}
+function playIntroOnly(key, running, circleId, captionId, idleLabel, startBtnId){
   if(running()) return;
   const c = document.getElementById(circleId), cap = document.getElementById(captionId);
   if(!RECORDED_VOICE_CLIPS[key]){ if(cap) cap.textContent = 'Per questo esercizio non c’è una spiegazione parlata.'; return; }
   unlockRecordedVoiceClips();
   if(c) c.textContent = 'Ascolta';
   if(cap) cap.textContent = 'Spiegazione dell’esercizio.';
-  speakCue(key, ()=>{ if(!running()){ if(c) c.textContent = idleLabel; if(cap) cap.textContent = ''; } });
+  const tok = ++introOnlyTok;
+  speakCue(key, ()=>{
+    if(running()) return;
+    if(startBtnId){ autoStartAfterIntro(tok, key, running, startBtnId, cap); return; }
+    if(c) c.textContent = idleLabel; if(cap) cap.textContent = '';
+  });
 }
 
 // ---- barra di avanzamento (cicli + tempo rimasto stimato dal ritmo reale) ----
@@ -2651,9 +2668,9 @@ document.getElementById('pranaStart').addEventListener('click', ()=>{
     }
   }, 350);
 });
-document.getElementById('relaxIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:relax', ()=>relaxRunning, 'relaxCircle', 'relaxCaption', 'Pronto'));
-document.getElementById('breathIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:breath', ()=>breathRunning, 'breathCircle', 'breathCaption', 'Inizia'));
-document.getElementById('autoregIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:'+autoregCurrentTech, ()=>autoregRunning, 'autoregCircle', 'autoregCaption', 'Pronto'));
+document.getElementById('relaxIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:relax', ()=>relaxRunning, 'relaxCircle', 'relaxCaption', 'Pronto', 'relaxStart'));
+document.getElementById('breathIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:breath', ()=>breathRunning, 'breathCircle', 'breathCaption', 'Inizia', 'breathStart'));
+document.getElementById('autoregIntroBtn').addEventListener('click', ()=> playIntroOnly('INTRO:'+autoregCurrentTech, ()=>autoregRunning, 'autoregCircle', 'autoregCaption', 'Pronto', 'autoregStart'));
 document.getElementById('mandalaIntroBtn').addEventListener('click', ()=>{ unlockRecordedVoiceClips(); speakCue('INTRO:mandala'); });
 document.getElementById('pranaIntroBtn').addEventListener('click', ()=>{
   if(pranaRunning) return;
@@ -2662,7 +2679,11 @@ document.getElementById('pranaIntroBtn').addEventListener('click', ()=>{
   unlockRecordedVoiceClips('prana');
   document.getElementById('pranaCircle').textContent = 'Ascolta';
   document.getElementById('pranaCaption').textContent = 'Spiegazione dell’esercizio.';
-  speakCue(key, ()=>{ if(!pranaRunning){ document.getElementById('pranaCircle').textContent = 'Pronto'; document.getElementById('pranaCaption').textContent = ''; } });
+  const tok = ++introOnlyTok;
+  speakCue(key, ()=>{
+    if(pranaRunning) return;
+    autoStartAfterIntro(tok, key, ()=>pranaRunning, 'pranaStart', document.getElementById('pranaCaption'));
+  });
 });
 document.getElementById('pranaStop').addEventListener('click', ()=>{
   metroStop();
@@ -3411,7 +3432,7 @@ function makeGuided(id, cfg){
     }, 350);
   });
   $('Stop').addEventListener('click', ()=>{ g.stop(); stopVoiceClipAudio(); reset(); progReset(cfg.pre); });
-  $('IntroBtn').addEventListener('click', ()=> playIntroOnly(cfg.introKey, ()=>g.running, cfg.pre+'Circle', cfg.pre+'Caption', 'Pronto'));
+  $('IntroBtn').addEventListener('click', ()=> playIntroOnly(cfg.introKey, ()=>g.running, cfg.pre+'Circle', cfg.pre+'Caption', 'Pronto', cfg.pre+'Start'));
 }
 function stopGuidedAll(){ Object.keys(GUIDED).forEach(k=> GUIDED[k].stop()); }
 function guidedAnyRunning(){ return Object.keys(GUIDED).some(k=> GUIDED[k].running); }
@@ -3763,7 +3784,7 @@ updateModeNote();
 refreshScoresUI();
 /* ---- Controllo aggiornamenti ---- */
 (function(){
-  const LOCAL=86;
+  const LOCAL=87;
   const banner=document.getElementById('updBanner'), msg=document.getElementById('updMsg');
   function reloadFresh(){
     try{ if(window.pathRunning||window.mandalaRunning){ if(!confirm('Un esercizio è in corso. Aggiornare comunque?')) return; } }catch(e){}
