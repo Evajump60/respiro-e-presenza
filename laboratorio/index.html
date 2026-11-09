@@ -24,6 +24,7 @@
   textarea{width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid var(--line);font:inherit;background:#fff;}
   label.q{display:block;margin-top:8px;color:var(--ink-soft);font-size:.92rem;}
   .entry{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:#fff;}
+  .card.last{outline:2px solid rgba(200,140,50,.75);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -33,7 +34,7 @@
   <h1>Laboratorio</h1>
   <div class="notice" id="notice"></div>
   <div id="main"></div>
-  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:34px 0 20px">Laboratorio · Versione 3</p>
+  <p id="appVersion" style="text-align:center;font-size:.8em;opacity:.6;margin:34px 0 20px">Laboratorio · Versione 4</p>
 </div>
 <script>
 (function(){
@@ -57,21 +58,24 @@
   document.getElementById('notice').textContent = NOTICE;
   var main = document.getElementById('main');
   function byId(id){ for(var i=0;i<ITEMS.length;i++) if(ITEMS[i].id===id) return ITEMS[i]; return null; }
-  function list(){
+  var lastY = 0, lastId = null, view = 'list';
+  function list(keep){
     var h = '';
     GROUPS.forEach(function(g){
       h += '<h2>'+esc(g.t)+'</h2>';
       g.ids.forEach(function(id){ var it = byId(id); if(!it) return;
-        h += '<div class="card" data-id="'+esc(id)+'"><div class="seal">試</div><div><strong>'+esc(it.titolo)+'</strong><span>'+esc(it.durata||'')+(it.per==='adulti'?' · solo adulti':'')+'</span></div></div>'; });
+        h += '<div class="card'+(keep===true&&id===lastId?' last':'')+'" data-id="'+esc(id)+'"><div class="seal">試</div><div><strong>'+esc(it.titolo)+'</strong><span>'+esc(it.durata||'')+(it.per==='adulti'?' · solo adulti':'')+'</span></div></div>'; });
     });
     h += '<div style="margin-top:22px;"><button class="ghost" id="dBtn" type="button">Il mio diario di osservazione ('+load().length+')</button></div>';
     main.innerHTML = h;
-    Array.prototype.forEach.call(main.querySelectorAll('.card'), function(c){ c.addEventListener('click', function(){ detail(c.getAttribute('data-id')); }); });
-    main.querySelector('#dBtn').addEventListener('click', diary);
-    window.scrollTo(0,0);
+    Array.prototype.forEach.call(main.querySelectorAll('.card'), function(c){ c.addEventListener('click', function(){ lastY = window.pageYOffset||0; lastId = c.getAttribute('data-id'); push('d'); detail(lastId); }); });
+    main.querySelector('#dBtn').addEventListener('click', function(){ lastY = window.pageYOffset||0; lastId = null; push('g'); diary(); });
+    view = 'list';
+    if(keep===true) window.scrollTo(0,lastY); else window.scrollTo(0,0);
   }
   function detail(id){
-    var it = byId(id); if(!it) return list();
+    var it = byId(id); if(!it) return list(true);
+    view = 'detail';
     var h = '<button class="ghost" id="bk" type="button">← Laboratorio</button><h3>'+esc(it.titolo)+'</h3>';
     h += '<div class="sub">'+(it.origine?'Da dove viene: '+esc(it.origine)+'<br>':'')+'Per chi: '+(it.per==='adulti'?'solo adulti':'tutti')+(it.durata?' · Durata: '+esc(it.durata):'')+'</div>';
     if(it.audio) h += '<div style="margin:12px 0"><div class="sub" style="margin-bottom:4px">🎧 Ascolta la guida (la voce di Eva)</div><audio controls preload="none" src="'+esc(it.audio)+'" style="width:100%"></audio></div>';
@@ -80,7 +84,7 @@
     Q.forEach(function(q,i){ h += '<label class="q">'+(i+1)+'. '+esc(q)+'<textarea rows="2" class="lq"></textarea></label>'; });
     h += '<p class="sub" style="font-size:12px;">Nessun risultato è un esito valido.</p><button class="primary" id="sv" type="button">Salva nel diario</button><span id="sd" class="sub" style="margin-left:10px;"></span>';
     main.innerHTML = h; window.scrollTo(0,0);
-    main.querySelector('#bk').addEventListener('click', list);
+    main.querySelector('#bk').addEventListener('click', back);
     main.querySelector('#sv').addEventListener('click', function(){
       var r = Array.prototype.map.call(main.querySelectorAll('.lq'), function(t){ return t.value.trim(); });
       var a = load(); a.unshift({id:it.id, titolo:it.titolo, data:new Date().toISOString(), r:r}); save(a);
@@ -88,6 +92,7 @@
     });
   }
   function diary(){
+    view = 'diary';
     var a = load(), h = '<button class="ghost" id="bk" type="button">← Laboratorio</button><h3>Il mio diario di osservazione</h3>';
     if(!a.length) h += '<p class="sub">Ancora nessuna annotazione.</p>';
     a.forEach(function(e,i){
@@ -97,7 +102,7 @@
     });
     if(a.length) h += '<button class="ghost" id="ex" type="button">Esporta in un file di testo</button>';
     main.innerHTML = h; window.scrollTo(0,0);
-    main.querySelector('#bk').addEventListener('click', list);
+    main.querySelector('#bk').addEventListener('click', back);
     Array.prototype.forEach.call(main.querySelectorAll('.del'), function(b){ b.addEventListener('click', function(){ var x = load(); x.splice(parseInt(b.getAttribute('data-i'),10),1); save(x); diary(); }); });
     var ex = main.querySelector('#ex'); if(ex) ex.addEventListener('click', function(){
       var t = 'DIARIO DI OSSERVAZIONE - Laboratorio\n'+SHORT+'\n\n';
@@ -105,6 +110,11 @@
       try{ var u = URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'})); var l = document.createElement('a'); l.href=u; l.download='diario-laboratorio.txt'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },2000); }catch(err){ prompt('Copia il testo:', t); }
     });
   }
+  /* Torna alla lista nel punto in cui eri (anche con il tasto/gesto indietro del telefono) */
+  var pushed = false;
+  function push(v){ try{ history.pushState({lab:v}, ''); pushed = true; }catch(e){} }
+  function back(){ if(pushed){ try{ history.back(); return; }catch(e){} } list(true); }
+  window.addEventListener('popstate', function(){ pushed = false; if(view !== 'list') list(true); });
   list();
 })();
 </script>
